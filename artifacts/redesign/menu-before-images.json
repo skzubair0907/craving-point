@@ -1,0 +1,1443 @@
+[
+  {
+    "id": "waffle-chocolate-classic",
+    "category_id": "waffle",
+    "name": "Waffle Chocolate Classic",
+    "slug": "waffle-chocolate-classic",
+    "description": "Pressed to order, drizzled warm. A Belgian waffle slice under a heavy chocolate drizzle.",
+    "price": 45,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 45
+      },
+      {
+        "label": "Slice 2",
+        "price": 70
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-dark-white",
+    "category_id": "waffle",
+    "name": "Waffle Dark & White Chocolate",
+    "slug": "waffle-dark-white",
+    "description": "Swirled dark and white couverture, poured warm at the pass.",
+    "price": 65,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 65
+      },
+      {
+        "label": "Slice 2",
+        "price": 85
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-dark-delight",
+    "category_id": "waffle",
+    "name": "Waffle Dark Delight",
+    "slug": "waffle-dark-delight",
+    "description": "Dark chocolate lovers pick. Silky, bitter-sweet, poured warm.",
+    "price": 70,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 70
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-triple-chocolate",
+    "category_id": "waffle",
+    "name": "Triple Chocolate Waffle",
+    "slug": "waffle-triple-chocolate",
+    "description": "Milk, dark and white chocolate on one pressed slice.",
+    "price": 80,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 80
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-almond-chocolate",
+    "category_id": "waffle",
+    "name": "Almond Chocolate Waffle",
+    "slug": "waffle-almond-chocolate",
+    "description": "Roasted almond crunch over warm chocolate on a fresh waffle.",
+    "price": 95,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 95
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-brownie",
+    "category_id": "waffle",
+    "name": "Brownie Chocolate Waffle",
+    "slug": "waffle-brownie",
+    "description": "Fudgy brownie chunks folded into the chocolate drizzle.",
+    "price": 65,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 65
+      },
+      {
+        "label": "Slice 2",
+        "price": 120
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-ice-cream",
+    "category_id": "waffle",
+    "name": "Ice Cream Chocolate Waffle",
+    "slug": "waffle-ice-cream",
+    "description": "A scoop of ice cream melting over a warm chocolate waffle.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 130
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-vanilla",
+    "category_id": "waffle",
+    "name": "Vanilla Chocolate Waffle",
+    "slug": "waffle-vanilla",
+    "description": "Vanilla-spiked drizzle over a golden, buttery waffle.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich",
+    "category_id": "waffle",
+    "name": "Waffle Chocolate Sandwich",
+    "slug": "waffle-sandwich",
+    "description": "Two pressed slices, chocolate in the middle. Eaten like a sandwich, tastes like dessert.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 100
+      },
+      {
+        "label": "Slice 2",
+        "price": 120
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-icecream",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich with Ice Cream",
+    "slug": "waffle-sandwich-icecream",
+    "description": "The sandwich, upped with a cold scoop between the slices.",
+    "price": 120,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 120
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-triple",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich (Triple Chocolate)",
+    "slug": "waffle-sandwich-triple",
+    "description": "Three chocolates stacked in a pressed sandwich.",
+    "price": 130,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 130
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-full",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich, Ice Cream & Triple Chocolate",
+    "slug": "waffle-sandwich-full",
+    "description": "The full stack — sandwich, ice cream, triple chocolate. Go big.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 150
+      },
+      {
+        "label": "Slice 2",
+        "price": 160
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-kitkat",
+    "category_id": "waffle",
+    "name": "Kit Kat Waffle",
+    "slug": "waffle-kitkat",
+    "description": "Snapped Kit Kat pieces over a warm chocolate waffle.",
+    "price": 70,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 70
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-oreo",
+    "category_id": "waffle",
+    "name": "Oreo Waffle",
+    "slug": "waffle-oreo",
+    "description": "Oreo chunks and crumbs dusted over chocolate.",
+    "price": 75,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 75
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-ferrero",
+    "category_id": "waffle",
+    "name": "Ferrero Rocher Waffle",
+    "slug": "waffle-ferrero",
+    "description": "Ferrero Rocher crumble and hazelnut chocolate over the waffle.",
+    "price": 160,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 160
+      },
+      {
+        "label": "Slice 2",
+        "price": 200
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-biscoff",
+    "category_id": "waffle",
+    "name": "Biscoff Waffle",
+    "slug": "waffle-biscoff",
+    "description": "Caramelised biscuit spread and biscuit crumble over chocolate.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 100
+      },
+      {
+        "label": "Slice 2",
+        "price": 200
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-pistachio",
+    "category_id": "waffle",
+    "name": "Waffle Pistachio",
+    "slug": "waffle-pistachio",
+    "description": "Pistachio crumble, the sleeper hit of the counter.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-cake-overloaded",
+    "category_id": "waffle",
+    "name": "Waffle Cake (Overloaded)",
+    "slug": "waffle-cake-overloaded",
+    "description": "Everything at once. The counter favourite. Priced as printed.",
+    "price": 250,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "bowl-chocolate-classic",
+    "category_id": "chocolate-bowl",
+    "name": "Chocolate Classic Bowl",
+    "slug": "bowl-chocolate-classic",
+    "description": "Kraft tub filled to the rim with chocolate chunks, wafers and sauce.",
+    "price": 90,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 90
+      },
+      {
+        "label": "Large",
+        "price": 140
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-dark-chocolate",
+    "category_id": "chocolate-bowl",
+    "name": "Dark Chocolate Bowl",
+    "slug": "bowl-dark-chocolate",
+    "description": "Dark couverture, chocolate chunks, all the way through.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 145
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-triple-chocolate",
+    "category_id": "chocolate-bowl",
+    "name": "Triple Chocolate Bowl",
+    "slug": "bowl-triple-chocolate",
+    "description": "Milk, dark and white layers in one loaded tub.",
+    "price": 120,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 120
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-milkst",
+    "category_id": "chocolate-bowl",
+    "name": "Milkst Chocolate Bowl",
+    "slug": "bowl-milkst",
+    "description": "Milkiest chocolate on the counter, built to the rim.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 200
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-dark-delight",
+    "category_id": "chocolate-bowl",
+    "name": "Dark Delight Bowl",
+    "slug": "bowl-dark-delight",
+    "description": "The dark-chocolate lovers bowl, loaded.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 100
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-roasted-almond",
+    "category_id": "chocolate-bowl",
+    "name": "Roasted Almond Classic Bowl",
+    "slug": "bowl-roasted-almond",
+    "description": "Roasted almonds over chocolate in a customised tub.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-kitkat",
+    "category_id": "chocolate-bowl",
+    "name": "KitKat Bowl",
+    "slug": "bowl-kitkat",
+    "description": "KitKat pieces snapped into a filled-to-the-rim tub.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-oreo",
+    "category_id": "chocolate-bowl",
+    "name": "Oreo Bowl",
+    "slug": "bowl-oreo",
+    "description": "Oreo halved, crumbed and layered through chocolate.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 160
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-strawberry",
+    "category_id": "chocolate-bowl",
+    "name": "Strawberry Spread Bowl",
+    "slug": "bowl-strawberry",
+    "description": "Strawberry spread swirled through a chocolate tub.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 100
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-ferrero",
+    "category_id": "chocolate-bowl",
+    "name": "Ferrero Rocher Bowl",
+    "slug": "bowl-ferrero",
+    "description": "Ferrero Rocher, hazelnut cream, to the rim.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 200
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-biscoff",
+    "category_id": "chocolate-bowl",
+    "name": "Biscoff Bowl",
+    "slug": "bowl-biscoff",
+    "description": "Caramelised biscuit spread and crumble. The big one.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 250
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-classic",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Classic",
+    "slug": "pancake-classic",
+    "description": "Off the plate in stacks, sticks and bowls. The classic.",
+    "price": 45,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-dark-white",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Dark & White",
+    "slug": "pancake-dark-white",
+    "description": "Dark and white chocolate over a stack.",
+    "price": 65,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-dark-delight",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Dark Delight",
+    "slug": "pancake-dark-delight",
+    "description": "Deep dark chocolate on a warm stack.",
+    "price": 70,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-stick",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Stick",
+    "slug": "pancake-stick",
+    "description": "Pan cake on a stick, for walking purposes.",
+    "price": 50,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-bowl",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Bowl",
+    "slug": "pancake-bowl",
+    "description": "Pan cake bites in a loaded bowl.",
+    "price": 95,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-triple-chocolate",
+    "category_id": "pan-cake",
+    "name": "Triple Chocolate Pan Cake",
+    "slug": "pancake-triple-chocolate",
+    "description": "Three chocolates over the stack.",
+    "price": 100,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-roasted-almond",
+    "category_id": "pan-cake",
+    "name": "Roasted Almond Pan Cake",
+    "slug": "pancake-roasted-almond",
+    "description": "Almonds over chocolate pan cake.",
+    "price": 110,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-biscoff",
+    "category_id": "pan-cake",
+    "name": "Biscoff Pan Cake",
+    "slug": "pancake-biscoff",
+    "description": "Biscoff spread and crumble over a stack.",
+    "price": 120,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-overload",
+    "category_id": "pan-cake",
+    "name": "Over Load Pan Cake",
+    "slug": "pancake-overload",
+    "description": "Everything loaded. Overloaded.",
+    "price": 220,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "pancake-crepe",
+    "category_id": "pan-cake",
+    "name": "Crepe Pan Cake",
+    "slug": "pancake-crepe",
+    "description": "Thin, crepe-style, rolled and drizzled.",
+    "price": 120,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-bite-classic",
+    "category_id": "brownie",
+    "name": "Chocolate Brownie Bite (Bowl) Classic",
+    "slug": "brownie-bite-classic",
+    "description": "Brownie bites in a bowl, classic chocolate.",
+    "price": 150,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-oreo",
+    "category_id": "brownie",
+    "name": "Oreo Brownie Bite",
+    "slug": "brownie-oreo",
+    "description": "Brownie bites loaded with Oreo.",
+    "price": 180,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-kitkat",
+    "category_id": "brownie",
+    "name": "KitKat Brownie Bite",
+    "slug": "brownie-kitkat",
+    "description": "KitKat studded brownie bites.",
+    "price": 165,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-triple-chocolate",
+    "category_id": "brownie",
+    "name": "Triple Chocolate Brownie Bite",
+    "slug": "brownie-triple-chocolate",
+    "description": "Triple chocolate, brownie bites in a bowl.",
+    "price": 160,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-ferrero",
+    "category_id": "brownie",
+    "name": "Ferrero Rocher Bite",
+    "slug": "brownie-ferrero",
+    "description": "Ferrero Rocher over brownie bites.",
+    "price": 200,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-overloaded",
+    "category_id": "brownie",
+    "name": "Brownie Bite Over Loaded",
+    "slug": "brownie-overloaded",
+    "description": "Brownie bites, everything loaded.",
+    "price": 180,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "brownie-kitkat-tub",
+    "category_id": "brownie",
+    "name": "KitKat Brownie Tub",
+    "slug": "brownie-kitkat-tub",
+    "description": "A full tub of KitKat brownie.",
+    "price": 280,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "sundae-waffle",
+    "category_id": "craving-special",
+    "name": "Waffle Sundae",
+    "slug": "sundae-waffle",
+    "description": "The signature house sundae. What the counter is known for.",
+    "price": 250,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "sundae-oreo",
+    "category_id": "craving-special",
+    "name": "Oreo Sundae",
+    "slug": "sundae-oreo",
+    "description": "Oreo-loaded house sundae.",
+    "price": 280,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-kitkat",
+    "category_id": "craving-special",
+    "name": "Kit Kat Sundae",
+    "slug": "sundae-kitkat",
+    "description": "Kit Kat pieces over the house sundae.",
+    "price": 260,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-pancake",
+    "category_id": "craving-special",
+    "name": "Pan Cake Sundae",
+    "slug": "sundae-pancake",
+    "description": "Pan cake pieces under the sundae.",
+    "price": 250,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-brownie",
+    "category_id": "craving-special",
+    "name": "Brownie Sundae",
+    "slug": "sundae-brownie",
+    "description": "Brownie chunks with the house sundae.",
+    "price": 280,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bombolone-classic",
+    "category_id": "bombolone",
+    "name": "Bombolone (Classic Chocolate)",
+    "slug": "bombolone-classic",
+    "description": "Sugar-dusted, filled to order. 3 pieces.",
+    "price": 120,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bombolone-triple",
+    "category_id": "bombolone",
+    "name": "Bombolone (Triple Chocolate)",
+    "slug": "bombolone-triple",
+    "description": "Triple chocolate filled doughnuts. 3 pieces.",
+    "price": 150,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "churro-classic",
+    "category_id": "churro",
+    "name": "Churro (Classic Chocolate)",
+    "slug": "churro-classic",
+    "description": "Ridged, fried to order, dipped deep. 5 pieces.",
+    "price": 90,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "churro-triple",
+    "category_id": "churro",
+    "name": "Churro (Triple Chocolate)",
+    "slug": "churro-triple",
+    "description": "Triple chocolate churros. 5 pieces.",
+    "price": 150,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "cake-biscoff",
+    "category_id": "cake",
+    "name": "Biscoff Cake",
+    "slug": "cake-biscoff",
+    "description": "Caramelised biscuit cake, baked off the counter.",
+    "price": 150,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "cold-coffee",
+    "category_id": "beverages",
+    "name": "Cold Coffee",
+    "slug": "cold-coffee",
+    "description": "Creamy chilled coffee blended for a rich café finish.",
+    "price": 99,
+    "price_variants": [
+      {
+        "label": "Regular",
+        "price": 99
+      },
+      {
+        "label": "Large",
+        "price": 139
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ],
+    "addons": [
+      {
+        "id": "addon-ice-cream",
+        "name": "Ice Cream Scoop",
+        "price": 40
+      },
+      {
+        "id": "addon-extra-shot",
+        "name": "Extra Shot",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "veg-burger",
+    "category_id": "burgers",
+    "name": "Veg Burger",
+    "slug": "veg-burger",
+    "description": "Crispy patty, lettuce, onion and our house burger sauce in a soft toasted bun.",
+    "price": 129,
+    "price_variants": [
+      {
+        "label": "Single",
+        "price": 129
+      },
+      {
+        "label": "Double",
+        "price": 189
+      }
+    ],
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-jalapeno",
+        "name": "Jalapeños",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "double-cheese-burger",
+    "category_id": "burgers",
+    "name": "Double Cheese Burger",
+    "slug": "double-cheese-burger",
+    "description": "Two juicy patties layered with melted cheese and grilled onions. Pure indulgence.",
+    "price": 189,
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "cheesy",
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-extra-patty",
+        "name": "Extra Patty",
+        "price": 70
+      }
+    ]
+  },
+  {
+    "id": "chicken-roll",
+    "category_id": "rolls",
+    "name": "Chicken Roll",
+    "slug": "chicken-roll",
+    "description": "Freshly prepared chicken roll with crunchy veg and signature sauce, rolled hot on the tawa.",
+    "price": 109,
+    "price_variants": [
+      {
+        "label": "Regular",
+        "price": 109
+      },
+      {
+        "label": "Large",
+        "price": 139
+      }
+    ],
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "quick-bite",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-chicken",
+        "name": "Extra Chicken",
+        "price": 70
+      },
+      {
+        "id": "addon-extra-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-extra-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      }
+    ]
+  },
+  {
+    "id": "paneer-sandwich",
+    "category_id": "starters",
+    "name": "Paneer Sandwich",
+    "slug": "paneer-sandwich",
+    "description": "Grilled paneer with mint mayo and crunchy greens in a buttery toasted sandwich.",
+    "price": 149,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-mint-mayo",
+        "name": "Mint Mayo",
+        "price": 25
+      }
+    ]
+  },
+  {
+    "id": "chilli-fries",
+    "category_id": "starters",
+    "name": "Chilli Fries",
+    "slug": "chilli-fries",
+    "description": "Loaded fries with melted cheese, peri peri dust and fresh herbs.",
+    "price": 119,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": true,
+    "tags": [
+      "crispy",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-peri-peri",
+        "name": "Peri Peri Dust",
+        "price": 15
+      }
+    ]
+  },
+  {
+    "id": "veg-noodles",
+    "category_id": "main-course",
+    "name": "Veg Noodles",
+    "slug": "veg-noodles",
+    "description": "Stir-fried noodles with vibrant veggies and a smoky wok sauce.",
+    "price": 159,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "quick-bite",
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-veg",
+        "name": "Extra Veggies",
+        "price": 30
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      }
+    ]
+  },
+  {
+    "id": "classic-thali",
+    "category_id": "main-course",
+    "name": "Classic Thali",
+    "slug": "classic-thali",
+    "description": "A satisfying mix of main, side and dessert for one — the full Craving Point meal.",
+    "price": 259,
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-rice",
+        "name": "Extra Rice",
+        "price": 40
+      },
+      {
+        "id": "addon-extra-gravy",
+        "name": "Extra Gravy",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "chicken-bowl",
+    "category_id": "rice",
+    "name": "Chicken Bowl",
+    "slug": "chicken-bowl",
+    "description": "Steamed rice topped with juicy chicken, herbs and our house-made gravy.",
+    "price": 179,
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-chicken",
+        "name": "Extra Chicken",
+        "price": 70
+      },
+      {
+        "id": "addon-extra-gravy",
+        "name": "Extra Gravy",
+        "price": 30
+      },
+      {
+        "id": "addon-extra-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      }
+    ]
+  }
+]

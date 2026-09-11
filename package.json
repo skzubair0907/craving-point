@@ -1,0 +1,41 @@
+{
+  "name": "craving-point",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.cjs",
+    "setup:database": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/setup-database.ps1",
+    "build": "npm run lint && vite build",
+    "start:api": "node scripts/sync-menu.cjs && node api/server.cjs",
+    "lint": "tsc -p tsconfig.app.json --noEmit",
+    "preview": "vite preview",
+    "prebuild": "node scripts/sync-menu.cjs && node scripts/generate-seo.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check:production": "node scripts/check-production.cjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.1",
+    "framer-motion": "^11.5.4",
+    "lucide-react": "^0.446.0",
+    "@react-three/fiber": "^8.13.0",
+    "@react-three/drei": "^9.56.0",
+    "three": "^0.159.0",
+    "gsap": "^3.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  }
+}

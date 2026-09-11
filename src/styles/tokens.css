@@ -1,0 +1,46 @@
+:root {
+  /* Brand */
+  --cp-primary: #f15a29;
+  --cp-primary-600: #d63f18;
+  --cp-primary-soft: #ff916b;
+  --cp-cream: #f5efe8;
+  --cp-cream-soft: #e9dccb;
+  --cp-bg: #120d0c;
+  --cp-surface: #201915;
+  --cp-accent: #41332f;
+  --cp-warm: #f6b26a;
+  --cp-gold: #f5bf57;
+  --cp-green: #22c55e;
+
+  /* Typography */
+  --font-display: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+
+  /* Shadows */
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.25);
+  --shadow-strong: 0 24px 60px rgba(0, 0, 0, 0.35);
+
+  /* Transitions */
+  --ease-default: cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+body {
+  font-family: var(--font-body);
+  --brand-radius: var(--radius-lg);
+}
+
+h1, h2, h3, h4, .brand-title, .section-title, .eyebrow {
+  font-family: var(--font-display);
+}

@@ -1,0 +1,350 @@
+{
+  "checks": [
+    {
+      "name": "Category: Waffle",
+      "status": "pass",
+      "details": {
+        "cards": 18
+      }
+    },
+    {
+      "name": "Category: Chocolate Bowl",
+      "status": "pass",
+      "details": {
+        "cards": 11
+      }
+    },
+    {
+      "name": "Category: Pan Cake",
+      "status": "pass",
+      "details": {
+        "cards": 10
+      }
+    },
+    {
+      "name": "Category: Brownie",
+      "status": "pass",
+      "details": {
+        "cards": 7
+      }
+    },
+    {
+      "name": "Category: Craving Special",
+      "status": "pass",
+      "details": {
+        "cards": 5
+      }
+    },
+    {
+      "name": "Category: Bombolone",
+      "status": "pass",
+      "details": {
+        "cards": 2
+      }
+    },
+    {
+      "name": "Category: Churro",
+      "status": "pass",
+      "details": {
+        "cards": 2
+      }
+    },
+    {
+      "name": "Category: Cake",
+      "status": "pass",
+      "details": {
+        "cards": 1
+      }
+    },
+    {
+      "name": "Category: Beverages",
+      "status": "pass",
+      "details": {
+        "cards": 1
+      }
+    },
+    {
+      "name": "Category: Burgers",
+      "status": "pass",
+      "details": {
+        "cards": 2
+      }
+    },
+    {
+      "name": "Category: Rolls",
+      "status": "pass",
+      "details": {
+        "cards": 3
+      }
+    },
+    {
+      "name": "Category: Starters",
+      "status": "pass",
+      "details": {
+        "cards": 2
+      }
+    },
+    {
+      "name": "Category: Main Course",
+      "status": "pass",
+      "details": {
+        "cards": 2
+      }
+    },
+    {
+      "name": "Category: Rice",
+      "status": "pass",
+      "details": {
+        "cards": 1
+      }
+    },
+    {
+      "name": "Category: Shawarma Bowls",
+      "status": "pass",
+      "details": {
+        "cards": 12
+      }
+    },
+    {
+      "name": "Category: Momos",
+      "status": "pass",
+      "details": {
+        "cards": 6
+      }
+    },
+    {
+      "name": "Route /",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nCHEETA CAMP · TROMBAY\nTHE DIGITAL FOOD EXPERIENCE\nSEE YOU AT THE CO"
+    },
+    {
+      "name": "Route /offers",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\n\nA LITTLE EXTRA VALUE\n\nCURRENT OFFERS\n\n₹50 off\n\nUse code CRAVE50\n\nA"
+    },
+    {
+      "name": "Route /about",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\n\nABOUT US\n\nLOCAL FLAVOR. FAST SERVICE. REAL COMFORT.\n\nCraving Point"
+    },
+    {
+      "name": "Route /location",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\n\nFIND US\n\nVISIT CRAVING POINT\nCraving Point\n\nShop No. 29, F-Sector,"
+    },
+    {
+      "name": "Route /contact",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\n\nFIND US\n\nVISIT CRAVING POINT\nCraving Point\n\nShop No. 29, F-Sector,"
+    },
+    {
+      "name": "Route /account",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nYOUR DETAILS\n\nSave your details on this device for your next order."
+    },
+    {
+      "name": "Route /cart",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\n🛒\nYour cart is empty\n\nLooks like you haven't added anything yet.\n\n"
+    },
+    {
+      "name": "Route /checkout",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nYour cart is empty\n\nAdd items before completing checkout.\n\nYOUR CRA"
+    },
+    {
+      "name": "Route /order-confirmation",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nNO RECENT ORDER\nBROWSE MENU\n\nYOUR CRAVINGS.\nOUR SPECIALTY.\n\nBack to"
+    },
+    {
+      "name": "Route /order-tracking",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nTRACK YOUR ORDER\n\nOpen the private tracking link from your order re"
+    },
+    {
+      "name": "Route /menu/not-a-product",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nITEM NOT FOUND\nBROWSE MENU\n\nYOUR CRAVINGS.\nOUR SPECIALTY.\n\nBack to "
+    },
+    {
+      "name": "Route /not-a-page",
+      "status": "pass",
+      "details": "Skip to content\nCRAVING\nPOINT.88\n✳\nHOME\nMENU\nABOUT\nTHE GRILL\nREELS\nGIFTING\nVISIT\nORDER NOW\n0\nPAGE NOT FOUND\nBROWSE MENU\n\nYOUR CRAVINGS.\nOUR SPECIALTY.\n\nBack to "
+    },
+    {
+      "name": "Route /admin",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/menu",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/categories",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/orders",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/customers",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/coupons",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/reviews",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Route /admin/settings",
+      "status": "pass",
+      "details": "ADMIN ACCESS\nEmail\nPassword\nSIGN IN\nBack to website"
+    },
+    {
+      "name": "Favorite persistence and removal",
+      "status": "pass"
+    },
+    {
+      "name": "Profile saves and prefills checkout",
+      "status": "pass"
+    },
+    {
+      "name": "Cart persistence, quantity, coupons",
+      "status": "pass"
+    },
+    {
+      "name": "Checkout pickup and required fields",
+      "status": "fail",
+      "error": "Expected values to be strictly equal:\n\nfalse !== true\n"
+    },
+    {
+      "name": "Add-ons and product total",
+      "status": "pass"
+    },
+    {
+      "name": "Cart removal and empty state",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 390 /menu#cat-shawarma-bowls",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 390 /menu#cat-momos",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 390 /account",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 390 /offers",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 390 /menu/chicken-shawarma",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 768 /menu#cat-shawarma-bowls",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 768 /menu#cat-momos",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 768 /account",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 768 /offers",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 768 /menu/chicken-shawarma",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 1440 /menu#cat-shawarma-bowls",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 1440 /menu#cat-momos",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 1440 /account",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 1440 /offers",
+      "status": "pass"
+    },
+    {
+      "name": "Layout 1440 /menu/chicken-shawarma",
+      "status": "pass"
+    },
+    {
+      "name": "Mobile navigation and Escape",
+      "status": "pass"
+    },
+    {
+      "name": "Video autoplay and loop",
+      "status": "pass",
+      "details": {
+        "muted": true,
+        "loop": true,
+        "paused": false,
+        "ready": 4,
+        "time": 3.473347
+      }
+    },
+    {
+      "name": "Reduced motion stops autoplay",
+      "status": "pass"
+    }
+  ],
+  "pageErrors": [],
+  "failedRequests": [],
+  "catalog": {
+    "total": 85,
+    "missingRawImages": [
+      "shawarma-chicken-kurkure-bowl",
+      "shawarma-chicken-cheese-tandoori-bowl",
+      "shawarma-llb-chicken-loaded",
+      "momo-chicken-cheese-pasta"
+    ],
+    "missingRenderedImages": [],
+    "reusedImages": [
+      {
+        "id": "shawarma-chicken-kurkure-bowl",
+        "url": "/images/menu-generated/shawarma-chicken-lays-bowl-1152.webp"
+      },
+      {
+        "id": "shawarma-chicken-cheese-tandoori-bowl",
+        "url": "/images/menu-generated/shawarma-chicken-tandoori-bowl-1152.webp"
+      },
+      {
+        "id": "shawarma-llb-chicken-loaded",
+        "url": "/images/menu-generated/shawarma-chicken-1152.webp"
+      },
+      {
+        "id": "momo-chicken-cheese-pasta",
+        "url": "/images/menu-generated/momo-chicken-boom-boom-1152.webp"
+      }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+﻿Mode: Built-in image generation
+Asset: public/images/waffle-dark-white.png
+
+Prompt:
+Create a premium photorealistic restaurant menu product image for 'Waffle Dark & White Chocolate'. A single thick golden Belgian waffle on a dark handmade ceramic plate, generously drizzled with glossy dark chocolate and creamy white chocolate in elegant contrasting ribbons, clearly showing both chocolates and crisp waffle pockets. Three-quarter close-up camera angle, whole waffle and plate visible with comfortable margins for square menu-card cropping. Warm cinematic side lighting, rich chocolate brown and golden tones, deep warm charcoal studio background, subtle natural crumbs, realistic appetizing texture. Original polished editorial food photography aesthetic for Craving Point .88. No nuts, fruit, ice cream, wrapped candy, extra dishes, text, logos, labels, or watermark. Square composition, high resolution.

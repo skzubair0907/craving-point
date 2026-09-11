@@ -1,0 +1,6 @@
+.combo-food-card .food-card-image { aspect-ratio: 3 / 4; background: #080604; }
+.combo-food-card .food-card-image img { object-fit: contain; }
+.combo-food-card:hover .food-card-image img { transform: none; }
+.combo-food-card .food-card-body > p { display: block; overflow: visible; -webkit-line-clamp: unset; }
+.dialog-image.combo-poster { background: #080604; }
+.dialog-image.combo-poster img { object-fit: contain; }

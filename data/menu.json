@@ -1,0 +1,2025 @@
+[
+  {
+    "id": "combo-fries-chocolate",
+    "category_id": "combos",
+    "name": "Chicken Fries & Chocolate Combo",
+    "slug": "combo-fries-chocolate",
+    "description": "1 chicken fries bowl + 1 chocolate classic bowl. FREE: 200 ml Campa Cola.",
+    "price": 200,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer4.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-khubus-party",
+    "category_id": "combos",
+    "name": "10 Khubus Shawarma Combo",
+    "slug": "combo-khubus-party",
+    "description": "10 Khubus chicken shawarmas. FREE: 1 litre Campa Cola.",
+    "price": 500,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer18.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-kitkat-duo",
+    "category_id": "combos",
+    "name": "KitKat Large Bowl Combo",
+    "slug": "combo-kitkat-duo",
+    "description": "2 large KitKat chocolate bowls. FREE: 1 classic chocolate bowl.",
+    "price": 300,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer20.jpeg",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-classic-duo",
+    "category_id": "combos",
+    "name": "Classic Chocolate & Waffle Combo",
+    "slug": "combo-classic-duo",
+    "description": "2 classic chocolate bowls. FREE: 1 slice classic waffle.",
+    "price": 180,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer20.jpeg",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-five-bowls",
+    "category_id": "combos",
+    "name": "Five Chocolate Bowls Combo",
+    "slug": "combo-five-bowls",
+    "description": "5 small bowls: Oreo, KitKat, Ferrero Rocher, almond chocolate and Biscoff. FREE: 2 classic waffle slices + 6 classic chocolate pancakes.",
+    "price": 630,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer15.jpeg",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-shawarma-party",
+    "category_id": "combos",
+    "name": "Shawarma Snack Combo — Buy 5 Get 1 Free",
+    "slug": "combo-shawarma-party",
+    "description": "6 complete combos for the price of 5 (₹140 each). Includes 6 chicken shawarmas + 6 small chocolate bowls + 6 Campa Colas (200 ml each). The sixth combo is FREE.",
+    "price": 700,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer16.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-chicken-lovers",
+    "category_id": "combos",
+    "name": "Chicken Lover’s Combo",
+    "slug": "combo-chicken-lovers",
+    "description": "1 open shawarma bowl + 1 Romali roti chicken shawarma + 1 Khubus chicken shawarma + 1 chicken fries bowl. FREE: 2 Campa Colas (200 ml each) + 2 water bottles (500 ml each).",
+    "price": 370,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer28.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-dessert-trio",
+    "category_id": "combos",
+    "name": "Classic, Biscoff & Ferrero Combo",
+    "slug": "combo-dessert-trio",
+    "description": "3 small bowls: classic chocolate, Biscoff and Ferrero Rocher. FREE: 1 classic waffle slice + 6 classic pancakes + 200 ml Campa Cola.",
+    "price": 400,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer27.jpeg",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-fries-party",
+    "category_id": "combos",
+    "name": "Chicken Fries Combo — Buy 5 Get 1 Free",
+    "slug": "combo-fries-party",
+    "description": "6 complete combos for the price of 5 (₹200 each). Includes 6 chicken fries bowls + 6 chocolate classic bowls + 6 Campa Colas (200 ml each). The sixth combo is FREE.",
+    "price": 1000,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer13.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "combo-shawarma-dessert",
+    "category_id": "combos",
+    "name": "Shawarma, Waffle & Pancake Combo",
+    "slug": "combo-shawarma-dessert",
+    "description": "1 chicken shawarma + 1 classic waffle slice + 1 classic chocolate bowl + 6 classic pancakes + 200 ml Campa Cola. FREE: 500 ml water bottle.",
+    "price": 220,
+    "portion": "1 complete bundle",
+    "image_url": "/images/offer9.jpeg",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "waffle-chocolate-classic",
+    "category_id": "waffle",
+    "name": "Waffle Chocolate Classic",
+    "slug": "waffle-chocolate-classic",
+    "description": "Pressed to order, drizzled warm. A Belgian waffle slice under a heavy chocolate drizzle.",
+    "price": 45,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 45
+      },
+      {
+        "label": "Slice 2",
+        "price": 70
+      }
+    ],
+    "image_url": "/images/gallery3-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-dark-white",
+    "category_id": "waffle",
+    "name": "Waffle Dark & White Chocolate",
+    "slug": "waffle-dark-white",
+    "description": "Swirled dark and white couverture, poured warm at the pass.",
+    "price": 65,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 65
+      },
+      {
+        "label": "Slice 2",
+        "price": 85
+      }
+    ],
+    "image_url": "/images/waffle-dark-white.png",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-dark-delight",
+    "category_id": "waffle",
+    "name": "Waffle Dark Delight",
+    "slug": "waffle-dark-delight",
+    "description": "Dark chocolate lovers pick. Silky, bitter-sweet, poured warm.",
+    "price": 70,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 70
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-dark-delight-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-triple-chocolate",
+    "category_id": "waffle",
+    "name": "Triple Chocolate Waffle",
+    "slug": "waffle-triple-chocolate",
+    "description": "Milk, dark and white chocolate on one pressed slice.",
+    "price": 80,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 80
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-triple-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-almond-chocolate",
+    "category_id": "waffle",
+    "name": "Almond Chocolate Waffle",
+    "slug": "waffle-almond-chocolate",
+    "description": "Roasted almond crunch over warm chocolate on a fresh waffle.",
+    "price": 95,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 95
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-almond-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-brownie",
+    "category_id": "waffle",
+    "name": "Brownie Chocolate Waffle",
+    "slug": "waffle-brownie",
+    "description": "Fudgy brownie chunks folded into the chocolate drizzle.",
+    "price": 65,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 65
+      },
+      {
+        "label": "Slice 2",
+        "price": 120
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-brownie-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-ice-cream",
+    "category_id": "waffle",
+    "name": "Ice Cream Chocolate Waffle",
+    "slug": "waffle-ice-cream",
+    "description": "A scoop of ice cream melting over a warm chocolate waffle.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 130
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-ice-cream-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-vanilla",
+    "category_id": "waffle",
+    "name": "Vanilla Chocolate Waffle",
+    "slug": "waffle-vanilla",
+    "description": "Vanilla-spiked drizzle over a golden, buttery waffle.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 95
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-vanilla-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich",
+    "category_id": "waffle",
+    "name": "Waffle Chocolate Sandwich",
+    "slug": "waffle-sandwich",
+    "description": "Two pressed slices, chocolate in the middle. Eaten like a sandwich, tastes like dessert.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 100
+      },
+      {
+        "label": "Slice 2",
+        "price": 120
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-sandwich-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-icecream",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich with Ice Cream",
+    "slug": "waffle-sandwich-icecream",
+    "description": "The sandwich, upped with a cold scoop between the slices.",
+    "price": 120,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 120
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-sandwich-icecream-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-triple",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich (Triple Chocolate)",
+    "slug": "waffle-sandwich-triple",
+    "description": "Three chocolates stacked in a pressed sandwich.",
+    "price": 130,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 130
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-sandwich-triple-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-sandwich-full",
+    "category_id": "waffle",
+    "name": "Waffle Sandwich, Ice Cream & Triple Chocolate",
+    "slug": "waffle-sandwich-full",
+    "description": "The full stack — sandwich, ice cream, triple chocolate. Go big.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 150
+      },
+      {
+        "label": "Slice 2",
+        "price": 160
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-sandwich-full-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-kitkat",
+    "category_id": "waffle",
+    "name": "Kit Kat Waffle",
+    "slug": "waffle-kitkat",
+    "description": "Snapped Kit Kat pieces over a warm chocolate waffle.",
+    "price": 70,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 70
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-kitkat-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-oreo",
+    "category_id": "waffle",
+    "name": "Oreo Waffle",
+    "slug": "waffle-oreo",
+    "description": "Oreo chunks and crumbs dusted over chocolate.",
+    "price": 75,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 75
+      },
+      {
+        "label": "Slice 2",
+        "price": 100
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-oreo-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-ferrero",
+    "category_id": "waffle",
+    "name": "Ferrero Rocher Waffle",
+    "slug": "waffle-ferrero",
+    "description": "Ferrero Rocher crumble and hazelnut chocolate over the waffle.",
+    "price": 160,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 160
+      },
+      {
+        "label": "Slice 2",
+        "price": 200
+      }
+    ],
+    "image_url": "/images/gallery2-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-biscoff",
+    "category_id": "waffle",
+    "name": "Biscoff Waffle",
+    "slug": "waffle-biscoff",
+    "description": "Caramelised biscuit spread and biscuit crumble over chocolate.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 100
+      },
+      {
+        "label": "Slice 2",
+        "price": 200
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-biscoff-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-pistachio",
+    "category_id": "waffle",
+    "name": "Waffle Pistachio",
+    "slug": "waffle-pistachio",
+    "description": "Pistachio crumble, the sleeper hit of the counter.",
+    "price": 85,
+    "price_variants": [
+      {
+        "label": "Slice 1",
+        "price": 85
+      },
+      {
+        "label": "Slice 2",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/waffle-pistachio-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "waffle-cake-overloaded",
+    "category_id": "waffle",
+    "name": "Waffle Cake (Overloaded)",
+    "slug": "waffle-cake-overloaded",
+    "description": "Everything at once. The counter favourite. Priced as printed.",
+    "price": 250,
+    "image_url": "/images/menu-generated/waffle-cake-overloaded-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "bowl-chocolate-classic",
+    "category_id": "chocolate-bowl",
+    "name": "Chocolate Classic Bowl",
+    "slug": "bowl-chocolate-classic",
+    "description": "Kraft tub filled to the rim with chocolate chunks, wafers and sauce.",
+    "price": 90,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 90
+      },
+      {
+        "label": "Large",
+        "price": 140
+      }
+    ],
+    "image_url": "/images/gallery4-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-dark-chocolate",
+    "category_id": "chocolate-bowl",
+    "name": "Dark Chocolate Bowl",
+    "slug": "bowl-dark-chocolate",
+    "description": "Dark couverture, chocolate chunks, all the way through.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 145
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-dark-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-triple-chocolate",
+    "category_id": "chocolate-bowl",
+    "name": "Triple Chocolate Bowl",
+    "slug": "bowl-triple-chocolate",
+    "description": "Milk, dark and white layers in one loaded tub.",
+    "price": 120,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 120
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-triple-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-milkst",
+    "category_id": "chocolate-bowl",
+    "name": "Milkst Chocolate Bowl",
+    "slug": "bowl-milkst",
+    "description": "Milkiest chocolate on the counter, built to the rim.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 200
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-milkst-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-dark-delight",
+    "category_id": "chocolate-bowl",
+    "name": "Dark Delight Bowl",
+    "slug": "bowl-dark-delight",
+    "description": "The dark-chocolate lovers bowl, loaded.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 100
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-dark-delight-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-roasted-almond",
+    "category_id": "chocolate-bowl",
+    "name": "Roasted Almond Classic Bowl",
+    "slug": "bowl-roasted-almond",
+    "description": "Roasted almonds over chocolate in a customised tub.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-roasted-almond-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-kitkat",
+    "category_id": "chocolate-bowl",
+    "name": "KitKat Bowl",
+    "slug": "bowl-kitkat",
+    "description": "KitKat pieces snapped into a filled-to-the-rim tub.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-kitkat-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-oreo",
+    "category_id": "chocolate-bowl",
+    "name": "Oreo Bowl",
+    "slug": "bowl-oreo",
+    "description": "Oreo halved, crumbed and layered through chocolate.",
+    "price": 110,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 110
+      },
+      {
+        "label": "Large",
+        "price": 160
+      }
+    ],
+    "image_url": "/images/gallery1-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-strawberry",
+    "category_id": "chocolate-bowl",
+    "name": "Strawberry Spread Bowl",
+    "slug": "bowl-strawberry",
+    "description": "Strawberry spread swirled through a chocolate tub.",
+    "price": 100,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 100
+      },
+      {
+        "label": "Large",
+        "price": 150
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-strawberry-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-ferrero",
+    "category_id": "chocolate-bowl",
+    "name": "Ferrero Rocher Bowl",
+    "slug": "bowl-ferrero",
+    "description": "Ferrero Rocher, hazelnut cream, to the rim.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 200
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-ferrero-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bowl-biscoff",
+    "category_id": "chocolate-bowl",
+    "name": "Biscoff Bowl",
+    "slug": "bowl-biscoff",
+    "description": "Caramelised biscuit spread and crumble. The big one.",
+    "price": 150,
+    "price_variants": [
+      {
+        "label": "Small",
+        "price": 150
+      },
+      {
+        "label": "Large",
+        "price": 250
+      }
+    ],
+    "image_url": "/images/menu-generated/bowl-biscoff-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-classic",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Classic",
+    "slug": "pancake-classic",
+    "description": "Off the plate in stacks, sticks and bowls. The classic.",
+    "price": 45,
+    "image_url": "/images/menu-generated/pancake-classic-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-dark-white",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Dark & White",
+    "slug": "pancake-dark-white",
+    "description": "Dark and white chocolate over a stack.",
+    "price": 65,
+    "image_url": "/images/menu-generated/pancake-dark-white-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-dark-delight",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Dark Delight",
+    "slug": "pancake-dark-delight",
+    "description": "Deep dark chocolate on a warm stack.",
+    "price": 70,
+    "image_url": "/images/menu-generated/pancake-dark-delight-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-stick",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Stick",
+    "slug": "pancake-stick",
+    "description": "Pan cake on a stick, for walking purposes.",
+    "price": 50,
+    "image_url": "/images/menu-generated/pancake-stick-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-bowl",
+    "category_id": "pan-cake",
+    "name": "Pan Cake Bowl",
+    "slug": "pancake-bowl",
+    "description": "Pan cake bites in a loaded bowl.",
+    "price": 95,
+    "image_url": "/images/menu-generated/pancake-bowl-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-triple-chocolate",
+    "category_id": "pan-cake",
+    "name": "Triple Chocolate Pan Cake",
+    "slug": "pancake-triple-chocolate",
+    "description": "Three chocolates over the stack.",
+    "price": 100,
+    "image_url": "/images/menu-generated/pancake-triple-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-roasted-almond",
+    "category_id": "pan-cake",
+    "name": "Roasted Almond Pan Cake",
+    "slug": "pancake-roasted-almond",
+    "description": "Almonds over chocolate pan cake.",
+    "price": 110,
+    "image_url": "/images/menu-generated/pancake-roasted-almond-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-biscoff",
+    "category_id": "pan-cake",
+    "name": "Biscoff Pan Cake",
+    "slug": "pancake-biscoff",
+    "description": "Biscoff spread and crumble over a stack.",
+    "price": 120,
+    "image_url": "/images/menu-generated/pancake-biscoff-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "pancake-overload",
+    "category_id": "pan-cake",
+    "name": "Over Load Pan Cake",
+    "slug": "pancake-overload",
+    "description": "Everything loaded. Overloaded.",
+    "price": 220,
+    "image_url": "/images/menu-generated/pancake-overload-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "pancake-crepe",
+    "category_id": "pan-cake",
+    "name": "Crepe Pan Cake",
+    "slug": "pancake-crepe",
+    "description": "Thin, crepe-style, rolled and drizzled.",
+    "price": 120,
+    "image_url": "/images/menu-generated/pancake-crepe-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-bite-classic",
+    "category_id": "brownie",
+    "name": "Chocolate Brownie Bite (Bowl) Classic",
+    "slug": "brownie-bite-classic",
+    "description": "Brownie bites in a bowl, classic chocolate.",
+    "price": 150,
+    "image_url": "/images/menu-generated/brownie-bite-classic-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-oreo",
+    "category_id": "brownie",
+    "name": "Oreo Brownie Bite",
+    "slug": "brownie-oreo",
+    "description": "Brownie bites loaded with Oreo.",
+    "price": 180,
+    "image_url": "/images/menu-generated/brownie-oreo-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-kitkat",
+    "category_id": "brownie",
+    "name": "KitKat Brownie Bite",
+    "slug": "brownie-kitkat",
+    "description": "KitKat studded brownie bites.",
+    "price": 165,
+    "image_url": "/images/menu-generated/brownie-kitkat-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-triple-chocolate",
+    "category_id": "brownie",
+    "name": "Triple Chocolate Brownie Bite",
+    "slug": "brownie-triple-chocolate",
+    "description": "Triple chocolate, brownie bites in a bowl.",
+    "price": 160,
+    "image_url": "/images/menu-generated/brownie-triple-chocolate-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-ferrero",
+    "category_id": "brownie",
+    "name": "Ferrero Rocher Bite",
+    "slug": "brownie-ferrero",
+    "description": "Ferrero Rocher over brownie bites.",
+    "price": 200,
+    "image_url": "/images/menu-generated/brownie-ferrero-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "brownie-overloaded",
+    "category_id": "brownie",
+    "name": "Brownie Bite Over Loaded",
+    "slug": "brownie-overloaded",
+    "description": "Brownie bites, everything loaded.",
+    "price": 180,
+    "image_url": "/images/menu-generated/brownie-overloaded-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "brownie-kitkat-tub",
+    "category_id": "brownie",
+    "name": "KitKat Brownie Tub",
+    "slug": "brownie-kitkat-tub",
+    "description": "A full tub of KitKat brownie.",
+    "price": 280,
+    "image_url": "/images/menu-generated/brownie-kitkat-tub-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "sundae-waffle",
+    "category_id": "craving-special",
+    "name": "Waffle Sundae",
+    "slug": "sundae-waffle",
+    "description": "The signature house sundae. What the counter is known for.",
+    "price": 250,
+    "image_url": "/images/menu-generated/sundae-waffle-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "sweet",
+      "filling"
+    ]
+  },
+  {
+    "id": "sundae-oreo",
+    "category_id": "craving-special",
+    "name": "Oreo Sundae",
+    "slug": "sundae-oreo",
+    "description": "Oreo-loaded house sundae.",
+    "price": 280,
+    "image_url": "/images/menu-generated/sundae-oreo-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-kitkat",
+    "category_id": "craving-special",
+    "name": "Kit Kat Sundae",
+    "slug": "sundae-kitkat",
+    "description": "Kit Kat pieces over the house sundae.",
+    "price": 260,
+    "image_url": "/images/menu-generated/sundae-kitkat-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-pancake",
+    "category_id": "craving-special",
+    "name": "Pan Cake Sundae",
+    "slug": "sundae-pancake",
+    "description": "Pan cake pieces under the sundae.",
+    "price": 250,
+    "image_url": "/images/menu-generated/sundae-pancake-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "sundae-brownie",
+    "category_id": "craving-special",
+    "name": "Brownie Sundae",
+    "slug": "sundae-brownie",
+    "description": "Brownie chunks with the house sundae.",
+    "price": 280,
+    "image_url": "/images/menu-generated/sundae-brownie-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bombolone-classic",
+    "category_id": "bombolone",
+    "name": "Bombolone (Classic Chocolate)",
+    "slug": "bombolone-classic",
+    "description": "Sugar-dusted, filled to order. 3 pieces.",
+    "price": 120,
+    "image_url": "/images/menu-generated/bombolone-classic-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "bombolone-triple",
+    "category_id": "bombolone",
+    "name": "Bombolone (Triple Chocolate)",
+    "slug": "bombolone-triple",
+    "description": "Triple chocolate filled doughnuts. 3 pieces.",
+    "price": 150,
+    "image_url": "/images/menu-generated/bombolone-triple-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "churro-classic",
+    "category_id": "churro",
+    "name": "Churro (Classic Chocolate)",
+    "slug": "churro-classic",
+    "description": "Ridged, fried to order, dipped deep. 5 pieces.",
+    "price": 90,
+    "image_url": "/images/menu-generated/churro-classic-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "churro-triple",
+    "category_id": "churro",
+    "name": "Churro (Triple Chocolate)",
+    "slug": "churro-triple",
+    "description": "Triple chocolate churros. 5 pieces.",
+    "price": 150,
+    "image_url": "/images/menu-generated/churro-triple-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "cake-biscoff",
+    "category_id": "cake",
+    "name": "Biscoff Cake",
+    "slug": "cake-biscoff",
+    "description": "Caramelised biscuit cake, baked off the counter.",
+    "price": 150,
+    "image_url": "/images/menu-generated/cake-biscoff-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ]
+  },
+  {
+    "id": "cold-coffee",
+    "category_id": "beverages",
+    "name": "Cold Coffee",
+    "slug": "cold-coffee",
+    "description": "Creamy chilled coffee blended for a rich café finish.",
+    "price": 99,
+    "price_variants": [
+      {
+        "label": "Regular",
+        "price": 99
+      },
+      {
+        "label": "Large",
+        "price": 139
+      }
+    ],
+    "image_url": "/images/menu-generated/cold-coffee-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "sweet"
+    ],
+    "addons": [
+      {
+        "id": "addon-ice-cream",
+        "name": "Ice Cream Scoop",
+        "price": 40
+      },
+      {
+        "id": "addon-extra-shot",
+        "name": "Extra Shot",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "veg-burger",
+    "category_id": "burgers",
+    "name": "Veg Burger",
+    "slug": "veg-burger",
+    "description": "Crispy patty, lettuce, onion and our house burger sauce in a soft toasted bun.",
+    "price": 129,
+    "price_variants": [
+      {
+        "label": "Single",
+        "price": 129
+      },
+      {
+        "label": "Double",
+        "price": 189
+      }
+    ],
+    "image_url": "/images/menu-generated/veg-burger-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-jalapeno",
+        "name": "Jalapeños",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "double-cheese-burger",
+    "category_id": "burgers",
+    "name": "Double Cheese Burger",
+    "slug": "double-cheese-burger",
+    "description": "Two juicy patties layered with melted cheese and grilled onions. Pure indulgence.",
+    "price": 189,
+    "image_url": "/images/menu-generated/double-cheese-burger-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "cheesy",
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-extra-patty",
+        "name": "Extra Patty",
+        "price": 70
+      }
+    ]
+  },
+  {
+    "id": "chicken-roll",
+    "category_id": "rolls",
+    "name": "Chicken Roll",
+    "slug": "chicken-roll",
+    "description": "Freshly prepared chicken roll with crunchy veg and signature sauce, rolled hot on the tawa.",
+    "price": 109,
+    "price_variants": [
+      {
+        "label": "Regular",
+        "price": 109
+      },
+      {
+        "label": "Large",
+        "price": 139
+      }
+    ],
+    "image_url": "/images/menu-generated/chicken-roll-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "quick-bite",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-chicken",
+        "name": "Extra Chicken",
+        "price": 70
+      },
+      {
+        "id": "addon-extra-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      },
+      {
+        "id": "addon-extra-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      }
+    ]
+  },
+  {
+    "id": "paneer-sandwich",
+    "category_id": "starters",
+    "name": "Paneer Sandwich",
+    "slug": "paneer-sandwich",
+    "description": "Grilled paneer with mint mayo and crunchy greens in a buttery toasted sandwich.",
+    "price": 149,
+    "image_url": "/images/menu-generated/paneer-sandwich-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-mint-mayo",
+        "name": "Mint Mayo",
+        "price": 25
+      }
+    ]
+  },
+  {
+    "id": "chilli-fries",
+    "category_id": "starters",
+    "name": "Chilli Fries",
+    "slug": "chilli-fries",
+    "description": "Loaded fries with melted cheese, peri peri dust and fresh herbs.",
+    "price": 119,
+    "image_url": "/images/menu-generated/chilli-fries-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": true,
+    "is_spicy": true,
+    "tags": [
+      "crispy",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      },
+      {
+        "id": "addon-peri-peri",
+        "name": "Peri Peri Dust",
+        "price": 15
+      }
+    ]
+  },
+  {
+    "id": "veg-noodles",
+    "category_id": "main-course",
+    "name": "Veg Noodles",
+    "slug": "veg-noodles",
+    "description": "Stir-fried noodles with vibrant veggies and a smoky wok sauce.",
+    "price": 159,
+    "image_url": "/images/menu-generated/veg-noodles-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "quick-bite",
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-veg",
+        "name": "Extra Veggies",
+        "price": 30
+      },
+      {
+        "id": "addon-sauce",
+        "name": "Extra Sauce",
+        "price": 25
+      }
+    ]
+  },
+  {
+    "id": "classic-thali",
+    "category_id": "main-course",
+    "name": "Classic Thali",
+    "slug": "classic-thali",
+    "description": "A satisfying mix of main, side and dessert for one — the full Craving Point meal.",
+    "price": 259,
+    "image_url": "/images/menu-generated/classic-thali-1152.webp",
+    "is_veg": true,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_featured": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-rice",
+        "name": "Extra Rice",
+        "price": 40
+      },
+      {
+        "id": "addon-extra-gravy",
+        "name": "Extra Gravy",
+        "price": 30
+      }
+    ]
+  },
+  {
+    "id": "chicken-bowl",
+    "category_id": "rice",
+    "name": "Chicken Bowl",
+    "slug": "chicken-bowl",
+    "description": "Steamed rice topped with juicy chicken, herbs and our house-made gravy.",
+    "price": 179,
+    "image_url": "/images/menu-generated/chicken-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_featured": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "spicy"
+    ],
+    "addons": [
+      {
+        "id": "addon-extra-chicken",
+        "name": "Extra Chicken",
+        "price": 70
+      },
+      {
+        "id": "addon-extra-gravy",
+        "name": "Extra Gravy",
+        "price": 30
+      },
+      {
+        "id": "addon-extra-cheese",
+        "name": "Extra Cheese",
+        "price": 40
+      }
+    ]
+  },
+  {
+    "id": "shawarma-chicken-nachos-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Nachos Shawarma Bowl",
+    "slug": "chicken-nachos-shawarma-bowl",
+    "description": "Chicken shawarma, crunchy nachos and creamy house sauces.",
+    "price": 250,
+    "image_url": "/images/menu-generated/shawarma-chicken-nachos-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "crispy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-lays-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Lays Shawarma Bowl",
+    "slug": "chicken-lays-shawarma-bowl",
+    "description": "Loaded chicken shawarma with crisp potato chips and sauces.",
+    "price": 250,
+    "image_url": "/images/menu-generated/shawarma-chicken-lays-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "crispy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-kurkure-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Kurkure Shawarma Bowl",
+    "slug": "chicken-kurkure-shawarma-bowl",
+    "description": "Spiced chicken shawarma loaded with crunchy Kurkure-style bites.",
+    "price": 250,
+    "image_url": "/images/menu-generated/shawarma-chicken-kurkure-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "crispy",
+      "spicy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-cheese-loaded-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Cheese Loaded Bowl",
+    "slug": "chicken-cheese-loaded-bowl",
+    "description": "Chicken shawarma and fries under a generous melted cheese sauce.",
+    "price": 250,
+    "image_url": "/images/menu-generated/shawarma-chicken-cheese-loaded-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "cheesy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-chatpatta-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Chatpatta Shawarma Bowl",
+    "slug": "chicken-chatpatta-shawarma-bowl",
+    "description": "Tangy, spiced chicken shawarma with fresh vegetables and sauces.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-chatpatta-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "spicy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-malai-cheese-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Malai Cheese Bowl",
+    "slug": "chicken-malai-cheese-bowl",
+    "description": "Creamy chicken shawarma bowl finished with a smooth cheese sauce.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-malai-cheese-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "cheesy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-cheese-tandoori-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Cheese Tandoori Bowl",
+    "slug": "chicken-cheese-tandoori-bowl",
+    "description": "Tandoori chicken shawarma with cheese sauce, onions and herbs.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-cheese-tandoori-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "cheesy",
+      "spicy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-cheese-bbq-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Cheese BBQ Bowl",
+    "slug": "chicken-cheese-bbq-bowl",
+    "description": "Smoky barbecue chicken shawarma with creamy cheese sauce.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-cheese-bbq-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "cheesy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-fries-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Fries Bowl",
+    "slug": "chicken-fries-bowl",
+    "description": "Crisp fries, chicken shawarma and house mayo in one bowl.",
+    "price": 110,
+    "image_url": "/images/menu-generated/shawarma-chicken-fries-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "crispy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken",
+    "category_id": "rolls",
+    "name": "Chicken Shawarma",
+    "slug": "chicken-shawarma",
+    "description": "Warm wrap with roasted chicken, salad and creamy house sauce.",
+    "price": 120,
+    "image_url": "/images/menu-generated/shawarma-chicken-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ]
+  },
+  {
+    "id": "shawarma-llb-chicken-loaded",
+    "category_id": "rolls",
+    "name": "LLB Chicken Shawarma Loaded",
+    "slug": "llb-chicken-shawarma-loaded",
+    "description": "Extra-loaded chicken shawarma wrap with sauces and crisp vegetables.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-llb-chicken-loaded-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "quick-bite"
+    ]
+  },
+  {
+    "id": "shawarma-bbq-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "BBQ Shawarma Bowl",
+    "slug": "bbq-shawarma-bowl",
+    "description": "Smoky barbecue chicken shawarma bowl with creamy drizzle.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-bbq-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-cheese-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Cheese Shawarma Bowl",
+    "slug": "chicken-cheese-shawarma-bowl",
+    "description": "Chicken shawarma bowl piled with rich cheese sauce.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-cheese-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "filling",
+      "cheesy"
+    ]
+  },
+  {
+    "id": "shawarma-chicken-tandoori-bowl",
+    "category_id": "shawarma-bowls",
+    "name": "Chicken Tandoori Shawarma Bowl",
+    "slug": "chicken-tandoori-shawarma-bowl",
+    "description": "Tandoori-spiced chicken shawarma with fresh salad and sauce.",
+    "price": 150,
+    "image_url": "/images/menu-generated/shawarma-chicken-tandoori-bowl-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "filling",
+      "spicy"
+    ]
+  },
+  {
+    "id": "momo-chicken-steam",
+    "category_id": "momos",
+    "name": "Chicken Steam Momo",
+    "slug": "chicken-steam-momo",
+    "description": "Six tender steamed chicken momos served with spicy chutney.",
+    "price": 70,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-steam-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": false,
+    "tags": [
+      "quick-bite"
+    ]
+  },
+  {
+    "id": "momo-chicken-fry",
+    "category_id": "momos",
+    "name": "Chicken Fry Momo",
+    "slug": "chicken-fry-momo",
+    "description": "Six crisp fried chicken momos with bold dipping chutney.",
+    "price": 80,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-fry-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "quick-bite",
+      "crispy"
+    ]
+  },
+  {
+    "id": "momo-chicken-boom-boom",
+    "category_id": "momos",
+    "name": "Chicken Boom Boom Yellow Sauce Momo",
+    "slug": "chicken-boom-boom-yellow-sauce-momo",
+    "description": "Six chicken momos coated in creamy, spicy yellow boom boom sauce.",
+    "price": 120,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-boom-boom-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": true,
+    "is_spicy": true,
+    "tags": [
+      "quick-bite",
+      "cheesy",
+      "spicy"
+    ]
+  },
+  {
+    "id": "momo-chicken-tandoori-steam",
+    "category_id": "momos",
+    "name": "Chicken Steam Tandoori Sauce Momo",
+    "slug": "chicken-steam-tandoori-sauce-momo",
+    "description": "Six steamed chicken momos tossed in smoky tandoori sauce.",
+    "price": 120,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-tandoori-steam-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "quick-bite",
+      "spicy"
+    ]
+  },
+  {
+    "id": "momo-chicken-chatpatta-steam",
+    "category_id": "momos",
+    "name": "Chicken Chatpata Steam Momo",
+    "slug": "chicken-chatpata-steam-momo",
+    "description": "Six steamed chicken momos in tangy chatpata masala sauce.",
+    "price": 120,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-chatpatta-steam-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": true,
+    "tags": [
+      "quick-bite",
+      "spicy"
+    ]
+  },
+  {
+    "id": "momo-chicken-cheese-pasta",
+    "category_id": "momos",
+    "name": "Chicken Cheese White Pasta Sauce Momo",
+    "slug": "chicken-cheese-white-pasta-sauce-momo",
+    "description": "Six chicken momos in creamy white pasta cheese sauce.",
+    "price": 120,
+    "portion": "6 pcs",
+    "image_url": "/images/menu-generated/momo-chicken-cheese-pasta-1152.webp",
+    "is_veg": false,
+    "is_available": true,
+    "is_bestseller": false,
+    "is_spicy": false,
+    "tags": [
+      "quick-bite",
+      "cheesy"
+    ]
+  }
+]
