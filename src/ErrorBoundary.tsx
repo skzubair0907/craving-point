@@ -20,17 +20,16 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<{}>, State> 
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 24, fontFamily: 'system-ui, Arial' }}>
-          <h1 style={{ color: '#b91c1c' }}>Something went wrong</h1>
-          <pre style={{ whiteSpace: 'pre-wrap', background: '#111', color: '#fff', padding: 12, borderRadius: 6 }}>
-            {String(this.state.error && this.state.error.stack ? this.state.error.stack : this.state.error)}
-          </pre>
-          <div style={{ marginTop: 12 }}>
-            <button onClick={() => window.location.reload()} style={{ padding: '8px 12px', borderRadius: 6 }}>
-              Reload
+        <main className="grid min-h-screen place-items-center bg-[#120f10] px-6 text-center text-white">
+          <section className="max-w-md space-y-5 rounded-2xl border border-white/15 bg-white/5 p-8">
+            <p className="text-sm font-semibold tracking-[0.18em] text-primary">CRAVING POINT</p>
+            <h1 className="text-3xl font-bold">Something went wrong</h1>
+            <p className="text-white/70">Please try again. If the problem continues, call the restaurant for help with your order.</p>
+            <button onClick={() => window.location.reload()} className="btn-primary w-full">
+              Try again
             </button>
-          </div>
-        </div>
+          </section>
+        </main>
       )
     }
     return this.props.children

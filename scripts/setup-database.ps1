@@ -20,7 +20,11 @@ try {
     $keyPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureKey)
     $privateKey = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($keyPointer).Trim()
   } else { throw 'Choose C or H. Nothing was saved.' }
-  if ($privateKey -match '[\r\n]' -or $privateKey -match '^your_' -or $privateKey.Length -lt 30) { throw 'This is not a valid server key. Nothing was saved.' }
+  if ([string]::IsNullOrWhiteSpace($privateKey)) { throw 'The clipboard is empty. Copy the complete Secret key, then try again. Nothing was saved.' }
+  if ($privateKey -match '[\r\n]') { throw 'The clipboard contains multiple lines. Copy only the Secret key value, then try again. Nothing was saved.' }
+  if ($privateKey -match '^(your_|copy[-_ ]|placeholder|example|replace[-_ ])') { throw 'The clipboard contains example text, not a Secret key. Nothing was saved.' }
+  if ($privateKey.StartsWith('sb_publishable_')) { throw 'That is the publishable browser key. Copy a Secret key instead. Nothing was saved.' }
+  if ($privateKey.Length -lt 30) { throw 'The copied key is incomplete. Copy the complete Secret key, then try again. Nothing was saved.' }
   if ($privateKey.StartsWith('eyJ')) {
     $parts = $privateKey.Split('.')
     if ($parts.Length -ne 3) { throw 'Invalid key format. Nothing was saved.' }

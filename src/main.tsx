@@ -17,10 +17,6 @@ window.addEventListener('unhandledrejection', (ev) => {
   console.error('Unhandled promise rejection:', ev.reason)
 })
 
-// Debug log to verify app mount
-// eslint-disable-next-line no-console
-console.log('Mounting React app...')
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
@@ -28,4 +24,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </React.StrictMode>
 )
-

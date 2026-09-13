@@ -2,6 +2,8 @@ const { randomBytes, randomUUID, createHash } = require('node:crypto')
 const { buildOrder } = require('./order.cjs')
 const { repository, configured } = require('./repository.cjs')
 const payments = require('./payments.cjs')
+const DEFAULT_RESTAURANT_LOCATION = { lat: 19.0175, lng: 72.8905 }
+const DEFAULT_CUSTOMER_LOCATION = (restaurantLocation = DEFAULT_RESTAURANT_LOCATION) => ({ lat: restaurantLocation.lat + 0.0064, lng: restaurantLocation.lng + 0.0081 })
 const fail = (statusCode, message) => { throw Object.assign(new Error(message), { statusCode }) }
 const publicOrder = row => ({ ...row.payload, trackingToken: row.tracking_token })
 const receipt = row => ({ success: true, order: publicOrder(row), ...(row.payment_order_id && row.payload.payment_status !== 'paid' ? { payment: { key: process.env.RAZORPAY_KEY_ID, order_id: row.payment_order_id, amount: Math.round(row.payload.total * 100), currency: 'INR' } } : {}) })
@@ -56,7 +58,30 @@ async function handle(action, payload, { local = false, repo = repository(local)
         if (captured) row = await repo.payment(row, captured.id)
       } catch { /* The saved state remains visible during provider downtime. */ }
     }
-    return { order: { id: row.order_number, status: row.payload.status, payment_status: row.payload.payment_status || 'pending', orderType: row.payload.meta.orderType, total: row.payload.total, created_at: row.payload.created_at, preparation_minutes: row.payload.preparation_minutes, updated_at: row.payload.updated_at } }
+    const restaurantLocation = row.payload.restaurantLocation || DEFAULT_RESTAURANT_LOCATION
+    const customerLocation = row.payload.customerLocation || DEFAULT_CUSTOMER_LOCATION(restaurantLocation)
+    let deliveryLocation = null
+    try {
+      deliveryLocation = await repo.deliveryLocation(row.order_number)
+    } catch {
+      // Tracking is optional. A missing location must never block receipt/status access.
+    }
+    return {
+      order: {
+        id: row.order_number,
+        status: row.payload.status,
+        payment_status: row.payload.payment_status || 'pending',
+        orderType: row.payload.meta.orderType,
+        total: row.payload.total,
+        created_at: row.payload.created_at,
+        preparation_minutes: row.payload.preparation_minutes,
+        updated_at: row.payload.updated_at,
+        trackingToken: row.tracking_token,
+        restaurantLocation,
+        customerLocation,
+        deliveryLocation,
+      },
+    }
   }
   if (action === 'verifyPayment') {
     const row = await authorize(repo, payload)

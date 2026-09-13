@@ -29,6 +29,17 @@ test('tracking requires the private token and excludes customer details', async 
   const tracked = await handle('orderStatus', { orderId: created.order.id, token: created.order.trackingToken }, { repo, local: true })
   assert.equal(tracked.order.status, 'preparing'); assert.equal(tracked.order.customer, undefined)
 })
+test('tracking returns a rider location only through the token-protected order endpoint', async () => {
+  const repo = memory()
+  repo.deliveryLocation = async () => ({ latitude: 19.0182, longitude: 72.8909, accuracy: 12, updated_at: '2026-09-13T10:00:00.000Z' })
+  const created = await handle('createOrder', makePayload(), { repo, local: true })
+  await assert.rejects(
+    () => handle('orderStatus', { orderId: created.order.id, token: '0'.repeat(64) }, { repo, local: true }),
+    /not found/
+  )
+  const result = await handle('orderStatus', { orderId: created.order.id, token: created.order.trackingToken }, { repo, local: true })
+  assert.deepEqual(result.order.deliveryLocation, { latitude: 19.0182, longitude: 72.8909, accuracy: 12, updated_at: '2026-09-13T10:00:00.000Z' })
+})
 
 test('a saved order retry returns its receipt even after stock sells out or ordering closes', async () => {
   const repo=memory(),payload=makePayload()

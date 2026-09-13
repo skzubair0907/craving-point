@@ -5,6 +5,7 @@ import { CartItem } from '../types'
 interface CartState {
   items: CartItem[];
   coupon: string;
+  updatedAt: string;
   setCoupon: (code: string) => void;
   getCouponDiscount: (subtotal: number) => number;
   loyaltyPoints: number;
@@ -22,6 +23,7 @@ interface CartState {
 }
 
 const STORAGE_KEY = 'craving-point-cart'
+const UPDATED_AT_KEY = 'craving-point-cart-updated-at'
 const LOYALTY_KEY = 'craving-point-loyalty-points'
 const REWARD_KEY = 'craving-point-reward-applied'
 
@@ -43,6 +45,17 @@ const readStoredNumber = (key: string, fallback: number): number => {
   try {
     const item = window.localStorage.getItem(key)
     return item ? Number(item) || fallback : fallback
+  } catch {
+    return fallback
+  }
+}
+
+const readStoredTimestamp = (key: string, fallback: string): string => {
+  if (typeof window === 'undefined') return fallback
+
+  try {
+    const item = window.localStorage.getItem(key)
+    return item || fallback
   } catch {
     return fallback
   }
@@ -71,6 +84,12 @@ const persistLoyaltyPoints = (points: number) => {
   }
 }
 
+const persistUpdatedAt = (updatedAt: string) => {
+  if (typeof window !== 'undefined') {
+    try { window.localStorage.setItem(UPDATED_AT_KEY, updatedAt) } catch { /* Storage may be unavailable. */ }
+  }
+}
+
 const persistRewardState = (value: boolean) => {
   if (typeof window !== 'undefined') {
     try { window.localStorage.setItem(REWARD_KEY, String(value)) } catch { /* Storage may be unavailable. */ }
@@ -80,6 +99,7 @@ const persistRewardState = (value: boolean) => {
 export const useCartStore = create<CartState>((set, get) => ({
   items: readStoredCart(),
   coupon: '',
+  updatedAt: readStoredTimestamp(UPDATED_AT_KEY, new Date().toISOString()),
   setCoupon: (coupon) => set({ coupon }),
   getCouponDiscount: (subtotal) => {
     const coupon = useRestaurantStore.getState().catalog.coupons.find(c => c.code === get().coupon && c.active && subtotal >= c.minimum)
@@ -102,15 +122,19 @@ export const useCartStore = create<CartState>((set, get) => ({
           )
         : [...state.items, { ...newItem, quantity }]
 
+      const updatedAt = new Date().toISOString()
       persistCart(nextItems)
-      return { items: nextItems }
+      persistUpdatedAt(updatedAt)
+      return { items: nextItems, updatedAt }
     })
   },
   removeItem: (id) =>
     set((state) => {
       const nextItems = state.items.filter((i) => i.id !== id)
+      const updatedAt = new Date().toISOString()
       persistCart(nextItems)
-      return { items: nextItems }
+      persistUpdatedAt(updatedAt)
+      return { items: nextItems, updatedAt }
     }),
   updateQuantity: (id, quantity) =>
     set((state) => {
@@ -118,12 +142,16 @@ export const useCartStore = create<CartState>((set, get) => ({
         .map((i) => (i.id === id ? { ...i, quantity: Math.min(99, Math.max(0, Math.floor(quantity) || 0)) } : i))
         .filter((i) => i.quantity > 0)
 
+      const updatedAt = new Date().toISOString()
       persistCart(nextItems)
-      return { items: nextItems }
+      persistUpdatedAt(updatedAt)
+      return { items: nextItems, updatedAt }
     }),
   clearCart: () => {
+    const updatedAt = new Date().toISOString()
     persistCart([])
-    set({ items: [], rewardApplied: false, coupon: '' })
+    persistUpdatedAt(updatedAt)
+    set({ items: [], updatedAt, rewardApplied: false, coupon: '' })
     persistRewardState(false)
   },
   getTotal: () => {
@@ -131,7 +159,11 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
   getDeliveryFee: (subtotal) => { const s = useRestaurantStore.getState().catalog.restaurantSettings; return subtotal > s.free_delivery_above ? 0 : s.delivery_fee },
   getTax: (subtotal) => Number((subtotal * (useRestaurantStore.getState().catalog.restaurantSettings.tax_percentage ?? 5) / 100).toFixed(2)),
-  getRewardDiscount: () => 0,
+  getRewardDiscount: (subtotal) => {
+    if (!get().rewardApplied || !get().loyaltyPoints || subtotal <= 0) return 0
+    const maxDiscount = Math.min(get().loyaltyPoints, subtotal)
+    return Number(Math.min(maxDiscount, subtotal * 0.2).toFixed(2))
+  },
   addLoyaltyPoints: (amount) => {
     set((state) => {
       const nextPoints = Math.max(0, state.loyaltyPoints + amount)

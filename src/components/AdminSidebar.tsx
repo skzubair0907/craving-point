@@ -30,7 +30,7 @@ const AdminSidebar = () => {
     <div className="admin-mobile-topbar"><button className="admin-drawer-toggle" aria-label="Open admin navigation" onClick={()=>setOpen(true)}><Menu size={22}/></button><div><small>CRAVING POINT / ADMIN</small><strong>{current}</strong></div><Link to="/" aria-label="View restaurant website"><img src="/images/logo.jpg" width="38" height="38" alt="Craving Point"/></Link></div>
     {open&&<button className="admin-drawer-shade" aria-label="Dismiss admin navigation" onClick={()=>setOpen(false)}/>}
     <div ref={drawer} className={'admin-workspace-nav '+(open?'is-open':'')} role={open?'dialog':undefined} aria-modal={open?true:undefined} aria-label="Administration navigation">
-      <div className="admin-workspace-brand"><div><small>CRAVING POINT</small><strong>Workspace</strong></div><button aria-label="Close admin navigation" onClick={()=>setOpen(false)}><X size={22}/></button></div>
+      <div className="admin-workspace-brand"><div><small>CRAVING POINT</small><strong>Workspace</strong></div><span className="admin-workspace-badge">LIVE OPS</span><button aria-label="Close admin navigation" onClick={()=>setOpen(false)}><X size={22}/></button></div>
       <p className="admin-nav-label">Manage your restaurant</p>
       <nav aria-label="Admin sections">{menuItems.map(item=><Link key={item.path} to={item.path} aria-current={location.pathname===item.path?'page':undefined} onClick={()=>setOpen(false)}>{item.icon}<span>{item.label}</span></Link>)}</nav>
       <div className="admin-workspace-end"><Link to="/">View website</Link><button onClick={()=>supabase.auth.signOut()}><LogOut size={17}/> Sign out</button></div>

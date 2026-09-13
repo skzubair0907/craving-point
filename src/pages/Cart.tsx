@@ -151,6 +151,17 @@ const CartPage = () => {
             </div>
           </div>
 
+          {loyaltyPoints > 0 && (
+            <button
+              type="button"
+              onClick={() => setRewardApplied(!rewardApplied)}
+              className={`w-full mb-5 rounded-xl border px-4 py-3 text-left text-sm font-bold transition ${rewardApplied ? 'border-primary bg-primary/10 text-primary' : 'border-secondary-dark bg-secondary-dark/40 text-accent'}`}
+            >
+              {rewardApplied ? '✓ Rewards applied' : 'Use loyalty rewards'}
+              <span className="ml-2 opacity-80">({loyaltyPoints} pts = ₹{Math.min(loyaltyPoints, subtotal).toFixed(2)} max)</span>
+            </button>
+          )}
+
           <div className="flex gap-2 mb-8">
             <input 
               type="text" 

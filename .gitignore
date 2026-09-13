@@ -7,3 +7,8 @@ artifacts/backups/
 data/orders.json
 data/orders.json.tmp
 *.log
+# Claude Code generated files
+*.claudeplans*
+*.claude-plan*
+# Claude Code generated directories
+ZAHID.claudeplans/

@@ -7,10 +7,12 @@ import { useCartStore } from '../store/useCartStore'
 import { useRestaurantData } from '../store/useRestaurantData'
 import { orderApi, openPayment, saveReceipt } from '../lib/orderApi'
 import OrderPreviewModal from '../components/OrderPreviewModal'
+import { useNotificationsStore } from '../store/useNotificationsStore'
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const { restaurantSettings } = useRestaurantData()
+  const { add: addNotification } = useNotificationsStore()
   const requestRef = useRef({ id: randomId(), fingerprint: '' })
   const processingRef = useRef(false)
   const [payment, setPayment] = useState('cod')
@@ -25,6 +27,7 @@ const CheckoutPage = () => {
     getTax,
     getRewardDiscount,
     rewardApplied,
+    loyaltyPoints,
     addLoyaltyPoints,
     clearCart,
     setRewardApplied,
@@ -63,6 +66,13 @@ const CheckoutPage = () => {
     if (result.requiresReview) { setPreviewOrder(result.order); setIsPreviewOpen(true); return }
     let order = { ...result.order, payment: result.payment }
     saveReceipt(order)
+    addNotification({
+      id: `order-${order.id}`,
+      title: 'Order confirmed',
+      message: `We received your order ${order.id}. Track it anytime from the account page.`,
+    })
+    addLoyaltyPoints(Math.max(10, Math.round(order.total)))
+    setRewardApplied(false)
     if (result.payment) {
       try {
         const confirmation = await openPayment(result.payment, payload.customer)
@@ -252,6 +262,16 @@ const CheckoutPage = () => {
                 <span>₹{total.toFixed(2)}</span>
               </div>
             </div>
+            {loyaltyPoints > 0 && (
+              <button
+                type="button"
+                onClick={() => setRewardApplied(!rewardApplied)}
+                className={`mt-4 w-full rounded-xl border px-4 py-3 text-left text-sm font-bold transition ${rewardApplied ? 'border-primary bg-primary/10 text-primary' : 'border-secondary-dark bg-secondary-dark/40 text-accent'}`}
+              >
+                {rewardApplied ? '✓ Rewards applied' : 'Use loyalty rewards'}
+                <span className="ml-2 opacity-80">({loyaltyPoints} pts)</span>
+              </button>
+            )}
             <div className="p-4 bg-secondary-dark rounded-xl flex items-start gap-3 text-xs text-accent/60 leading-relaxed">
               <CheckCircle size={16} className="text-green-600 shrink-0" />
               <span>We ensure the highest standards of hygiene and packaging for every order.</span>

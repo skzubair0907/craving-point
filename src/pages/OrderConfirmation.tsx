@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom'
 import { CheckCircle, Clock } from 'lucide-react'
 import { orderApi, openPayment, saveReceipt } from '../lib/orderApi'
 import { useCartStore } from '../store/useCartStore'
+import { useNotificationsStore } from '../store/useNotificationsStore'
 export default function OrderConfirmation() {
   const location=useLocation()
   const [order,setOrder]=useState<any>(()=>{try{return location.state?.order || JSON.parse(localStorage.getItem('craving-point-last-order') || 'null')}catch{return null}})
+  const { add: addNotification } = useNotificationsStore()
   const [message,setMessage]=useState(location.state?.paymentError || '')
   const [busy,setBusy]=useState(false)
-  useEffect(()=>{if(!order?.trackingToken)return;let active=true;orderApi('orderStatus',{orderId:order.id,token:order.trackingToken}).then(result=>{if(!active)return;setOrder((previous:any)=>{const updated={...previous,status:result.order.status,payment_status:result.order.payment_status};saveReceipt(updated);return updated})}).catch(()=>{});return()=>{active=false}},[order?.id])
+  useEffect(()=>{if(!order?.trackingToken)return;let active=true;orderApi('orderStatus',{orderId:order.id,token:order.trackingToken}).then(result=>{if(!active)return;setOrder((previous:any)=>{const updated={...previous,status:result.order.status,payment_status:result.order.payment_status};saveReceipt(updated);const statusLabel=result.order.status?.replace('_',' ')?.replace(/\b\w/g, (c: string) => c.toUpperCase()); if (statusLabel) addNotification({ id: `status-${order.id}-${result.order.status}`, title: 'Delivery update', message: `Your order is now ${statusLabel}.`, }); return updated})}).catch(()=>{});return()=>{active=false}},[order?.id, addNotification])
   if(!order?.id || !Array.isArray(order.items))return <div className="px-4 py-20 text-center"><h1 className="section-title">No recent order</h1><Link className="btn-primary mt-6" to="/menu">Browse menu</Link></div>
   const awaiting=order.meta.payment==='online'&&order.payment_status!=='paid'
   const cancelled=order.status==='cancelled'

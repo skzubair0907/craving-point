@@ -7,6 +7,13 @@ import { useRestaurantStatus } from '../hooks/useRestaurantStatus'
 import { useDepth, useQuality } from '../hooks/useExperience'
 import { Reveal } from '../components/EditorialMotion'
 import MenuExperience from '../components/MenuExperience'
+import { getReorderPrompt } from '../lib/reorderReminder.mjs'
+import { getAbandonedCartPrompt } from '../lib/abandonedCart.mjs'
+import { getFavoriteHighlights } from '../lib/favorites.mjs'
+import { getBestsellerHighlights } from '../lib/bestsellers.mjs'
+import { getActiveOffers } from '../lib/activeOffers.mjs'
+import { useCartStore } from '../store/useCartStore'
+import { useFavoritesStore } from '../store/useFavoritesStore'
 
 function GrillFilm() {
   const quality = useQuality()
@@ -19,14 +26,33 @@ function GrillFilm() {
 }
 
 export default function Home() {
-  const { restaurantSettings: settings } = useRestaurantData()
+  const { restaurantSettings: settings, menuItems, offers } = useRestaurantData()
   const status = useRestaurantStatus()
   const depth = useDepth<HTMLElement>()
   const magnetic = useDepth<HTMLAnchorElement>()
   const quality = useQuality()
   const { video, playing, toggle } = useLoopingVideo(quality !== 'low')
+  const cartItems = useCartStore((state) => state.items)
+  const cartUpdatedAt = useCartStore((state) => state.updatedAt)
+  const favoriteIds = useFavoritesStore((state) => state.ids)
   const [ready, setReady] = useState(false)
+  const lastOrder = typeof window !== 'undefined' ? (() => { try { const raw = window.localStorage.getItem('craving-point-last-order'); return raw ? JSON.parse(raw) : null } catch { return null } })() : null
+  const reminder = getReorderPrompt(lastOrder)
+  const cartPrompt = getAbandonedCartPrompt({ items: cartItems, updatedAt: cartUpdatedAt })
+  const favoriteHighlights = getFavoriteHighlights(favoriteIds, menuItems) as Array<{ id: string; name: string; slug: string; price: number; link: string }> | null
+  const bestsellerHighlights = getBestsellerHighlights(menuItems) as Array<{ id: string; name: string; slug: string; price: number; link: string }> | null
+  const activeOffers = getActiveOffers(offers) as Array<{ id: string; title: string; description: string; discount: string; image_url: string; link: string }> | null
   const whatsapp = 'https://wa.me/' + (settings.whatsapp_number || settings.phone).replace(/\D/g, '')
+  const addFavoriteQuick = (favoriteId: string) => {
+    const item = menuItems.find((product) => product.id === favoriteId)
+    if (!item) return
+    useCartStore.getState().addItem({ ...item, productId: item.id, selectedAddons: [], quantity: 1 })
+  }
+  const addBestsellerQuick = (bestsellerId: string) => {
+    const item = menuItems.find((product) => product.id === bestsellerId)
+    if (!item) return
+    useCartStore.getState().addItem({ ...item, productId: item.id, selectedAddons: [], quantity: 1 })
+  }
   return <div className="cinematic-home" data-quality={quality}>
     <section className="campaign-hero" ref={depth}>
       <div className="hero-topline"><span>CHEETA CAMP · TROMBAY</span><span>THE DIGITAL FOOD EXPERIENCE</span><span className="hero-status"><i/>{status.isOpen ? 'OPEN FOR YOUR CRAVINGS' : 'SEE YOU AT THE COUNTER'}</span></div>
@@ -35,6 +61,109 @@ export default function Home() {
       <div className="hero-footer"><a href="#about" className="scroll-note"><ArrowDown size={17}/> SCROLL TO DISCOVER</a><span>WAFFLES · BOWLS · SHAWARMA</span>{quality !== 'low' && <button className="film-toggle" onClick={toggle}>{playing ? <Pause size={15}/> : <Play size={15}/>} {playing ? 'PAUSE FILM' : 'PLAY FOOD FILM'}</button>}</div>
       {!ready && <div className="asset-progress" role="status">PREPARING YOUR CRAVING <span>00</span></div>}
     </section>
+
+    {reminder && <section className="editorial-shell pb-5">
+      <div className="card-premium p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-accent/50">Last order</p>
+            <h3 className="mt-2 text-2xl font-bold text-accent">{reminder.title}</h3>
+            <p className="mt-2 text-sm text-accent/70">{reminder.message}</p>
+          </div>
+          <Link className="btn-primary" to={reminder.link}>{reminder.action}</Link>
+        </div>
+      </div>
+    </section>}
+
+    {cartPrompt && <section className="editorial-shell pb-5">
+      <div className="card-premium border-primary/40 bg-primary/5 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-accent/50">Saved cart</p>
+            <h3 className="mt-2 text-2xl font-bold text-accent">{cartPrompt.title}</h3>
+            <p className="mt-2 text-sm text-accent/70">{cartPrompt.message}</p>
+          </div>
+          <Link className="btn-primary" to={cartPrompt.link}>{cartPrompt.action}</Link>
+        </div>
+      </div>
+    </section>}
+
+    {favoriteHighlights && favoriteHighlights.length > 0 && <section className="editorial-shell pb-5">
+      <div className="card-premium p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-accent/50">Saved favorites</p>
+            <h3 className="mt-2 text-2xl font-bold text-accent">Pick up where you left off</h3>
+          </div>
+          <Link className="btn-secondary" to="/account">Manage favorites</Link>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {favoriteHighlights.map((item) => (
+            <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-white/5 p-4">
+              <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Favorite pick</p>
+              <h4 className="mt-3 text-lg font-bold text-accent">{item.name}</h4>
+              <div className="mt-3 flex items-center justify-between gap-2">
+                <span className="text-sm text-accent/70">₹{item.price}</span>
+                <div className="flex items-center gap-3">
+                  <Link className="text-primary underline" to={item.link}>View</Link>
+                  <button type="button" className="btn-secondary" onClick={() => addFavoriteQuick(item.id)}>Add</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>}
+
+    {bestsellerHighlights && bestsellerHighlights.length > 0 && <section className="editorial-shell pb-5">
+      <div className="card-premium p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-accent/50">Hot right now</p>
+            <h3 className="mt-2 text-2xl font-bold text-accent">Best sellers</h3>
+          </div>
+          <Link className="btn-secondary" to="/menu">Browse full menu</Link>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {bestsellerHighlights.map((item) => (
+            <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-primary/5 p-4">
+              <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Customer favorite</p>
+              <h4 className="mt-3 text-lg font-bold text-accent">{item.name}</h4>
+              <div className="mt-3 flex items-center justify-between gap-2">
+                <span className="text-sm text-accent/70">₹{item.price}</span>
+                <div className="flex items-center gap-3">
+                  <Link className="text-primary underline" to={item.link}>View</Link>
+                  <button type="button" className="btn-secondary" onClick={() => addBestsellerQuick(item.id)}>Add</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>}
+
+    {activeOffers && activeOffers.length > 0 && <section className="editorial-shell pb-5">
+      <div className="card-premium p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-accent/50">This week</p>
+            <h3 className="mt-2 text-2xl font-bold text-accent">Active deals</h3>
+          </div>
+          <Link className="btn-secondary" to="/offers">See all offers</Link>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {activeOffers.map((offer) => (
+            <div key={offer.id} className="overflow-hidden rounded-2xl border border-[var(--brand-border)] bg-[linear-gradient(135deg,rgba(255,242,204,0.18),rgba(255,255,255,0.05))] p-4">
+              <img src={offer.image_url} alt={offer.title} className="h-28 w-full rounded-xl object-cover" />
+              <p className="mt-4 text-xs uppercase tracking-[0.25em] text-accent/50">{offer.discount}</p>
+              <h4 className="mt-2 text-lg font-bold text-accent">{offer.title}</h4>
+              <p className="mt-2 text-sm text-accent/70">{offer.description}</p>
+              <Link className="mt-3 inline-block text-primary underline" to={offer.link}>Explore deal</Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>}
 
     <section id="about" className="editorial-shell story-section">
       <Reveal className="story-copy"><p className="small-label"><span className="red-dash"/> 01 / A TASTE OF OUR WORLD</p><h2>COCOA.<br/>BUTTER.<br/>SALT. <em>FIRE.</em></h2><p>Sweet meets savoury at Craving Point .88. From chocolate-drenched waffles to a warm wrap, find your kind of comfort in Cheeta Camp.</p><Link to="/menu" className="text-link">Find your favourite <ArrowUpRight size={18}/></Link></Reveal>

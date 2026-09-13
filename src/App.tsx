@@ -11,6 +11,7 @@ const Cart = lazy(() => import('./pages/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout'))
 const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'))
 const OrderTracking = lazy(() => import('./pages/OrderTracking'))
+const DeliveryTracking = lazy(() => import('./pages/DeliveryTracking'))
 const Account = lazy(() => import('./pages/Account'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 const AdminLogin = lazy(() => import('./pages/AdminLogin'))
@@ -31,6 +32,7 @@ import FloatingWhatsApp from './components/FloatingWhatsApp'
 import StickyBottomBar from './components/StickyBottomBar'
 import BackToTop from './components/BackToTop'
 import { useRestaurantData, useLiveRestaurant } from './store/useRestaurantData'
+import clsx from 'clsx'
 
 const OffersPage = () => {
   const { coupons, restaurantSettings } = useRestaurantData()
@@ -70,52 +72,59 @@ const AboutPage = () => {
 const LocationPage = () => {
   const { restaurantSettings } = useRestaurantData()
   return (
-  <div className="mx-auto max-w-6xl px-4 py-20">
-    <div className="mb-10 text-center">
-      <p className="eyebrow">Find us</p>
-      <h1 className="section-title">Visit Craving Point</h1>
-    </div>
-    <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-      <div className="glass-card overflow-hidden p-2">
-        <iframe
-          title="Craving Point location map"
-          src="https://www.google.com/maps?q=Cheeta+Camp+Trombay+Mumbai&output=embed"
-          className="h-[420px] w-full rounded-2xl border-0"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
+    <div className="mx-auto max-w-6xl px-4 py-20">
+      <div className="mb-10 text-center">
+        <p className="eyebrow">Find us</p>
+        <h1 className="section-title">Find Us</h1>
       </div>
-      <div className="glass-card p-8">
-        <h3 className="text-2xl font-black text-white">Craving Point</h3>
-        <p className="mt-4 text-white/80 leading-7">
-          {restaurantSettings.address}
-        </p>
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
-          <p className="mb-2 font-black uppercase tracking-[0.18em] text-xs text-white">Opening Hours</p>
-          <p>{restaurantSettings.opening_hours_label}</p>
+
+      <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="glass-card overflow-hidden rounded-3xl p-2 shadow-2xl shadow-black/30">
+          <iframe
+            title="Craving Point location map"
+            width="100%"
+            height="350"
+            style={{ border: 0, borderRadius: '1rem' }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Craving%20Point%20Cheeta%20Camp%20Trombay%20Mumbai%20400088&output=embed"
+            className="w-full rounded-2xl border-0"
+          />
         </div>
-        <a
-          href={restaurantSettings.google_maps_url}
-          target="_blank"
-          rel="noreferrer"
-          className="btn-primary mt-6 inline-flex items-center gap-2"
-        >
-          Get Directions
-        </a>
-        {restaurantSettings.phone && (
+
+        <div className="glass-card p-8">
+          <h3 className="text-2xl font-black text-white">Craving Point</h3>
+          <p className="mt-4 text-white/80 leading-7">
+            SHOP NO. 29, F-SECTOR, Cheeta Camp Rd, near Noor Masjid, Cheeta Camp, Trombay, Mumbai, Maharashtra 400088
+          </p>
+          <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+            <p className="mb-2 font-black uppercase tracking-[0.18em] text-xs text-white">Opening Hours</p>
+            <p>{restaurantSettings.opening_hours_label}</p>
+          </div>
           <a
-            href={`https://wa.me/${restaurantSettings.whatsapp_number || '917021235530'}?text=${encodeURIComponent('Hi! I would like to place an order.')}`}
+            href={restaurantSettings.google_maps_url}
             target="_blank"
             rel="noreferrer"
-            className="btn-secondary mt-3 inline-flex w-full items-center justify-center gap-2"
+            className="btn-primary mt-6 inline-flex items-center gap-2"
           >
-            Order on WhatsApp
+            Get Directions
           </a>
-        )}
+          {restaurantSettings.phone && (
+            <a
+              href={`https://wa.me/${restaurantSettings.whatsapp_number || '917021235530'}?text=${encodeURIComponent('Hi! I would like to place an order.')}`}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-secondary mt-3 inline-flex w-full items-center justify-center gap-2"
+            >
+              Order on WhatsApp
+            </a>
+          )}
+        </div>
       </div>
     </div>
-  </div>
-)}
+  )
+}
 
 const AdminLayout = () => {
   return (
@@ -162,37 +171,38 @@ const App = () => {
       <RouteScroll />
       <Metadata />
       <Suspense fallback={<p role="status" className="p-12">Loading page...</p>}>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="menu" element={<Menu />} />
-          <Route path="menu/:id" element={<ProductDetail />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="order-confirmation" element={<OrderConfirmation />} />
-          <Route path="order-tracking" element={<OrderTracking />} />
-          <Route path="account" element={<Account />} />
-          <Route path="offers" element={<OffersPage />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="location" element={<LocationPage />} />
-          <Route path="contact" element={<LocationPage />} />
-          <Route path="*" element={<div className="mx-auto max-w-xl px-4 py-20 text-center"><h1 className="section-title">Page not found</h1><Link to="/menu" className="btn-primary mt-6">Browse menu</Link></div>} />
-        </Route>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="menu" element={<Menu />} />
+            <Route path="menu/:id" element={<ProductDetail />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="order-confirmation" element={<OrderConfirmation />} />
+            <Route path="order-tracking" element={<OrderTracking />} />
+            <Route path="delivery-tracking/:orderId?" element={<DeliveryTracking />} />
+            <Route path="account" element={<Account />} />
+            <Route path="offers" element={<OffersPage />} />
+            <Route path="about" element={<AboutPage />} />
+            <Route path="location" element={<LocationPage />} />
+            <Route path="contact" element={<LocationPage />} />
+            <Route path="*" element={<div className="mx-auto max-w-xl px-4 py-20 text-center"><h1 className="section-title">Page not found</h1><Link to="/menu" className="btn-primary mt-6">Browse menu</Link></div>} />
+          </Route>
 
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
-          <Route path="reports" element={<AdminReports/>}/>
-          <Route path="delivery" element={<AdminDispatch/>}/>{(['inventory','support','staff','audit','notifications'] as const).map(kind=><Route key={kind} path={kind} element={<AdminOperations kind={kind}/>} />)}
-          <Route index element={<AdminDashboard />} />
-          <Route path="menu" element={<AdminMenuManagement />} />
-          <Route path="categories" element={<AdminCategoryManagement />} />
-          <Route path="orders" element={<AdminOrdersManagement />} />
-          <Route path="customers" element={<AdminCustomers />} />
-          <Route path="coupons" element={<AdminCoupons />} />
-          <Route path="reviews" element={<AdminReviews />} />
-          <Route path="settings" element={<AdminSettings />} />
-        </Route>
-      </Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
+            <Route path="reports" element={<AdminReports/>}/>
+            <Route path="delivery" element={<AdminDispatch/>}/>{(['inventory','support','staff','audit','notifications'] as const).map(kind=><Route key={kind} path={kind} element={<AdminOperations kind={kind}/>} />)}
+            <Route index element={<AdminDashboard />} />
+            <Route path="menu" element={<AdminMenuManagement />} />
+            <Route path="categories" element={<AdminCategoryManagement />} />
+            <Route path="orders" element={<AdminOrdersManagement />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+        </Routes>
       </Suspense>
     </Router>
   )

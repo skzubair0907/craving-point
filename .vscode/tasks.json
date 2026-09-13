@@ -1,0 +1,141 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Verify referral feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/referrals.test.cjs\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify referral feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/referrals.test.cjs\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify referral feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/referrals.test.cjs\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Type-check the app",
+			"type": "shell",
+			"command": "cmd /d /c \"npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Type-check the app",
+			"type": "shell",
+			"command": "cmd /d /c \"npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Final verification",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/referrals.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run reorder reminder test",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/reorderReminder.test.cjs\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify reminder flow",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/reorderReminder.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Final reminder verification",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/reorderReminder.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run abandoned cart regression",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/abandonedCart.test.cjs\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify abandoned cart flow",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/abandonedCart.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run favorites regression",
+			"type": "shell",
+			"command": "node --test tests/favoritesHighlights.test.cjs",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify favorites feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/favoritesHighlights.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify favorites feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/favoritesHighlights.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run bestsellers regression",
+			"type": "shell",
+			"command": "node --test tests/bestsellers.test.cjs",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Verify bestseller feature",
+			"type": "shell",
+			"command": "cmd /d /c \"node --test tests/favoritesHighlights.test.cjs && node --test tests/bestsellers.test.cjs && npm run lint\"",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run active offers regression",
+			"type": "shell",
+			"command": "node --test tests/activeOffers.test.cjs",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}

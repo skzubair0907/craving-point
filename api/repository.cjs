@@ -4,7 +4,7 @@ const root = path.join(__dirname, '..')
 const configured = () => {
   const url = process.env.SUPABASE_URL || ''
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-  return /^https:\/\//.test(url) && Boolean(key) && !/^your_|placeholder/i.test(key)
+  return /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(url) && Boolean(key) && !/^(your_|placeholder|copy[-_ ]|example|replace[-_ ])/i.test(key)
 }
 async function rest(resource, options = {}) {
   if (!configured()) throw Object.assign(new Error('Online ordering is not configured. Please contact the restaurant.'), { statusCode: 503 })
@@ -54,6 +54,11 @@ function repository(local = false) {
         write(rows); return current
       }
       return await rest('rpc/confirm_order_payment', { method: 'POST', body: JSON.stringify({ p_order_number: row.order_number, p_payment_id: paymentId }) })
+    },
+    async deliveryLocation(orderNumber) {
+      if (local && !configured()) return null
+      const rows = await rest(`delivery_tracking?order_number=eq.${encodeURIComponent(orderNumber)}&select=latitude,longitude,accuracy,updated_at&limit=1`)
+      return rows[0] || null
     },
     async review(row) {
       if (local && !configured()) throw Object.assign(new Error('Reviews require the connected restaurant database.'), { statusCode: 503 })
