@@ -1,6 +1,33 @@
-const fs = require('node:fs')
-const path = require('node:path')
-const root = path.join(__dirname, '..')
+let fs = null
+let nodePath = null
+
+try {
+  fs = require('node:fs')
+  nodePath = require('node:path')
+} catch {
+  fs = null
+  nodePath = null
+}
+
+const root = nodePath ? nodePath.resolve('.') : '.'
+
+const dataFile = fileName => {
+  if (!nodePath) return null
+  const explicit = process.env.LOCAL_ORDERS_PATH
+  if (explicit) return explicit
+  return nodePath.resolve(root, 'data', fileName)
+}
+
+const localStorage = () => {
+  if (!fs || !nodePath) return null
+  return {
+    existsSync: fs.existsSync.bind(fs),
+    readFileSync: fs.readFileSync.bind(fs),
+    writeFileSync: fs.writeFileSync.bind(fs),
+    renameSync: fs.renameSync.bind(fs),
+  }
+}
+
 const configured = () => {
   const url = process.env.SUPABASE_URL || ''
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -19,15 +46,29 @@ async function rest(resource, options = {}) {
   return response.status === 204 ? null : response.json()
 }
 function repository(local = false) {
-  const ordersPath = process.env.LOCAL_ORDERS_PATH || path.join(root, 'data/orders.json')
-  const read = () => fs.existsSync(ordersPath) ? JSON.parse(fs.readFileSync(ordersPath, 'utf8')) : []
-  const write = rows => { fs.writeFileSync(ordersPath + '.tmp', JSON.stringify(rows, null, 2)); fs.renameSync(ordersPath + '.tmp', ordersPath) }
+  const storage = localStorage()
+  const ordersPath = dataFile('orders.json')
+  const read = () => {
+    if (!storage || !ordersPath) return []
+    return storage.existsSync(ordersPath) ? JSON.parse(storage.readFileSync(ordersPath, 'utf8')) : []
+  }
+  const write = rows => {
+    if (!storage || !ordersPath) throw Object.assign(new Error('Local file storage is unavailable in this environment.'), { statusCode: 503 })
+    storage.writeFileSync(ordersPath + '.tmp', JSON.stringify(rows, null, 2))
+    storage.renameSync(ordersPath + '.tmp', ordersPath)
+  }
   return {
     async catalog() {
       if (!configured() && process.env.VITE_SUPABASE_URL) throw Object.assign(new Error('Order database setup is incomplete. Configure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the server, then restart it.'), { statusCode: 503 })
       // Local development can run without Supabase. Production never needs this
       // file fallback, which keeps deployed server requests independent of disk.
-      if (!configured()) return JSON.parse(fs.readFileSync(path.join(root, 'data/catalog.json'), 'utf8'))
+      if (!configured()) {
+        const catalogPath = dataFile('catalog.json')
+        if (!storage || !catalogPath || !storage.existsSync(catalogPath)) {
+          throw Object.assign(new Error('The restaurant catalog is not available in this environment.'), { statusCode: 503 })
+        }
+        return JSON.parse(storage.readFileSync(catalogPath, 'utf8'))
+      }
       const rows = await rest('storefront?id=eq.1&select=data')
       if (!rows[0]?.data) throw Object.assign(new Error('The restaurant catalog has not been initialized.'), { statusCode: 503 })
       const stocks = await rest('product_stock?select=product_id,quantity')
