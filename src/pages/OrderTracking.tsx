@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { CheckCircle, Circle, RefreshCw } from 'lucide-react'
 import { orderApi } from '../lib/orderApi'
 import { useRestaurantData } from '../store/useRestaurantData'
 export default function OrderTracking() {
   const location=useLocation()
+  const navigate=useNavigate()
   const { restaurantSettings }=useRestaurantData()
   const [order,setOrder]=useState<any>(null)
   const [error,setError]=useState('')
@@ -14,6 +15,7 @@ export default function OrderTracking() {
   const [reviewBusy,setReviewBusy]=useState(false)
   const [credentials]=useState(()=>{const params=new URLSearchParams(location.hash.slice(1));if(params.get('order'))return{orderId:params.get('order'),token:params.get('token')};try{const saved=location.state?.order || JSON.parse(localStorage.getItem('craving-point-last-order')||'null');return{orderId:saved?.id,token:saved?.trackingToken}}catch{return{}}})
   useEffect(()=>{if(!credentials.orderId||!credentials.token)return;let active=true;let pending=false;const refresh=async()=>{if(pending)return;pending=true;try{const data=await orderApi('orderStatus',credentials);if(active){setOrder(data.order);setError('');setLastUpdated(new Date().toLocaleTimeString())}}catch(error){if(active)setError(error instanceof Error?error.message:'Unable to refresh order.')}finally{pending=false}};void refresh();const timer=setInterval(()=>{if(document.visibilityState==='visible')void refresh()},15000);window.addEventListener('focus',refresh);return()=>{active=false;clearInterval(timer);window.removeEventListener('focus',refresh)}},[credentials,refreshKey])
+  useEffect(()=>{if(order?.status==='out_for_delivery'&&credentials.orderId&&credentials.token)navigate('/delivery-tracking/'+encodeURIComponent(credentials.orderId)+'#token='+encodeURIComponent(credentials.token),{replace:true})},[order?.status,credentials.orderId,credentials.token,navigate])
   if(!credentials.orderId||!credentials.token)return <div className="px-4 py-20 text-center"><h1 className="section-title">Track your order</h1><p className="mt-4">Open the private tracking link from your order receipt.</p><Link className="btn-primary mt-6" to="/order-confirmation">View latest receipt</Link></div>
   const steps=order?.orderType==='pickup'?['placed','confirmed','preparing','ready','picked_up']:['placed','confirmed','preparing','ready','out_for_delivery','delivered']
   const labels:Record<string,string>={placed:'Order received',confirmed:'Restaurant confirmed',preparing:'Preparing your food',ready:'Ready',out_for_delivery:'Out for delivery',delivered:'Delivered',picked_up:'Picked up'}
