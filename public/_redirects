@@ -1,1 +1,2 @@
-/*      /index.html  200
+# SPA routing is handled by Cloudflare Worker via wrangler.toml
+# not_found_handling = "single-page-application"
