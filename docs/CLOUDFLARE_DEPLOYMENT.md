@@ -1,20 +1,20 @@
 # Cloudflare Pages deployment
 
-This project can be deployed without Netlify using Cloudflare Pages Functions.
+This project can be deployed without Netlify using a Cloudflare Worker with static assets and the trusted order API.
 
 ## Before deployment
 
 1. Push the latest project changes to GitHub.
 2. Create a free Cloudflare account at `dash.cloudflare.com`.
-3. Open **Workers & Pages** and select **Create application** → **Pages** → **Connect to Git**.
+3. Open **Workers & Pages** and select **Create** → **Import a repository**.
 4. Select the Craving Point GitHub repository and production branch `main`.
 
 ## Build settings
 
 ```text
-Framework preset: Vite
+Framework preset: None
 Build command: npm run build
-Build output directory: dist
+Deploy command: npx wrangler deploy
 Root directory: leave empty
 ```
 
@@ -45,4 +45,4 @@ After publishing, test:
 
 ## Important
 
-Cloudflare Functions require a Git-connected deployment; dashboard file upload does not deploy Functions. Rotate any secret previously shown in screenshots before public launch.
+This deployment is a Cloudflare Worker, so do not select Vite as the Cloudflare framework preset; the repository's build configuration handles Vite. Rotate any secret previously shown in screenshots before public launch.
