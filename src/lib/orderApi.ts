@@ -1,5 +1,5 @@
 export async function orderApi(action: string, payload: unknown) {
-  const endpoint = import.meta.env.DEV ? `/api/${action}` : `/.netlify/functions/${action}`
+  const endpoint = `/api/${action}`
   const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: AbortSignal.timeout(30000) })
   let data
   try { data = await response.json() } catch { throw new Error('The order service is unavailable. Please call the restaurant.') }

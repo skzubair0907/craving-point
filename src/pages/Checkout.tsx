@@ -35,7 +35,6 @@ const CheckoutPage = () => {
   const [pendingPayload, setPendingPayload] = useState<any>(null)
   const [profile] = useState<Record<string, string>>(() => { try { return JSON.parse(localStorage.getItem('craving-point-profile') || '{}') || {} } catch { return {} } })
   const [error, setError] = useState('')
-  const endpoint = import.meta.env.DEV ? '/api/orders' : '/.netlify/functions/createOrder'
   const [orderType, setOrderType] = useState<'delivery' | 'pickup'>(restaurantSettings.delivery_available === false ? 'pickup' : 'delivery')
   const [isProcessing, setIsProcessing] = useState(false)
   const [previewOrder, setPreviewOrder] = useState<any | null>(null)

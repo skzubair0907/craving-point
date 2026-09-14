@@ -25,8 +25,9 @@ function repository(local = false) {
   return {
     async catalog() {
       if (!configured() && process.env.VITE_SUPABASE_URL) throw Object.assign(new Error('Order database setup is incomplete. Configure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY on the server, then restart it.'), { statusCode: 503 })
-      const fallback = JSON.parse(fs.readFileSync(path.join(root, 'data/catalog.json'), 'utf8'))
-      if (!configured()) return fallback
+      // Local development can run without Supabase. Production never needs this
+      // file fallback, which keeps deployed server requests independent of disk.
+      if (!configured()) return JSON.parse(fs.readFileSync(path.join(root, 'data/catalog.json'), 'utf8'))
       const rows = await rest('storefront?id=eq.1&select=data')
       if (!rows[0]?.data) throw Object.assign(new Error('The restaurant catalog has not been initialized.'), { statusCode: 503 })
       const stocks = await rest('product_stock?select=product_id,quantity')
