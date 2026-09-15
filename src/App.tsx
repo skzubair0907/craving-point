@@ -5,6 +5,7 @@ import Metadata from './components/Metadata'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import Home from './pages/Home'
+import LegalPage from './pages/LegalPage'
 const AdminDispatch = lazy(() => import('./pages/AdminDispatch'))
 const Menu = lazy(() => import('./pages/Menu'))
 const Cart = lazy(() => import('./pages/Cart'))
@@ -182,6 +183,8 @@ const App = () => {
             <Route path="order-tracking" element={<OrderTracking />} />
             <Route path="delivery-tracking/:orderId?" element={<DeliveryTracking />} />
             <Route path="account" element={<Account />} />
+            <Route path="privacy" element={<LegalPage kind="privacy" />} />
+            <Route path="terms" element={<LegalPage kind="terms" />} />
             <Route path="offers" element={<OffersPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="location" element={<LocationPage />} />

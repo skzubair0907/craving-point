@@ -21,7 +21,7 @@ export default function Footer() {
       </div>
       <div className="reference-footer-wordmark" aria-hidden="true">Craving Point<span>.88</span></div>
       <div className="reference-footer-bottom">
-        <small>{'\u00a9'} {new Date().getFullYear()} Craving Point .88. All rights reserved.</small>
+        <small>{'\u00a9'} {new Date().getFullYear()} Craving Point .88. All rights reserved. <Link to="/privacy">Privacy</Link> · <Link to="/terms">Terms</Link></small>
         <div className="reference-footer-controls"><div className="reference-footer-theme" role="group" aria-label="Color theme">{(['light','dark'] as const).map(value => <button key={value} type="button" aria-pressed={theme === value} onClick={() => { if (theme !== value) toggleTheme() }}>{value}</button>)}</div><button className="reference-footer-top-button" type="button" onClick={() => window.scrollTo({ top:0, behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>Back to top <ArrowUp size={12}/></button></div>
       </div>
     </div>
