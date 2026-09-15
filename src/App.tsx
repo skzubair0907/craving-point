@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Metadata from './components/Metadata'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
+import CustomerSignInPrompt from './components/CustomerSignInPrompt'
 import Home from './pages/Home'
 import LegalPage from './pages/LegalPage'
 const AdminDispatch = lazy(() => import('./pages/AdminDispatch'))
@@ -153,6 +154,7 @@ const MainLayout = () => (
   <div className="flex min-h-screen flex-col bg-[var(--brand-bg)] text-white">
     <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:z-[100] focus:bg-primary focus:p-4">Skip to content</a>
     <Navbar />
+    <CustomerSignInPrompt />
     <CustomCursor />
 
     <main id="main-content" className="flex-grow pt-20">
