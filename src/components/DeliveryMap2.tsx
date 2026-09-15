@@ -109,10 +109,10 @@ export const DeliveryMap = ({
           maxZoom: 19,
         }).addTo(map)
 
-        const pin = (color: string, label: string) => (L as any).divIcon({ className: '', html: `<span aria-label="${label}" style="display:grid;place-items:center;width:30px;height:30px;border:3px solid white;border-radius:50%;background:${color};box-shadow:0 2px 8px #0008;color:white;font:700 12px system-ui">${label[0]}</span>`, iconSize: [30, 30], iconAnchor: [15, 15] })
-        ;(L as any).marker([restaurantLocation.lat, restaurantLocation.lng], { icon: pin('#e84a2a', 'Restaurant') }).addTo(map).bindPopup('Restaurant')
-        ;(L as any).marker([customerLocation.lat, customerLocation.lng], { icon: pin('#2563eb', 'Customer') }).addTo(map).bindPopup('Customer delivery location')
-        if (riderLocation) (L as any).marker([riderLocation.lat, riderLocation.lng], { icon: pin('#16a34a', 'Rider') }).addTo(map).bindPopup('Rider live location')
+        const pin = (color: string, label: string, markerText: string) => (L as any).divIcon({ className: '', html: `<span aria-label="${label}" style="display:grid;place-items:center;width:30px;height:30px;border:3px solid white;border-radius:50%;background:${color};box-shadow:0 2px 8px #0008;color:white;font:700 12px system-ui">${markerText}</span>`, iconSize: [30, 30], iconAnchor: [15, 15] })
+        ;(L as any).marker([restaurantLocation.lat, restaurantLocation.lng], { icon: pin('#e84a2a', 'Restaurant', 'S') }).addTo(map).bindPopup('Restaurant')
+        ;(L as any).marker([customerLocation.lat, customerLocation.lng], { icon: pin('#2563eb', 'Customer', 'C') }).addTo(map).bindPopup('Customer delivery location')
+        if (riderLocation) (L as any).marker([riderLocation.lat, riderLocation.lng], { icon: pin('#16a34a', 'Rider', 'D') }).addTo(map).bindPopup('Delivery rider live location')
 
         const path: [number, number][] = [[restaurantLocation.lat, restaurantLocation.lng]]
         if (riderLocation) path.push([riderLocation.lat, riderLocation.lng])

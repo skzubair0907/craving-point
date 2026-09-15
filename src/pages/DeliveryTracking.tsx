@@ -346,6 +346,16 @@ export default function DeliveryTracking() {
     ? order.restaurantLocation
     : DEFAULT_RESTAURANT_LOCATION;
   const customerLoc = isValidLocation(order.customerLocation) ? order.customerLocation : null;
+  const riderAtCustomer = Boolean(
+    effectiveRiderLocation &&
+      customerLoc &&
+      calculateDistance(
+        effectiveRiderLocation.latitude,
+        effectiveRiderLocation.longitude,
+        customerLoc.lat,
+        customerLoc.lng,
+      ) <= 30,
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--brand-bg)] text-white">
@@ -434,7 +444,7 @@ export default function DeliveryTracking() {
               {/* Order Header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h1 className="text-2xl font-bold">Order #{order.orderNumber}</h1>
+                  <h1 className="text-2xl font-bold">Order #{order.orderNumber || order.id}</h1>
                   <p className="mt-1 text-accent/40">
                     {order.status.replace('_', ' ').toLowerCase()}
                   </p>
@@ -448,15 +458,18 @@ export default function DeliveryTracking() {
               <div className="grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
                 <div className="bg-white/10 rounded-xl p-4">
-                  {customerLoc ? <DeliveryMap
-                    restaurantLocation={restaurantLoc}
-                    customerLocation={customerLoc}
-                    riderLocation={effectiveRiderLocation
-                      ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }
-                      : null}
-                    height="400px"
-                    width="100%"
-                  /> : <div className="grid min-h-[400px] place-items-center rounded-lg border border-white/10 p-6 text-center"><div><h2 className="text-lg font-bold">Exact delivery location needed</h2><p className="mt-2 text-sm text-accent/70">This order was placed without shared device location. The restaurant will use the delivery address.</p></div></div>}
+                  {customerLoc ? <>
+                    <DeliveryMap
+                      restaurantLocation={restaurantLoc}
+                      customerLocation={customerLoc}
+                      riderLocation={effectiveRiderLocation
+                        ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }
+                        : null}
+                      height="400px"
+                      width="100%"
+                    />
+                    {riderAtCustomer && <p className="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-200">Your delivery rider is at your saved delivery location.</p>}
+                  </> : <div className="grid min-h-[400px] place-items-center rounded-lg border border-white/10 p-6 text-center"><div><h2 className="text-lg font-bold">Exact delivery location needed</h2><p className="mt-2 text-sm text-accent/70">This order was placed without shared device location. The restaurant will use the delivery address.</p></div></div>}
                 </div>
 
                 {/* Info Panel */}
