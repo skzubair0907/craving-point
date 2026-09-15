@@ -99,15 +99,10 @@ export default function DeliveryTracking() {
       return;
     }
 
-    // Assume order contains restaurantLocation and customerLocation as { lat, lng }
-    const restaurantLoc = order.restaurantLocation;
     const customerLoc = order.customerLocation;
 
     if (
-      !restaurantLoc ||
       !customerLoc ||
-      typeof restaurantLoc.lat !== 'number' ||
-      typeof restaurantLoc.lng !== 'number' ||
       typeof customerLoc.lat !== 'number' ||
       typeof customerLoc.lng !== 'number'
     ) {
@@ -338,13 +333,9 @@ export default function DeliveryTracking() {
     );
   }
 
-  const DEFAULT_RESTAURANT_LOCATION = { lat: 19.0175, lng: 72.8905 };
   const isValidLocation = (location?: { lat?: number; lng?: number } | null) =>
     !!location && typeof location.lat === 'number' && typeof location.lng === 'number';
 
-  const restaurantLoc = isValidLocation(order.restaurantLocation)
-    ? order.restaurantLocation
-    : DEFAULT_RESTAURANT_LOCATION;
   const customerLoc = isValidLocation(order.customerLocation) ? order.customerLocation : null;
   const riderAtCustomer = Boolean(
     effectiveRiderLocation &&
@@ -460,7 +451,6 @@ export default function DeliveryTracking() {
                 <div className="bg-white/10 rounded-xl p-4">
                   {customerLoc ? <>
                     <DeliveryMap
-                      restaurantLocation={restaurantLoc}
                       customerLocation={customerLoc}
                       riderLocation={effectiveRiderLocation
                         ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }

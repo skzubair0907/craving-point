@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { loadGoogleMapsApi, initMap, addMarker, updateMarker, addPolyline, updatePolyline } from '../lib/mapUtils'
 
 export interface DeliveryMapProps {
-  restaurantLocation: { lat: number; lng: number }
   customerLocation: { lat: number; lng: number }
   riderLocation?: { lat: number; lng: number } | null
   height?: string | number
@@ -10,7 +9,6 @@ export interface DeliveryMapProps {
 }
 
 export const DeliveryMap = ({
-  restaurantLocation,
   customerLocation,
   riderLocation = null,
   height = '400px',
@@ -20,7 +18,6 @@ export const DeliveryMap = ({
   const leafletContainerRef = useRef<HTMLDivElement | null>(null)
   const leafletMapRef = useRef<any>(null)
   const mapRef = useRef<google.maps.Map | null>(null)
-  const restaurantMarkerRef = useRef<google.maps.Marker | null>(null)
   const customerMarkerRef = useRef<google.maps.Marker | null>(null)
   const riderMarkerRef = useRef<google.maps.Marker | null>(null)
   const polylineRef = useRef<google.maps.Polyline | null>(null)
@@ -46,29 +43,28 @@ export const DeliveryMap = ({
     if (!apiLoaded || !mapContainerRef.current) return
     if (!mapRef.current) {
       const bounds = new google.maps.LatLngBounds()
-      bounds.extend(restaurantLocation)
       bounds.extend(customerLocation)
+      if (riderLocation) bounds.extend(riderLocation)
       const map = initMap(mapContainerRef.current, { center: bounds.getCenter(), zoom: 15 })
       mapRef.current = map
-      map.fitBounds(bounds)
-      restaurantMarkerRef.current = addMarker(map, restaurantLocation, { title: 'Restaurant', icon: { url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' } })
+      if (riderLocation) map.fitBounds(bounds)
+      else map.setZoom(16)
       customerMarkerRef.current = addMarker(map, customerLocation, { title: 'Customer', icon: { url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' } })
     }
     if (riderLocation) {
       if (riderMarkerRef.current) updateMarker(riderMarkerRef.current, riderLocation)
       else if (mapRef.current) riderMarkerRef.current = addMarker(mapRef.current, riderLocation, { title: 'Rider', icon: { url: 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png' } })
-      const path: google.maps.LatLngLiteral[] = [restaurantLocation, riderLocation, customerLocation]
+      const path: google.maps.LatLngLiteral[] = [riderLocation, customerLocation]
       if (polylineRef.current) updatePolyline(polylineRef.current, path)
       else if (mapRef.current) polylineRef.current = addPolyline(mapRef.current, path, { strokeColor: '#FF0000', strokeOpacity: 0.8, strokeWeight: 4 })
     } else {
       if (riderMarkerRef.current) { riderMarkerRef.current.setMap(null); riderMarkerRef.current = null }
       if (polylineRef.current) { polylineRef.current.setMap(null); polylineRef.current = null }
     }
-  }, [apiLoaded, restaurantLocation.lat, restaurantLocation.lng, customerLocation.lat, customerLocation.lng, riderLocation?.lat, riderLocation?.lng])
+  }, [apiLoaded, customerLocation.lat, customerLocation.lng, riderLocation?.lat, riderLocation?.lng])
 
   useEffect(() => () => {
     if (mapRef.current) mapRef.current = null
-    if (restaurantMarkerRef.current) restaurantMarkerRef.current.setMap(null)
     if (customerMarkerRef.current) customerMarkerRef.current.setMap(null)
     if (riderMarkerRef.current) riderMarkerRef.current.setMap(null)
     if (polylineRef.current) polylineRef.current.setMap(null)
@@ -95,8 +91,8 @@ export const DeliveryMap = ({
         const L = await import('leaflet')
         if (!mounted || !leafletContainerRef.current) return
 
-        const centerLat = (restaurantLocation.lat + customerLocation.lat) / 2
-        const centerLng = (restaurantLocation.lng + customerLocation.lng) / 2
+        const centerLat = riderLocation ? (riderLocation.lat + customerLocation.lat) / 2 : customerLocation.lat
+        const centerLng = riderLocation ? (riderLocation.lng + customerLocation.lng) / 2 : customerLocation.lng
 
         const map = (L as any).map(leafletContainerRef.current, {
           center: [centerLat, centerLng],
@@ -110,16 +106,14 @@ export const DeliveryMap = ({
         }).addTo(map)
 
         const pin = (color: string, label: string, markerText: string) => (L as any).divIcon({ className: '', html: `<span aria-label="${label}" style="display:grid;place-items:center;width:30px;height:30px;border:3px solid white;border-radius:50%;background:${color};box-shadow:0 2px 8px #0008;color:white;font:700 12px system-ui">${markerText}</span>`, iconSize: [30, 30], iconAnchor: [15, 15] })
-        ;(L as any).marker([restaurantLocation.lat, restaurantLocation.lng], { icon: pin('#e84a2a', 'Restaurant', 'S') }).addTo(map).bindPopup('Restaurant')
         ;(L as any).marker([customerLocation.lat, customerLocation.lng], { icon: pin('#2563eb', 'Customer', 'C') }).addTo(map).bindPopup('Customer delivery location')
         if (riderLocation) (L as any).marker([riderLocation.lat, riderLocation.lng], { icon: pin('#16a34a', 'Rider', 'D') }).addTo(map).bindPopup('Delivery rider live location')
 
-        const path: [number, number][] = [[restaurantLocation.lat, restaurantLocation.lng]]
-        if (riderLocation) path.push([riderLocation.lat, riderLocation.lng])
-        path.push([customerLocation.lat, customerLocation.lng])
-
-        ;(L as any).polyline(path, { color: '#ff0000', weight: 4, opacity: 0.8 }).addTo(map)
-        map.fitBounds((L as any).latLngBounds(path), { padding: [60, 60] })
+        if (riderLocation) {
+          const path: [number, number][] = [[riderLocation.lat, riderLocation.lng], [customerLocation.lat, customerLocation.lng]]
+          ;(L as any).polyline(path, { color: '#ff0000', weight: 4, opacity: 0.8 }).addTo(map)
+          map.fitBounds((L as any).latLngBounds(path), { padding: [60, 60] })
+        }
 
         leafletMapRef.current = map
       } catch (e) {
@@ -136,8 +130,6 @@ export const DeliveryMap = ({
     }
   }, [
     apiError,
-    restaurantLocation.lat,
-    restaurantLocation.lng,
     customerLocation.lat,
     customerLocation.lng,
     riderLocation?.lat,
