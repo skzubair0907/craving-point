@@ -11,6 +11,7 @@ export default function CustomerSignInPrompt() {
   const continueWithGoogle = async () => {
     if (!isSupabaseConfigured) { setMessage('Google sign-in is not configured yet. Please try again shortly.'); return }
     setBusy(true)
+    sessionStorage.setItem(dismissedKey, 'true')
     try {
       const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/account' } })
       if (error) throw error
