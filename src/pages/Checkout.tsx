@@ -41,6 +41,7 @@ const CheckoutPage = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [customerLocation, setCustomerLocation] = useState<{lat:number;lng:number}|null>(null)
   const [locationMessage, setLocationMessage] = useState('')
+  const [address, setAddress] = useState(profile.address || '')
 
   const subtotal = getTotal()
   const couponDiscount = getCouponDiscount(subtotal)
@@ -169,8 +170,8 @@ const CheckoutPage = () => {
                 <div className="space-y-6">
                   <div className="space-y-2">
                       <label htmlFor="address" className="text-sm font-bold text-accent/60">Full Address</label>
-                    <textarea id="address" name="address" defaultValue={profile.address || ''} required rows={3} placeholder="House No, Street, Area..." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                    <div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary text-sm" onClick={()=>{if(!navigator.geolocation){setLocationMessage('Location is unavailable in this browser.');return}setLocationMessage('Finding your location…');navigator.geolocation.getCurrentPosition(position=>{setCustomerLocation({lat:position.coords.latitude,lng:position.coords.longitude});setLocationMessage('Exact delivery location saved for this order.')},()=>setLocationMessage('Location permission was denied. Your typed address will still be used.'),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}}>Use my current location</button>{locationMessage&&<span className="text-sm text-accent/70">{locationMessage}</span>}</div>
+                    <textarea id="address" name="address" value={address} onChange={event => setAddress(event.target.value)} required rows={3} placeholder="House No, Street, Area..." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
+                    <div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary text-sm" onClick={()=>{if(!navigator.geolocation){setLocationMessage('Location is unavailable in this browser.');return}setLocationMessage('Finding your location…');navigator.geolocation.getCurrentPosition(async position=>{const location={lat:position.coords.latitude,lng:position.coords.longitude};setCustomerLocation(location);setLocationMessage('Finding your full address…');try{const response=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`,{headers:{Accept:'application/json'}});const result=await response.json();if(!response.ok||!result.display_name)throw new Error('Address unavailable');setAddress(result.display_name);setLocationMessage('Address filled from your location. Add your flat or house number if it is missing.')}catch{setLocationMessage('Exact delivery location saved. Please enter your full address manually.')}},()=>setLocationMessage('Location permission was denied. Your typed address will still be used.'),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}}>Use my current location</button>{locationMessage&&<span className="text-sm text-accent/70">{locationMessage}</span>}</div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
