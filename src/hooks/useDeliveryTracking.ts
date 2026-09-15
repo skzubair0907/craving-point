@@ -69,7 +69,7 @@ export function useDeliveryTracking(
     void refresh()
     const timer = window.setInterval(() => {
       if (document.visibilityState === 'visible') void refresh()
-    }, 15000)
+    }, 3000)
 
     return () => {
       active = false
