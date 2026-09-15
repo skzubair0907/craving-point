@@ -1,6 +1,6 @@
 import OrderHistory from '../components/OrderHistory'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useRestaurantData } from '../store/useRestaurantData'
 import { useFavoritesStore } from '../store/useFavoritesStore'
 import { useCartStore } from '../store/useCartStore'
@@ -9,6 +9,7 @@ import { createReferralCode, getReferralLink } from '../lib/referrals.mjs'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 const key = 'craving-point-profile'
 export default function Account() {
+const navigate = useNavigate()
   const { menuItems } = useRestaurantData()
   const { ids, toggle } = useFavoritesStore()
   const loyaltyPoints = useCartStore((state) => state.loyaltyPoints)
@@ -50,7 +51,7 @@ export default function Account() {
   return <div className="mx-auto max-w-4xl px-4 py-12 space-y-8">
     <div><h1 className="section-title">Your details</h1><p className="mt-3 text-accent/60">Save your details on this device for your next order.</p></div>
     {isSupabaseConfigured && <section className="card-premium p-6"><h2 className="text-2xl font-bold">{user ? 'Signed in' : 'Save details with Google'}</h2><p className="mt-2 text-accent/70">{user ? `Signed in as ${user.email || 'your Google account'}.` : 'Sign in to keep your name and email connected to your customer account.'}</p>{user ? <button type="button" className="mt-4 text-primary underline" onClick={signOut}>Sign out</button> : <button type="button" className="btn-primary mt-4" disabled={signingIn} onClick={signInWithGoogle}>{signingIn ? 'Opening Google…' : 'Continue with Google'}</button>}</section>}
-    <form className="card-premium p-6 space-y-5" onSubmit={(event) => { event.preventDefault(); try { localStorage.setItem(key, JSON.stringify(profile)); setMessage('Details saved on this device.') } catch { setMessage('Your browser could not save these details.') } }}>
+    <form className="card-premium p-6 space-y-5" onSubmit={(event) => { event.preventDefault(); try { localStorage.setItem(key, JSON.stringify(profile)); navigate('/', { replace: true }) } catch { setMessage('Your browser could not save these details.') } }}>
       {Object.entries({ name: 'Full name', email: 'Email', phone: 'Phone number', address: 'Delivery address' }).map(([field, label]) => <div key={field}><label className="block mb-2" htmlFor={field}>{label}</label><input id={field} value={profile[field] || ''} type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'} onChange={(event) => setProfile({ ...profile, [field]: event.target.value })} className="w-full border border-[var(--brand-border)] rounded-xl px-4 py-3" /></div>)}
       <button className="btn-primary" type="submit">Save details</button><p role="status">{message}</p>
     </form>
