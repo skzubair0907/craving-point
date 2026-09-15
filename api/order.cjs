@@ -7,6 +7,8 @@ function buildOrder(payload, menu, catalog = {}) {
   if (typeof customer?.name !== 'string' || !customer.name.trim() || !/^[+\d\s()-]{10,20}$/.test(customer.phone || '')) fail('Enter a name and valid phone number')
   if (!['delivery', 'pickup'].includes(meta.orderType)) fail('Choose delivery or pickup')
   if (meta.orderType === 'delivery' && (typeof customer.address !== 'string' || !customer.address.trim())) fail('Delivery address is required')
+  const customerLocation = payload.customerLocation
+  if (customerLocation && (!Number.isFinite(customerLocation.lat) || customerLocation.lat < -90 || customerLocation.lat > 90 || !Number.isFinite(customerLocation.lng) || customerLocation.lng < -180 || customerLocation.lng > 180)) fail('Invalid customer location')
   if (meta.payment && !['cod', 'online'].includes(meta.payment)) fail('Invalid payment method')
   const settings = catalog.restaurantSettings || {}
   if (settings.online_ordering_enabled === false) fail('Online ordering is paused. Please call the restaurant.')
@@ -43,6 +45,6 @@ function buildOrder(payload, menu, catalog = {}) {
   const discount = Number(Math.min(subtotal, rules[code] || 0).toFixed(2))
   const delivery = meta.orderType === 'pickup' || subtotal > (settings.free_delivery_above ?? 500) ? 0 : (settings.delivery_fee ?? 40)
   const tax = Number(((subtotal - discount) * (settings.tax_percentage ?? 5) / 100).toFixed(2))
-  return { id: `CP-${randomUUID()}`, customer, items: snapshot, subtotal, discount, delivery, tax, total: Number((subtotal - discount + delivery + tax).toFixed(2)), meta: { orderType: meta.orderType, payment: meta.payment || 'cod', coupon: code }, payment_status: 'pending', preparation_minutes: settings.preparation_minutes || 30, status: meta.payment === 'online' ? 'awaiting_payment' : 'placed', created_at: new Date().toISOString() }
+  return { id: `CP-${randomUUID()}`, customer, customerLocation: customerLocation ? { lat: Number(customerLocation.lat), lng: Number(customerLocation.lng) } : null, items: snapshot, subtotal, discount, delivery, tax, total: Number((subtotal - discount + delivery + tax).toFixed(2)), meta: { orderType: meta.orderType, payment: meta.payment || 'cod', coupon: code }, payment_status: 'pending', preparation_minutes: settings.preparation_minutes || 30, status: meta.payment === 'online' ? 'awaiting_payment' : 'placed', created_at: new Date().toISOString() }
 }
 module.exports = { buildOrder }

@@ -71,7 +71,7 @@ test('order status exposes tracking credentials and delivery coordinates to the 
   }
 })
 
-test('order status supplies fallback delivery coordinates when location data is missing', async () => {
+test('order status does not invent customer coordinates when location data is missing', async () => {
   const previousLocalOrdersPath = process.env.LOCAL_ORDERS_PATH
   const tempPath = require('node:path').join(require('node:os').tmpdir(), `craving-order-tracking-${Date.now()}-fallback.json`)
   process.env.LOCAL_ORDERS_PATH = tempPath
@@ -93,9 +93,8 @@ test('order status supplies fallback delivery coordinates when location data is 
     await repo.insert(row)
     const result = await handle('orderStatus', { orderId: row.order_number, token: row.tracking_token }, { local: true, repo })
     assert.ok(result.order.restaurantLocation)
-    assert.ok(result.order.customerLocation)
+    assert.equal(result.order.customerLocation, null)
     assert.ok(typeof result.order.restaurantLocation.lat === 'number')
-    assert.ok(typeof result.order.customerLocation.lng === 'number')
   } finally {
     if (previousLocalOrdersPath !== undefined) process.env.LOCAL_ORDERS_PATH = previousLocalOrdersPath
     else delete process.env.LOCAL_ORDERS_PATH

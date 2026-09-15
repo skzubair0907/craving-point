@@ -39,6 +39,8 @@ const CheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [previewOrder, setPreviewOrder] = useState<any | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [customerLocation, setCustomerLocation] = useState<{lat:number;lng:number}|null>(null)
+  const [locationMessage, setLocationMessage] = useState('')
 
   const subtotal = getTotal()
   const couponDiscount = getCouponDiscount(subtotal)
@@ -96,7 +98,7 @@ const CheckoutPage = () => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     const customer = Object.fromEntries(['name','phone','email','address','landmark','instructions'].map(key => [key, String(data.get(key) || '').trim()]))
-    const payload = { customer, items, meta: { orderType, coupon, payment } }
+    const payload = { customer, customerLocation: orderType === 'delivery' ? customerLocation : null, items, meta: { orderType, coupon, payment } }
     setPendingPayload(payload)
     void run(async () => {
       const result = await orderApi('createOrder', { ...payload, meta: { ...payload.meta, preview: true } })
@@ -168,6 +170,7 @@ const CheckoutPage = () => {
                   <div className="space-y-2">
                       <label htmlFor="address" className="text-sm font-bold text-accent/60">Full Address</label>
                     <textarea id="address" name="address" defaultValue={profile.address || ''} required rows={3} placeholder="House No, Street, Area..." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
+                    <div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary text-sm" onClick={()=>{if(!navigator.geolocation){setLocationMessage('Location is unavailable in this browser.');return}setLocationMessage('Finding your location…');navigator.geolocation.getCurrentPosition(position=>{setCustomerLocation({lat:position.coords.latitude,lng:position.coords.longitude});setLocationMessage('Exact delivery location saved for this order.')},()=>setLocationMessage('Location permission was denied. Your typed address will still be used.'),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}}>Use my current location</button>{locationMessage&&<span className="text-sm text-accent/70">{locationMessage}</span>}</div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">

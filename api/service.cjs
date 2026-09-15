@@ -3,7 +3,6 @@ const { buildOrder } = require('./order.cjs')
 const { repository, configured } = require('./repository.cjs')
 const payments = require('./payments.cjs')
 const DEFAULT_RESTAURANT_LOCATION = { lat: 19.0175, lng: 72.8905 }
-const DEFAULT_CUSTOMER_LOCATION = (restaurantLocation = DEFAULT_RESTAURANT_LOCATION) => ({ lat: restaurantLocation.lat + 0.0064, lng: restaurantLocation.lng + 0.0081 })
 const fail = (statusCode, message) => { throw Object.assign(new Error(message), { statusCode }) }
 const publicOrder = row => ({ ...row.payload, trackingToken: row.tracking_token })
 const receipt = row => ({ success: true, order: publicOrder(row), ...(row.payment_order_id && row.payload.payment_status !== 'paid' ? { payment: { key: process.env.RAZORPAY_KEY_ID, order_id: row.payment_order_id, amount: Math.round(row.payload.total * 100), currency: 'INR' } } : {}) })
@@ -59,7 +58,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
       } catch { /* The saved state remains visible during provider downtime. */ }
     }
     const restaurantLocation = row.payload.restaurantLocation || DEFAULT_RESTAURANT_LOCATION
-    const customerLocation = row.payload.customerLocation || DEFAULT_CUSTOMER_LOCATION(restaurantLocation)
+    const customerLocation = row.payload.customerLocation || null
     let deliveryLocation = null
     try {
       deliveryLocation = await repo.deliveryLocation(row.order_number)

@@ -339,16 +339,13 @@ export default function DeliveryTracking() {
   }
 
   const DEFAULT_RESTAURANT_LOCATION = { lat: 19.0175, lng: 72.8905 };
-  const DEFAULT_CUSTOMER_LOCATION = { lat: 19.0239, lng: 72.8986 };
   const isValidLocation = (location?: { lat?: number; lng?: number } | null) =>
     !!location && typeof location.lat === 'number' && typeof location.lng === 'number';
 
   const restaurantLoc = isValidLocation(order.restaurantLocation)
     ? order.restaurantLocation
     : DEFAULT_RESTAURANT_LOCATION;
-  const customerLoc = isValidLocation(order.customerLocation)
-    ? order.customerLocation
-    : DEFAULT_CUSTOMER_LOCATION;
+  const customerLoc = isValidLocation(order.customerLocation) ? order.customerLocation : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--brand-bg)] text-white">
@@ -451,7 +448,7 @@ export default function DeliveryTracking() {
               <div className="grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
                 <div className="bg-white/10 rounded-xl p-4">
-                  <DeliveryMap
+                  {customerLoc ? <DeliveryMap
                     restaurantLocation={restaurantLoc}
                     customerLocation={customerLoc}
                     riderLocation={effectiveRiderLocation
@@ -459,7 +456,7 @@ export default function DeliveryTracking() {
                       : null}
                     height="400px"
                     width="100%"
-                  />
+                  /> : <div className="grid min-h-[400px] place-items-center rounded-lg border border-white/10 p-6 text-center"><div><h2 className="text-lg font-bold">Exact delivery location needed</h2><p className="mt-2 text-sm text-accent/70">This order was placed without shared device location. The restaurant will use the delivery address.</p></div></div>}
                 </div>
 
                 {/* Info Panel */}
