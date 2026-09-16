@@ -44,7 +44,7 @@ npm run preview
 Recommended: Vercel or Netlify.
 
 Vercel:
-1. Connect your GitHub repo to Vercel.
+1. Connect your GitHub repo to cloudflare.
 2. Set the build command to `npm run build` and the output directory to `dist`.
 
 Netlify:
