@@ -7,6 +7,10 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
   const [error, setError] = useState<string | null>(null)
   const [useAudit, setUseAudit] = useState(false)
 
+  const latestMapUrl = rows.length > 0 && Number.isFinite(Number(rows[0].latitude)) && Number.isFinite(Number(rows[0].longitude))
+    ? `https://www.google.com/maps?q=${encodeURIComponent(`${Number(rows[0].latitude)},${Number(rows[0].longitude)}`)}&z=15&output=embed`
+    : null
+
   useEffect(() => {
     let mounted = true
     const load = async () => {
@@ -25,9 +29,6 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
         if (res.error) throw res.error
         const nextRows = res.data || []
         setRows(nextRows)
-        if (nextRows.length > 0) {
-          void initDeliveryHistoryMap(`delivery-history-map-${orderNumber}`, nextRows)
-        }
       } catch (e: any) {
         setError(e?.message || 'Unable to load delivery history')
       } finally {
@@ -51,7 +52,19 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
       {!loading && rows.length === 0 && <p className="text-sm text-accent/60">No recent updates.</p>}
       {rows.length > 0 && (
         <div className="space-y-3">
-          <div style={{ height: 200, borderRadius: 8, overflow: 'hidden' }} id={`delivery-history-map-${orderNumber}`} />
+          {latestMapUrl ? (
+            <div style={{ height: 200, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <iframe
+                title={`Delivery rider map for ${orderNumber}`}
+                src={latestMapUrl}
+                loading="lazy"
+                style={{ width: '100%', height: '100%', border: 0 }}
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          ) : (
+            <div style={{ height: 200, borderRadius: 8, overflow: 'hidden' }} id={`delivery-history-map-${orderNumber}`} />
+          )}
           <ul className="text-sm space-y-2 max-h-40 overflow-auto">
             {rows.map((r: any, idx: number) => (
               <li key={idx} className="flex justify-between items-start gap-3 border-b border-white/5 pb-2">
