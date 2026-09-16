@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import AdminOrderDetails from '../components/AdminOrderDetails'
 import DeliveryLocationControls from '../components/DeliveryLocationControls'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
+import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 import DeliveryMetricsPanel from '../components/DeliveryMetricsPanel'
 import AdminOperations from './AdminOperations'
 import OrderAlerts from '../components/OrderAlerts'
@@ -157,5 +158,4 @@ export default function AdminDispatch() {
             )}
         </div>
     )
-}
 }
