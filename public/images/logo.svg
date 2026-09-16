@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Craving Point logo</title>
+  <desc id="desc">A gold and orange food brand mark with a fork, spoon, and oversized Craving Point wordmark.</desc>
+  <defs>
+    <linearGradient id="gold1" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8d6"/>
+      <stop offset="15%" stop-color="#ffd75a"/>
+      <stop offset="35%" stop-color="#ffb400"/>
+      <stop offset="55%" stop-color="#ff8a00"/>
+      <stop offset="80%" stop-color="#f07600"/>
+      <stop offset="100%" stop-color="#d45400"/>
+    </linearGradient>
+    <linearGradient id="orange1" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffdf79"/>
+      <stop offset="20%" stop-color="#ffba26"/>
+      <stop offset="50%" stop-color="#ff7b24"/>
+      <stop offset="100%" stop-color="#ff4d00"/>
+    </linearGradient>
+    <linearGradient id="sun1" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8a1"/>
+      <stop offset="35%" stop-color="#ffd95d"/>
+      <stop offset="100%" stop-color="#ff9e2f"/>
+    </linearGradient>
+    <linearGradient id="green1" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#82ff78"/>
+      <stop offset="30%" stop-color="#36d26f"/>
+      <stop offset="100%" stop-color="#1d8d3b"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#ffdf7a" flood-opacity="0.9"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="#000000"/>
+
+  <g transform="translate(110 52)" filter="url(#shadow)">
+    <g transform="translate(250 10)">
+      <circle cx="330" cy="205" r="170" fill="url(#sun1)" stroke="#f5c63a" stroke-width="12"/>
+      <g stroke="#f5c63a" stroke-width="14" stroke-linecap="round" opacity="0.95">
+        <line x1="330" y1="30" x2="330" y2="90"/>
+        <line x1="330" y1="380" x2="330" y2="440"/>
+        <line x1="160" y1="205" x2="90" y2="205"/>
+        <line x1="570" y1="205" x2="640" y2="205"/>
+        <line x1="210" y1="90" x2="170" y2="130"/>
+        <line x1="490" y1="280" x2="536" y2="324"/>
+        <line x1="210" y1="320" x2="170" y2="360"/>
+        <line x1="490" y1="130" x2="535" y2="88"/>
+      </g>
+      <g transform="translate(97 90)">
+        <path d="M0 0 L40 0 L40 280 L0 280 Z" fill="url(#gold1)" stroke="#8a4a00" stroke-width="10"/>
+        <path d="M40 0 L60 0 L60 280 L40 280 Z" fill="#f0ad2f" stroke="#8a4a00" stroke-width="10"/>
+        <path d="M0 0 L20 0 L20 280 L0 280 Z" fill="#f9d371"/>
+        <g fill="#f9d371" stroke="#8a4a00" stroke-width="8">
+          <rect x="-16" y="18" width="18" height="24" rx="5"/>
+          <rect x="-16" y="56" width="18" height="24" rx="5"/>
+          <rect x="-16" y="94" width="18" height="24" rx="5"/>
+          <rect x="-16" y="132" width="18" height="24" rx="5"/>
+          <rect x="-16" y="170" width="18" height="24" rx="5"/>
+          <rect x="-16" y="208" width="18" height="24" rx="5"/>
+          <rect x="-16" y="246" width="18" height="24" rx="5"/>
+        </g>
+      </g>
+      <g transform="translate(500 95) rotate(30)">
+        <path d="M0 0 C60 -40, 105 -20, 105 48 C105 110, 58 146, 0 150 C-24 103, -22 42, 0 0 Z" fill="url(#gold1)" stroke="#8a4a00" stroke-width="10"/>
+        <path d="M-42 0 C18 50, 18 118, -42 150" fill="none" stroke="#8a4a00" stroke-width="12" stroke-linecap="round"/>
+        <path d="M150 0 C84 48, 89 110, 150 150" fill="none" stroke="#8a4a00" stroke-width="12" stroke-linecap="round"/>
+        <path d="M56 54 C88 30, 116 35, 150 62" fill="none" stroke="#f9d371" stroke-width="18" stroke-linecap="round"/>
+        <path d="M42 112 C88 90, 126 92, 175 118" fill="none" stroke="#f9d371" stroke-width="18" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(98 80)">
+        <path d="M400 100 C465 25, 620 34, 660 118 C690 184, 670 264, 602 292 C566 309, 520 298, 488 270 C455 251, 387 226, 386 208 C385 160, 356 132, 400 100 Z" fill="url(#green1)" stroke="#0f7030" stroke-width="12"/>
+        <path d="M430 150 C514 86, 578 93, 625 154" fill="none" stroke="#ecff80" stroke-width="12" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <g transform="translate(0 330)">
+      <path d="M110 130 C 410 16, 710 14, 1020 124 L1080 150 C960 228, 790 270, 620 270 L260 270 C180 270, 110 245, 72 200 Z" fill="url(#gold1)" stroke="#8a4a00" stroke-width="12"/>
+      <path d="M112 132 C 400 30, 710 38, 1013 146" fill="none" stroke="#fef3bf" stroke-width="12" opacity="0.9"/>
+      <path d="M72 206 C 130 86, 203 62, 286 96" fill="none" stroke="#ffcf55" stroke-width="14" stroke-linecap="round"/>
+      <path d="M960 160 C1026 180, 1065 204, 1088 235" fill="none" stroke="#ffcf55" stroke-width="14" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(70 235)" filter="url(#glow)">
+      <text x="535" y="230" text-anchor="middle" font-size="210" font-family="Impact, Haettenschweiler, 'Arial Black', sans-serif" font-weight="900" fill="url(#gold1)" stroke="#7b2d00" stroke-width="18" paint-order="stroke fill" letter-spacing="2">CRAVING</text>
+      <text x="535" y="500" text-anchor="middle" font-size="220" font-family="Impact, Haettenschweiler, 'Arial Black', sans-serif" font-weight="900" fill="url(#gold1)" stroke="#7b2d00" stroke-width="18" paint-order="stroke fill" letter-spacing="2">POINT</text>
+      <circle cx="534" cy="520" r="52" fill="#f5f2e8" stroke="#7b2d00" stroke-width="15"/>
+      <circle cx="534" cy="520" r="26" fill="#ff6a00" stroke="#ffb000" stroke-width="13"/>
+      <circle cx="534" cy="520" r="8" fill="#fff7cf"/>
+    </g>
+  </g>
+</svg>

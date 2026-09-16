@@ -137,7 +137,24 @@ export const DeliveryMap = ({
   ])
 
   if (apiError) {
-    return <div ref={leafletContainerRef} style={{ width, height, borderRadius: 12, overflow: 'hidden' }} />
+    const encodedCenter = riderLocation
+      ? `${riderLocation.lat},${riderLocation.lng}`
+      : `${customerLocation.lat},${customerLocation.lng}`
+
+    const fallbackUrl = `https://www.google.com/maps?q=${encodeURIComponent(encodedCenter)}&z=15&output=embed`
+
+    return (
+      <div style={{ width, height, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <iframe
+          title="Delivery rider map"
+          src={fallbackUrl}
+          loading="lazy"
+          style={{ width: '100%', height: '100%', border: 0 }}
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+      </div>
+    )
   }
 
   if (!apiLoaded) return <div style={{ width, height, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>Loading map...</div>

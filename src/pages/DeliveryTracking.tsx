@@ -168,7 +168,7 @@ export default function DeliveryTracking() {
                 <div className="flex-shrink-0 flex items-center">
                   <Link to="/" className="flex items-center">
                     <img
-                      src="/images/logo.png"
+                      src="/images/logo.svg"
                       alt="Craving Point"
                       className="h-8 w-auto"
                     />
@@ -267,7 +267,7 @@ export default function DeliveryTracking() {
                 <div className="flex-shrink-0 flex items-center">
                   <Link to="/" className="flex items-center">
                     <img
-                      src="/images/logo.png"
+                      src="/images/logo.svg"
                       alt="Craving Point"
                       className="h-8 w-auto"
                     />
@@ -382,7 +382,7 @@ export default function DeliveryTracking() {
               <div className="flex-shrink-0 flex items-center">
                 <Link to="/" className="flex items-center">
                   <img
-                      src="/images/logo.png"
+                      src="/images/logo.svg"
                       alt="Craving Point"
                       className="h-8 w-auto"
                     />

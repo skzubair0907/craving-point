@@ -62,7 +62,7 @@ const ProductDetail = () => {
       <div className="grid gap-8 lg:grid-cols-[1fr_0.95fr]">
         <div className="card-premium overflow-hidden p-4">
           <div className="relative overflow-hidden rounded-[24px]">
-            <img src={productMedia(item) || '/images/logo.png'} alt={productMedia(item) ? item.name : 'Craving Point logo'} className={'h-[520px] w-full ' + (item.category_id === 'combos' ? 'object-contain bg-black' : 'object-cover')} />
+            <img src={productMedia(item) || '/images/logo.svg'} alt={productMedia(item) ? item.name : 'Craving Point logo'} className={'h-[520px] w-full ' + (item.category_id === 'combos' ? 'object-contain bg-black' : 'object-cover')} />
             {!!item.image_urls?.length&&<div className="grid grid-cols-3 gap-2 mt-3">{item.image_urls.map((url,index)=><a key={url} href={url} target="_blank" rel="noreferrer"><img src={url} alt={item.name+' view '+(index+2)} loading="lazy" className="w-full rounded-lg object-cover aspect-square"/></a>)}</div>}<div className="absolute left-4 top-4 flex gap-2">
               {item.is_bestseller && (
                 <span className="rounded-full bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#120f10]">

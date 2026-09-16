@@ -1,7 +1,7 @@
 import type { Category, MenuItem, Offer, RestaurantSettings, Review } from '../types'
 
 export const brandAssets = {
-  logo: '/images/logo.png',
+  logo: '/images/logo.svg',
   heroShowcase: '/images/17.jpeg',
 }
 
