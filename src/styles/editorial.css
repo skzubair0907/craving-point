@@ -23,6 +23,9 @@
 .grill-pause{position:absolute;right:20px;bottom:20px;z-index:2;display:flex;align-items:center;gap:10px;padding:13px 16px;background:#171512df;color:#fff8eb;border:1px solid #ffffff60;font-size:11px;letter-spacing:.1em}
 .brand-logo{display:block;flex-shrink:0;overflow:hidden;background:#fff;border-radius:6px}.brand-logo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center bottom}.header-brand-logo{width:84px;height:70px}.footer-brand-logo{width:240px;height:200px;margin:32px 0}.header-brand-logo:focus-visible,.footer-brand-logo:focus-visible{outline:3px solid var(--cp-primary);outline-offset:4px}@media(max-width:767px){.header-brand-logo{width:72px;height:60px}.footer-brand-logo{width:192px;height:160px}}
 .brand-logo{position:relative;isolation:isolate;cursor:pointer;transform-origin:center;transition:transform .22s ease,box-shadow .22s ease;box-shadow:0 0 0 1px #ffbd5526}
+
+/* Leaflet controls use a high layer; the fixed site navigation must remain above maps. */
+.editorial-header{z-index:1100}
 .brand-logo::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,#fff9 48%,transparent 70%);transform:translateX(-130%);opacity:0;transition:transform .55s ease,opacity .2s ease}
 @media(hover:hover) and (pointer:fine){.brand-logo:hover{transform:translateY(-2px) rotate(-2deg) scale(1.04);box-shadow:0 6px 20px #ef952d45,0 0 0 2px #f8b84499}.brand-logo:hover::after{transform:translateX(130%);opacity:1}}
 .brand-logo:focus-visible{box-shadow:0 0 0 3px #ffbc55,0 5px 18px #ef952d45}

@@ -157,7 +157,7 @@ const MainLayout = () => (
     <CustomerSignInPrompt />
     <CustomCursor />
 
-    <main id="main-content" className="flex-grow pt-20">
+    <main id="main-content" className="flex-grow pt-[88px]">
       <Outlet />
     </main>
     <Footer />
