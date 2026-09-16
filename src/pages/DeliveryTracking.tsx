@@ -40,9 +40,11 @@ export default function DeliveryTracking() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch order details on mount and when credentials change
+  // Keep order status in sync while the customer watches this page. The rider
+  // location has its own hook below; this refresh also receives status changes.
   useEffect(() => {
     let active = true;
+    let pending = false;
     if (!credentials?.orderId || !credentials?.token) {
       setLoading(false);
       setError('Invalid order credentials');
@@ -53,10 +55,13 @@ export default function DeliveryTracking() {
     setError(null);
 
     const fetchOrder = async () => {
+      if (pending) return;
+      pending = true;
       try {
         const data = await orderApi('orderStatus', credentials!);
         if (active) {
           setOrder(data.order);
+          setError(null);
           setLoading(false);
         }
       } catch (err) {
@@ -68,11 +73,25 @@ export default function DeliveryTracking() {
           );
           setLoading(false);
         }
+      } finally {
+        pending = false;
       }
     };
 
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') void fetchOrder();
+    };
     void fetchOrder();
-  }, [credentials?.orderId, credentials?.token, orderApi]);
+    const timer = window.setInterval(refreshWhenVisible, 1000);
+    window.addEventListener('focus', refreshWhenVisible);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+      window.removeEventListener('focus', refreshWhenVisible);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
+  }, [credentials?.orderId, credentials?.token]);
 
   // Use delivery tracking hook for real-time rider location
   const {
