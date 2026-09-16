@@ -168,7 +168,7 @@ export default function DeliveryTracking() {
                 <div className="flex-shrink-0 flex items-center">
                   <Link to="/" className="flex items-center">
                     <img
-                      src="/images/logo.jpg"
+                      src="/images/logo.png"
                       alt="Craving Point"
                       className="h-8 w-auto"
                     />
@@ -267,7 +267,7 @@ export default function DeliveryTracking() {
                 <div className="flex-shrink-0 flex items-center">
                   <Link to="/" className="flex items-center">
                     <img
-                      src="/images/logo.jpg"
+                      src="/images/logo.png"
                       alt="Craving Point"
                       className="h-8 w-auto"
                     />
@@ -382,10 +382,10 @@ export default function DeliveryTracking() {
               <div className="flex-shrink-0 flex items-center">
                 <Link to="/" className="flex items-center">
                   <img
-                    src="/images/logo.jpg"
-                    alt="Craving Point"
-                    className="h-8 w-auto"
-                  />
+                      src="/images/logo.png"
+                      alt="Craving Point"
+                      className="h-8 w-auto"
+                    />
                 </Link>
               </div>
               <div className="hidden md:block">
