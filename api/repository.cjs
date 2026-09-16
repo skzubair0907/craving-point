@@ -99,7 +99,9 @@ function repository(local = false) {
     },
     async deliveryLocation(orderNumber) {
       if (local && !configured()) return null
-      const rows = await rest(`delivery_tracking?order_number=eq.${encodeURIComponent(orderNumber)}&select=latitude,longitude,accuracy,updated_at&limit=1`)
+      // Return the most recent location update for the order.
+      // Ensure results are ordered by `updated_at` descending so we pick the latest row.
+      const rows = await rest(`delivery_tracking?order_number=eq.${encodeURIComponent(orderNumber)}&select=latitude,longitude,accuracy,updated_at&order=updated_at.desc&limit=1`)
       return rows[0] || null
     },
     async review(row) {

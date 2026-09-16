@@ -25,6 +25,19 @@ create policy "Staff manage delivery locations" on public.delivery_tracking
 grant select, insert, update on public.delivery_tracking to authenticated;
 grant all on public.delivery_tracking to service_role;
 
+-- Audit table for delivery location writes. Useful for debugging and retention.
+create table if not exists public.delivery_tracking_audit (
+  id bigserial primary key,
+  order_number text references public.order_requests(order_number) on delete cascade,
+  latitude double precision not null,
+  longitude double precision not null,
+  accuracy double precision,
+  updated_at timestamptz not null default now(),
+  updated_by uuid references auth.users(id) on delete set null
+);
+grant insert on public.delivery_tracking_audit to service_role;
+grant select on public.delivery_tracking_audit to authenticated;
+
 create or replace function public.set_delivery_location(
   p_order_number text,
   p_latitude double precision,
@@ -50,6 +63,9 @@ begin
     accuracy = excluded.accuracy,
     updated_at = excluded.updated_at,
     updated_by = excluded.updated_by;
+  -- Log the write to the audit table for debugging / historical trace.
+  insert into public.delivery_tracking_audit(order_number, latitude, longitude, accuracy, updated_at, updated_by)
+  values (p_order_number, p_latitude, p_longitude, p_accuracy, now(), auth.uid());
 end $$;
 
 revoke all on function public.set_delivery_location(text, double precision, double precision, double precision) from public, anon;
