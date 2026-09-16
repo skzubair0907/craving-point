@@ -23,14 +23,11 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
           .limit(50)
         if (!mounted) return
         if (res.error) throw res.error
-        setRows(res.data || [])
-        // Initialize map with fresh rows after setting state
-        try {
-          void import('./DeliveryHistoryPanel').then(mod => {
-            // call initDeliveryHistoryMap with element id and data
-            try { mod.initDeliveryHistoryMap(`delivery-history-map-${orderNumber}`, res.data || []) } catch {}
-          })
-        } catch {}
+        const nextRows = res.data || []
+        setRows(nextRows)
+        if (nextRows.length > 0) {
+          void initDeliveryHistoryMap(`delivery-history-map-${orderNumber}`, nextRows)
+        }
       } catch (e: any) {
         setError(e?.message || 'Unable to load delivery history')
       } finally {
@@ -40,7 +37,7 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
     void load()
     const timer = window.setInterval(() => { void load() }, 5000)
     return () => { mounted = false; clearInterval(timer) }
-  }, [orderNumber])
+  }, [orderNumber, useAudit])
 
   return (
     <section className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -74,6 +71,7 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
 
 // Leaflet map initialization: keep out-of-band to avoid blocking initial render.
 export async function initDeliveryHistoryMap(containerId: string, points: Array<any>) {
+  if (typeof window === 'undefined') return
   if (!containerId || !points || points.length === 0) return
   const el = document.getElementById(containerId)
   if (!el) return
@@ -140,26 +138,8 @@ export async function initDeliveryHistoryMap(containerId: string, points: Array<
           rotation = (toDeg(Math.atan2(y, x)) + 360) % 360
         }
 
-        // Try to use a public SVG image if available, falling back to the inline SVG divIcon
-        const imgUrl = '/images/delivery-rider.svg'
-        const imgExists = (() => {
-          try {
-            // image existence will be checked by creating an Image object
-            const test = new Image()
-            test.src = imgUrl
-            // this doesn't synchronously confirm, but we'll attempt to use it; if 404, browser will show broken image
-            return true
-          } catch {
-            return false
-          }
-        })()
-
-        if (imgExists) {
-          const html = `<div style="width:44px;height:44px;display:block;transform:rotate(${rotation}deg);background:url('${imgUrl}') center/contain no-repeat"></div>`
-          ;(L as any).marker([la, lo], { icon: (L as any).divIcon({ className: '', html, iconSize: [44, 44], iconAnchor: [22, 22] }) }).addTo(map)
-        } else {
-          ;(L as any).marker([la, lo], { icon: pin('#ef4444', 'Latest rider position', '', true) }).addTo(map)
-        }
+        const html = `<div style="width:44px;height:44px;display:block;transform:rotate(${rotation}deg);background:radial-gradient(circle at 50% 35%, #fff4b0 0%, #fbbf24 25%, #ef4444 70%);border-radius:50%;border:2px solid rgba(255,255,255,0.9);box-shadow:0 3px 10px rgba(0,0,0,0.25)"></div>`
+        ;(L as any).marker([la, lo], { icon: (L as any).divIcon({ className: '', html, iconSize: [44, 44], iconAnchor: [22, 22] }) }).addTo(map)
 
         // draw accuracy circle if available
         try {
