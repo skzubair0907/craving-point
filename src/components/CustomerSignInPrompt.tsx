@@ -1,12 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
 const dismissedKey = 'craving-point-welcome-dismissed'
 
 export default function CustomerSignInPrompt() {
-  const [open, setOpen] = useState(() => typeof window !== 'undefined' && !sessionStorage.getItem(dismissedKey))
+  const [open, setOpen] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(isSupabaseConfigured)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  useEffect(() => {
+    const shouldOpen = () => !sessionStorage.getItem(dismissedKey)
+    if (!isSupabaseConfigured) {
+      setOpen(shouldOpen())
+      setCheckingSession(false)
+      return
+    }
+
+    let active = true
+    const applySession = (hasSession: boolean) => {
+      if (!active) return
+      setOpen(!hasSession && shouldOpen())
+      setCheckingSession(false)
+    }
+    void supabase.auth.getSession().then(({ data }: { data: { session: unknown | null } }) => applySession(Boolean(data.session))).catch(() => applySession(false))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: unknown | null) => applySession(Boolean(session)))
+    return () => { active = false; subscription.unsubscribe() }
+  }, [])
   const continueAsGuest = () => { sessionStorage.setItem(dismissedKey, 'true'); setOpen(false) }
   const continueWithGoogle = async () => {
     if (!isSupabaseConfigured) { setMessage('Google sign-in is not configured yet. Please try again shortly.'); return }
@@ -20,7 +39,7 @@ export default function CustomerSignInPrompt() {
       setBusy(false)
     }
   }
-  if (!open) return null
+  if (checkingSession || !open) return null
   return <div className="fixed inset-0 z-[90] grid place-items-center bg-black/70 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="customer-sign-in-title">
     <section className="w-full max-w-md rounded-2xl border border-white/15 bg-[var(--brand-surface)] p-7 text-[var(--brand-cream)] shadow-2xl">
       <img src="/images/logo.jpg" alt="Craving Point" className="h-16 w-16 rounded-lg" />
