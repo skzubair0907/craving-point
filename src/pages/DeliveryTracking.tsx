@@ -468,6 +468,13 @@ export default function DeliveryTracking() {
                   Updated {new Date(liveLastUpdated).toLocaleTimeString()}
                 </div>
               </div>
+              {order.status === 'out_for_delivery' && order.deliveryOtp && (
+                <div className="mt-5 rounded-xl border border-primary/50 bg-primary/10 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Delivery confirmation code</p>
+                  <p className="mt-2 text-3xl font-black tracking-[0.35em]">{order.deliveryOtp}</p>
+                  <p className="mt-2 text-sm text-white/70">Give this code to the rider only when your order has arrived.</p>
+                </div>
+              )}
 
               {/* Main Content: Map and Info */}
               <div className="grid gap-6 md:grid-cols-[1fr_1fr]">

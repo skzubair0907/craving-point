@@ -60,10 +60,14 @@ async function handle(action, payload, { local = false, repo = repository(local)
     const restaurantLocation = row.payload.restaurantLocation || DEFAULT_RESTAURANT_LOCATION
     const customerLocation = row.payload.customerLocation || null
     let deliveryLocation = null
+    let deliveryVerification = null
     try {
       deliveryLocation = await repo.deliveryLocation(row.order_number)
     } catch {
       // Tracking is optional. A missing location must never block receipt/status access.
+    }
+    if (row.payload.status === 'out_for_delivery') {
+      try { deliveryVerification = await repo.deliveryOtp(row.id) } catch { /* OTP is optional until its database migration is applied. */ }
     }
     return {
       order: {
@@ -79,6 +83,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
         restaurantLocation,
         customerLocation,
         deliveryLocation,
+        deliveryOtp: deliveryVerification?.verified_at ? null : deliveryVerification?.otp || null,
       },
     }
   }
