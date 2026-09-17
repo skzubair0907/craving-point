@@ -30,6 +30,20 @@ export default function CatalogEditor({ section }: { section: Section }) {
   }
   const field = (name: string, label: string, type = 'text') => <label className="grid gap-2" key={name}>{label}<input required={['name', 'code'].includes(name)} type={type} min={type === 'number' ? 0 : undefined} step={type === 'number' ? '.01' : undefined} value={draft[name] ?? ''} onChange={e => setDraft({ ...draft, [name]: type === 'number' ? Number(e.target.value) : e.target.value })} className="admin-input" /></label>
   const flag = (name: string, label: string) => <label key={name} className="flex items-center gap-3"><input type="checkbox" checked={Boolean(draft[name])} onChange={e => setDraft({ ...draft, [name]: e.target.checked })} />{label}</label>
+  const removeRow = async (row: any) => {
+    if (section !== 'categories' || row.id === 'all') return
+    if (!window.confirm(`Delete "${row.name}" from the categories list?`)) return
+    try {
+      setBusy(true)
+      const nextCategories: Catalog['categories'] = records.filter((item) => keyOf(item) !== keyOf(row))
+      await publish('categories', nextCategories)
+      setMessage('Category deleted.')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to delete this category.')
+    } finally {
+      setBusy(false)
+    }
+  }
   const save = async (event: React.FormEvent) => {
     event.preventDefault(); setBusy(true); setMessage('')
     try {
@@ -104,7 +118,7 @@ export default function CatalogEditor({ section }: { section: Section }) {
     </form> : <>
       <input className="admin-input w-full" aria-label={`Search ${title}`} placeholder={`Search ${title.toLowerCase()}…`} value={query} onChange={e => setQuery(e.target.value)} />
       <div className="card-premium overflow-x-auto"><table className="w-full text-left"><thead><tr><th className="p-4">Name</th><th className="p-4">{section === 'categories' ? 'Order' : 'Price / value'}</th><th className="p-4">Status</th><th className="p-4">Actions</th></tr></thead><tbody>
-        {records.filter(row => row.id !== 'all' && String(row.name || row.code).toLowerCase().includes(query.toLowerCase())).map(row => <tr key={keyOf(row)} className="border-t border-[var(--brand-border)]"><td className="p-4">{row.name || row.code}</td><td className="p-4">{section === 'menuItems' ? `₹${money(row.price)}` : section === 'coupons' ? `${row.type === 'fixed' ? '₹' : ''}${row.value}${row.type === 'percentage' ? '%' : ''}` : row.display_order}</td><td className="p-4">{row.deleted_at ? 'Deleted' : (row.is_available ?? row.is_active ?? row.active) ? 'Active' : 'Hidden'}</td><td className="p-4"><button className="text-primary font-bold" onClick={() => open(row)}>Edit</button>{section==='menuItems'&&<CatalogActions item={row}/>}</td></tr>)}
+        {records.filter(row => row.id !== 'all' && String(row.name || row.code).toLowerCase().includes(query.toLowerCase())).map(row => <tr key={keyOf(row)} className="border-t border-[var(--brand-border)]"><td className="p-4">{row.name || row.code}</td><td className="p-4">{section === 'menuItems' ? `₹${money(row.price)}` : section === 'coupons' ? `${row.type === 'fixed' ? '₹' : ''}${row.value}${row.type === 'percentage' ? '%' : ''}` : row.display_order}</td><td className="p-4">{row.deleted_at ? 'Deleted' : (row.is_available ?? row.is_active ?? row.active) ? 'Active' : 'Hidden'}</td><td className="p-4 flex flex-wrap items-center gap-3"><button className="text-primary font-bold" onClick={() => open(row)}>Edit</button>{section === 'categories' && <button className="text-red-400 font-bold" onClick={() => void removeRow(row)}>Delete</button>}{section==='menuItems'&&<CatalogActions item={row}/>}</td></tr>)}
       </tbody></table>{!records.length && <p className="p-6">No records yet.</p>}</div>
     </>}
   </div>
