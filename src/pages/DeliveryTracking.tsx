@@ -5,7 +5,7 @@ import { useDeliveryTracking } from '../hooks/useDeliveryTracking';
 import { DeliveryMap } from '../components/DeliveryMap2';
 import { DeliveryStatusStepper } from '../components/DeliveryStatusStepper';
 import { DeliveryInfoPanel } from '../components/DeliveryInfoPanel';
-import { calculateDistance } from '../lib/mapUtils';
+import { calculateDistance, isValidLocation, resolveMapCenter } from '../lib/mapUtils';
 import clsx from 'clsx';
 
 export default function DeliveryTracking() {
@@ -352,10 +352,15 @@ export default function DeliveryTracking() {
     );
   }
 
-  const isValidLocation = (location?: { lat?: number; lng?: number } | null) =>
-    !!location && typeof location.lat === 'number' && typeof location.lng === 'number';
-
   const customerLoc = isValidLocation(order.customerLocation) ? order.customerLocation : null;
+  const fallbackMapLocation = resolveMapCenter({
+    customerLocation: order.customerLocation,
+    riderLocation: effectiveRiderLocation
+      ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }
+      : null,
+    fallbackLocation: order.restaurantLocation,
+  });
+  const displayCustomerLocation = customerLoc ?? fallbackMapLocation;
   const riderAtCustomer = Boolean(
     effectiveRiderLocation &&
       customerLoc &&
@@ -468,17 +473,22 @@ export default function DeliveryTracking() {
               <div className="grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
                 <div className="bg-white/10 rounded-xl p-4">
-                  {customerLoc ? <>
+                  <>
                     <DeliveryMap
-                      customerLocation={customerLoc}
+                      customerLocation={displayCustomerLocation}
                       riderLocation={effectiveRiderLocation
                         ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }
                         : null}
                       height="400px"
                       width="100%"
                     />
+                    {!customerLoc && (
+                      <p className="mt-3 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-100">
+                        Exact customer coordinates were not captured, so the map is showing the restaurant fallback location for route context.
+                      </p>
+                    )}
                     {riderAtCustomer && <p className="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-200">Your delivery rider is at your saved delivery location.</p>}
-                  </> : <div className="grid min-h-[400px] place-items-center rounded-lg border border-white/10 p-6 text-center"><div><h2 className="text-lg font-bold">Exact delivery location needed</h2><p className="mt-2 text-sm text-accent/70">This order was placed without shared device location. The restaurant will use the delivery address.</p></div></div>}
+                  </>
                 </div>
 
                 {/* Info Panel */}

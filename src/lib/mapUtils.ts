@@ -138,6 +138,32 @@ export function calculateBearing(
  * No Google Maps API key is used in this project.
  * The public location page uses the free iframe embed instead.
  */
+export function isValidLocation(location?: { lat?: number; lng?: number } | null): location is { lat: number; lng: number } {
+  return !!location && typeof location.lat === 'number' && Number.isFinite(location.lat) && typeof location.lng === 'number' && Number.isFinite(location.lng);
+}
+
+export function resolveMapCenter(
+  options: {
+    customerLocation?: { lat?: number; lng?: number } | null;
+    riderLocation?: { lat?: number; lng?: number } | null;
+    fallbackLocation?: { lat?: number; lng?: number } | null;
+  }
+): { lat: number; lng: number } {
+  const preferred =
+    (options.riderLocation && isValidLocation(options.riderLocation)
+      ? options.riderLocation
+      : options.customerLocation && isValidLocation(options.customerLocation)
+        ? options.customerLocation
+        : options.fallbackLocation && isValidLocation(options.fallbackLocation)
+          ? options.fallbackLocation
+          : { lat: 19.0175, lng: 72.8905 });
+
+  return {
+    lat: Number(preferred.lat),
+    lng: Number(preferred.lng),
+  };
+}
+
 export function loadGoogleMapsApi(): Promise<void> {
   return new Promise((resolve, reject) => {
     if ((window as any).google && (window as any).google.maps) {
