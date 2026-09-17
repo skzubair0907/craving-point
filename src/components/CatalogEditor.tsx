@@ -93,33 +93,180 @@ export default function CatalogEditor({ section }: { section: Section }) {
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Unable to publish changes.') }
     finally { setBusy(false) }
   }
-  return <div className="p-4 sm:p-8 space-y-6">
-    <div className="flex flex-wrap items-center justify-between gap-4"><h1 className="section-title">{title}</h1><button className="btn-primary" onClick={() => open()} disabled={!loaded}>Add {section === 'menuItems' ? 'item' : section === 'categories' ? 'category' : 'coupon'}</button></div>
-    {loadError && <p role="alert">{loadError}</p>}
-    {message && <p role="status" className="rounded-xl border border-primary/30 p-4">{message}</p>}
-    {draft ? <form onSubmit={save} className="card-premium p-5 space-y-6">
-      <h2 className="text-2xl font-bold">{original ? 'Edit' : 'Add'} {section === 'menuItems' ? 'menu item' : section === 'categories' ? 'category' : 'coupon'}</h2>
-      <div className="grid gap-5 sm:grid-cols-2">
-        {section !== 'coupons' ? field('name', 'Name') : field('code', 'Coupon code')}
-        {section === 'menuItems' && <>
-          {field('price', 'Base price (₹)', 'number')}
-          <label className="grid gap-2">Category<select className="admin-input" value={draft.category_id} onChange={e => setDraft({ ...draft, category_id: e.target.value })}>{catalog.categories.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
-          <label className="grid gap-2">Upload product photos<input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e => setPhoto(Array.from(e.target.files || []))} /></label>
-        </>}
-        {section !== 'coupons' && <label className="grid gap-2 sm:col-span-2">Description<textarea className="admin-input" rows={3} value={draft.description || ''} onChange={e => setDraft({ ...draft, description: e.target.value })} /></label>}
-        {section === 'categories' && <>{field('display_order', 'Display order', 'number')}<label className="grid gap-2">Menu type<select className="admin-input" value={draft.menu_type || 'sweet'} onChange={e => setDraft({ ...draft, menu_type: e.target.value })}><option value="sweet">Sweet</option><option value="savoury">Savoury</option></select></label>{flag('is_active', 'Visible on the menu')}</>}
-        {section === 'coupons' && <><label className="grid gap-2">Discount type<select className="admin-input" value={draft.type} onChange={e => setDraft({ ...draft, type: e.target.value })}><option value="fixed">Fixed amount (₹)</option><option value="percentage">Percentage</option></select></label>{field('value', 'Discount value', 'number')}{field('minimum', 'Minimum subtotal (₹)', 'number')}{flag('active', 'Active')}</>}
-      </div>
-      {section === 'menuItems' && <>
-        <div className="flex flex-wrap gap-5">{flag('is_available', 'Available')}{flag('is_veg', 'Vegetarian')}{flag('is_bestseller', 'Bestseller')}{flag('is_featured', 'Show on homepage')}{flag('is_spicy', 'Spicy')}</div>
-        {(['price_variants', 'addons'] as const).map(group => <fieldset key={group} className="space-y-3"><legend className="font-bold mb-3">{group === 'price_variants' ? 'Sizes and prices (first size sets the base price)' : 'Available extras'}</legend>{(draft[group] || []).map((row: any, index: number) => <div className="flex flex-wrap gap-2" key={index}><input required aria-label="Option name" className="admin-input flex-1" value={row.label ?? row.name} onChange={e => setDraft({ ...draft, [group]: draft[group].map((v: any, i: number) => i === index ? { ...v, [group === 'price_variants' ? 'label' : 'name']: e.target.value } : v) })} /><input required aria-label="Option price" type="number" min="0" step=".01" className="admin-input w-28" value={row.price} onChange={e => setDraft({ ...draft, [group]: draft[group].map((v: any, i: number) => i === index ? { ...v, price: Number(e.target.value) } : v) })} /><button type="button" onClick={() => setDraft({ ...draft, [group]: draft[group].filter((_: any, i: number) => i !== index) })}>Remove</button></div>)}<button type="button" className="btn-secondary" onClick={() => setDraft({ ...draft, [group]: [...(draft[group] || []), group === 'price_variants' ? { label: '', price: 0 } : { id: randomId(), name: '', price: 0 }] })}>Add {group === 'price_variants' ? 'size' : 'extra'}</button></fieldset>)}
-      </>}
-      {section==='menuItems'&&<><button type="button" className="btn-secondary" onClick={()=>setPreview(!preview)}>Preview product</button>{preview&&<article className="card-premium p-5"><img className="w-48 rounded-lg" src={draft.image_url} alt={draft.name}/><h3>{draft.name}</h3><p>{draft.description}</p><p>?{draft.price}</p></article>}</>}<div className="flex flex-wrap gap-3"><button type="submit" className="btn-primary" disabled={busy}>{busy ? 'Publishing…' : 'Publish changes'}</button><button type="button" className="btn-secondary" disabled={busy} onClick={() => setDraft(null)}>Cancel</button></div>
-    </form> : <>
-      <input className="admin-input w-full" aria-label={`Search ${title}`} placeholder={`Search ${title.toLowerCase()}…`} value={query} onChange={e => setQuery(e.target.value)} />
-      <div className="card-premium overflow-x-auto"><table className="w-full text-left"><thead><tr><th className="p-4">Name</th><th className="p-4">{section === 'categories' ? 'Order' : 'Price / value'}</th><th className="p-4">Status</th><th className="p-4">Actions</th></tr></thead><tbody>
-        {records.filter(row => row.id !== 'all' && String(row.name || row.code).toLowerCase().includes(query.toLowerCase())).map(row => <tr key={keyOf(row)} className="border-t border-[var(--brand-border)]"><td className="p-4">{row.name || row.code}</td><td className="p-4">{section === 'menuItems' ? `₹${money(row.price)}` : section === 'coupons' ? `${row.type === 'fixed' ? '₹' : ''}${row.value}${row.type === 'percentage' ? '%' : ''}` : row.display_order}</td><td className="p-4">{row.deleted_at ? 'Deleted' : (row.is_available ?? row.is_active ?? row.active) ? 'Active' : 'Hidden'}</td><td className="p-4 flex flex-wrap items-center gap-3"><button className="text-primary font-bold" onClick={() => open(row)}>Edit</button>{section === 'categories' && <button className="text-red-400 font-bold" onClick={() => void removeRow(row)}>Delete</button>}{section==='menuItems'&&<CatalogActions item={row}/>}</td></tr>)}
-      </tbody></table>{!records.length && <p className="p-6">No records yet.</p>}</div>
-    </>}
-  </div>
+  const filteredRecords = records.filter((row) => row.id !== 'all' && String(row.name || row.code).toLowerCase().includes(query.toLowerCase()))
+  const visibleCount = filteredRecords.length
+  const activeCount = records.filter((row) => row.id !== 'all' && (row.is_available ?? row.is_active ?? row.active)).length
+
+  return (
+    <div className="p-4 sm:p-8 space-y-6">
+      <header className="card-premium p-5 sm:p-6">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="eyebrow">Catalog control</p>
+            <h1 className="section-title mt-2">{title}</h1>
+          </div>
+          <button className="btn-primary" onClick={() => open()} disabled={!loaded}>
+            Add {section === 'menuItems' ? 'item' : section === 'categories' ? 'category' : 'coupon'}
+          </button>
+        </div>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-white/60">Visible</p>
+            <p className="mt-2 text-xl font-bold text-white">{visibleCount}</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-white/60">Active</p>
+            <p className="mt-2 text-xl font-bold text-white">{activeCount}</p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-white/60">Status</p>
+            <p className="mt-2 text-xl font-bold text-white">Live</p>
+          </div>
+        </div>
+      </header>
+
+      {loadError && <p role="alert">{loadError}</p>}
+      {message && <p role="status" className="rounded-xl border border-primary/30 p-4">{message}</p>}
+
+      {draft ? (
+        <form onSubmit={save} className="card-premium p-5 space-y-6">
+          <h2 className="text-2xl font-bold">
+            {original ? 'Edit' : 'Add'} {section === 'menuItems' ? 'menu item' : section === 'categories' ? 'category' : 'coupon'}
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {section !== 'coupons' ? field('name', 'Name') : field('code', 'Coupon code')}
+            {section === 'menuItems' && (
+              <>
+                {field('price', 'Base price (₹)', 'number')}
+                <label className="grid gap-2">
+                  Category
+                  <select className="admin-input" value={draft.category_id} onChange={e => setDraft({ ...draft, category_id: e.target.value })}>
+                    {catalog.categories.filter(c => c.id !== 'all').map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-2">
+                  Upload product photos
+                  <input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e => setPhoto(Array.from(e.target.files || []))} />
+                </label>
+              </>
+            )}
+            {section !== 'coupons' && (
+              <label className="grid gap-2 sm:col-span-2">
+                Description
+                <textarea className="admin-input" rows={3} value={draft.description || ''} onChange={e => setDraft({ ...draft, description: e.target.value })} />
+              </label>
+            )}
+            {section === 'categories' && (
+              <>
+                {field('display_order', 'Display order', 'number')}
+                <label className="grid gap-2">
+                  Menu type
+                  <select className="admin-input" value={draft.menu_type || 'sweet'} onChange={e => setDraft({ ...draft, menu_type: e.target.value })}>
+                    <option value="sweet">Sweet</option>
+                    <option value="savoury">Savoury</option>
+                  </select>
+                </label>
+                {flag('is_active', 'Visible on the menu')}
+              </>
+            )}
+            {section === 'coupons' && (
+              <>
+                <label className="grid gap-2">
+                  Discount type
+                  <select className="admin-input" value={draft.type} onChange={e => setDraft({ ...draft, type: e.target.value })}>
+                    <option value="fixed">Fixed amount (₹)</option>
+                    <option value="percentage">Percentage</option>
+                  </select>
+                </label>
+                {field('value', 'Discount value', 'number')}
+                {field('minimum', 'Minimum subtotal (₹)', 'number')}
+                {flag('active', 'Active')}
+              </>
+            )}
+          </div>
+
+          {section === 'menuItems' && (
+            <>
+              <div className="flex flex-wrap gap-5">{flag('is_available', 'Available')}{flag('is_veg', 'Vegetarian')}{flag('is_bestseller', 'Bestseller')}{flag('is_featured', 'Show on homepage')}{flag('is_spicy', 'Spicy')}</div>
+              {(['price_variants', 'addons'] as const).map(group => (
+                <fieldset key={group} className="space-y-3">
+                  <legend className="font-bold mb-3">{group === 'price_variants' ? 'Sizes and prices (first size sets the base price)' : 'Available extras'}</legend>
+                  {(draft[group] || []).map((row: any, index: number) => (
+                    <div className="flex flex-wrap gap-2" key={index}>
+                      <input required aria-label="Option name" className="admin-input flex-1" value={row.label ?? row.name} onChange={e => setDraft({ ...draft, [group]: draft[group].map((v: any, i: number) => i === index ? { ...v, [group === 'price_variants' ? 'label' : 'name']: e.target.value } : v) })} />
+                      <input required aria-label="Option price" type="number" min="0" step=".01" className="admin-input w-28" value={row.price} onChange={e => setDraft({ ...draft, [group]: draft[group].map((v: any, i: number) => i === index ? { ...v, price: Number(e.target.value) } : v) })} />
+                      <button type="button" onClick={() => setDraft({ ...draft, [group]: draft[group].filter((_: any, i: number) => i !== index) })}>Remove</button>
+                    </div>
+                  ))}
+                  <button type="button" className="btn-secondary" onClick={() => setDraft({ ...draft, [group]: [...(draft[group] || []), group === 'price_variants' ? { label: '', price: 0 } : { id: randomId(), name: '', price: 0 }] })}>Add {group === 'price_variants' ? 'size' : 'extra'}</button>
+                </fieldset>
+              ))}
+            </>
+          )}
+
+          {section === 'menuItems' && (
+            <>
+              <button type="button" className="btn-secondary" onClick={() => setPreview(!preview)}>Preview product</button>
+              {preview && (
+                <article className="card-premium p-5">
+                  <img className="w-48 rounded-lg" src={draft.image_url} alt={draft.name} />
+                  <h3>{draft.name}</h3>
+                  <p>{draft.description}</p>
+                  <p>₹{draft.price}</p>
+                </article>
+              )}
+            </>
+          )}
+
+          <div className="flex flex-wrap gap-3">
+            <button type="submit" className="btn-primary" disabled={busy}>{busy ? 'Publishing…' : 'Publish changes'}</button>
+            <button type="button" className="btn-secondary" disabled={busy} onClick={() => setDraft(null)}>Cancel</button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <div className="card-premium p-4">
+            <input
+              className="admin-input w-full"
+              aria-label={`Search ${title}`}
+              placeholder={`Search ${title.toLowerCase()}…`}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="card-premium overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr>
+                  <th className="p-4">Name</th>
+                  <th className="p-4">{section === 'categories' ? 'Order' : 'Price / value'}</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRecords.map((row) => (
+                  <tr key={keyOf(row)} className="border-t border-[var(--brand-border)]">
+                    <td className="p-4">{row.name || row.code}</td>
+                    <td className="p-4">{section === 'menuItems' ? `₹${money(row.price)}` : section === 'coupons' ? `${row.type === 'fixed' ? '₹' : ''}${row.value}${row.type === 'percentage' ? '%' : ''}` : row.display_order}</td>
+                    <td className="p-4">{row.deleted_at ? 'Deleted' : (row.is_available ?? row.is_active ?? row.active) ? 'Active' : 'Hidden'}</td>
+                    <td className="p-4 flex flex-wrap items-center gap-3">
+                      <button className="text-primary font-bold" onClick={() => open(row)}>Edit</button>
+                      {section === 'categories' && <button className="text-red-400 font-bold" onClick={() => void removeRow(row)}>Delete</button>}
+                      {section === 'menuItems' && <CatalogActions item={row} />}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!filteredRecords.length && <p className="p-6">No records yet.</p>}
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
