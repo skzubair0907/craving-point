@@ -3,7 +3,6 @@ import { MapPin, Phone, Truck, PackageCheck } from 'lucide-react'
 import { useAdminOrders } from '../hooks/useAdminOrders'
 import { supabase } from '../lib/supabase'
 import AdminOrderDetails from '../components/AdminOrderDetails'
-import DeliveryLocationControls from '../components/DeliveryLocationControls'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 import DeliveryMetricsPanel from '../components/DeliveryMetricsPanel'
@@ -38,21 +37,7 @@ export default function AdminDispatch() {
                 return
             }
 
-            if (!navigator.geolocation) {
-                setMessage('Order dispatched. Open the On the way order on the rider phone to share live location.')
-                return
-            }
-
-            setMessage('Order dispatched. Allow location permission to share the rider position.')
-            navigator.geolocation.getCurrentPosition(async position => {
-                try {
-                    const result = await supabase.rpc('set_delivery_location', { p_order_number: row.order_number, p_latitude: position.coords.latitude, p_longitude: position.coords.longitude, p_accuracy: position.coords.accuracy })
-                    if (result.error) throw result.error
-                    setMessage('Order dispatched and rider location shared. The customer map updates within 15 seconds.')
-                } catch (error) {
-                    setMessage(error instanceof Error ? error.message : 'Order dispatched, but rider location could not be saved.')
-                }
-            }, () => setMessage('Order dispatched. Location permission was denied; share it from the On the way order.'), { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 })
+            setMessage('Order dispatched. The assigned rider now starts live location from their own Delivery Partner portal.')
 
         } catch (error) {
             setMessage(error instanceof Error ? error.message : (error as { message?: string })?.message || 'Unable to update delivery.')
@@ -130,12 +115,12 @@ export default function AdminDispatch() {
                                 <div className="flex flex-wrap gap-3">
                                     <a className="btn-secondary flex items-center gap-2" href={'tel:' + o.customer?.phone}><Phone size={16} />Call customer</a>
                                     {o.customer?.address && <a className="btn-secondary" href={'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.customer.address)} target="_blank" rel="noreferrer">Open address in Maps</a>}
-                                    {next && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />{next === 'out_for_delivery' ? 'Dispatch order' : next === 'delivered' ? 'Mark delivered' : 'Mark ' + next}</button>}
+                                    {next && next !== 'out_for_delivery' && next !== 'delivered' && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />Mark {next}</button>}
+                                    {o.status === 'ready' && <span className="rounded-lg border border-primary/50 bg-primary/10 px-3 py-2 text-sm text-primary">The assigned rider starts delivery from their own phone.</span>}
                                 </div>
 
                                 {o.status === 'out_for_delivery' && (
                                     <div className="grid gap-3 md:grid-cols-2">
-                                        <DeliveryLocationControls orderId={row.id} orderNumber={row.order_number} customerLocation={o.customerLocation} onMessage={setMessage} />
                                         <DeliveryHistoryPanel orderNumber={row.order_number} />
                                     </div>
                                 )}
