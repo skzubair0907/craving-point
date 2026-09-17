@@ -14,6 +14,7 @@ import Checkout from './pages/Checkout'
 import OrderConfirmation from './pages/OrderConfirmation'
 import OrderTracking from './pages/OrderTracking'
 import DeliveryTracking from './pages/DeliveryTracking'
+import DeliveryPartner from './pages/DeliveryPartner'
 import Account from './pages/Account'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
@@ -194,6 +195,7 @@ const App = () => {
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/delivery-partner" element={<DeliveryPartner />} />
           <Route path="/admin" element={<AdminGuard><AdminLayout /></AdminGuard>}>
             <Route path="reports" element={<AdminReports/>}/>
             <Route path="delivery" element={<AdminDispatch/>}/>{(['inventory','support','staff','audit','notifications'] as const).map(kind=><Route key={kind} path={kind} element={<AdminOperations kind={kind}/>} />)}
