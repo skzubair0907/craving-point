@@ -7,8 +7,10 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
   const [error, setError] = useState<string | null>(null)
   const [useAudit, setUseAudit] = useState(false)
 
-  const latestMapUrl = rows.length > 0 && Number.isFinite(Number(rows[0].latitude)) && Number.isFinite(Number(rows[0].longitude))
-    ? `https://www.google.com/maps?q=${encodeURIComponent(`${Number(rows[0].latitude)},${Number(rows[0].longitude)}`)}&z=15&output=embed`
+  const latestRow = rows[0]
+  const recentRows = rows.slice(0, 4)
+  const latestMapUrl = latestRow && Number.isFinite(Number(latestRow.latitude)) && Number.isFinite(Number(latestRow.longitude))
+    ? `https://www.google.com/maps?q=${encodeURIComponent(`${Number(latestRow.latitude)},${Number(latestRow.longitude)}`)}&z=15&output=embed`
     : null
 
   useEffect(() => {
@@ -41,25 +43,28 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
   }, [orderNumber, useAudit])
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+    <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#1b1a1b] via-[#17171a] to-[#0d0d0f] p-4 shadow-[0_20px_42px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
-        <h3 className="text-lg font-bold text-white">Recent rider updates</h3>
-        <label className="inline-flex items-center gap-2 text-sm text-white/70">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Dispatch</p>
+          <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-white">Customer live map</h3>
+        </div>
+        <label className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/60 px-2.5 py-1.5 text-xs text-white/75">
           <input type="checkbox" checked={useAudit} onChange={e=>setUseAudit(e.target.checked)} aria-label="Show audit history" />
-          Show audit history
+          Full log
         </label>
       </div>
 
-      {loading && <p className="mt-3 text-sm text-white/70">Loading…</p>}
+      {loading && <p className="mt-3 text-sm text-white/70">Loading live location…</p>}
       {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
-      {!loading && rows.length === 0 && <p className="mt-3 text-sm text-white/60">No recent updates.</p>}
+      {!loading && rows.length === 0 && <p className="mt-3 text-sm text-white/60">Waiting for rider location.</p>}
 
-      {rows.length > 0 && (
+      {latestRow && (
         <div className="mt-4 space-y-3">
           {latestMapUrl ? (
-            <div style={{ height: 220, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 220 }}>
               <iframe
-                title={`Delivery rider map for ${orderNumber}`}
+                title={`Delivery rider location for ${orderNumber}`}
                 src={latestMapUrl}
                 loading="lazy"
                 style={{ width: '100%', height: '100%', border: 0 }}
@@ -67,20 +72,38 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
               />
             </div>
           ) : (
-            <div style={{ height: 220, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)' }} id={`delivery-history-map-${orderNumber}`} />
+            <div className="flex h-[220px] items-center justify-center rounded-xl border border-dashed border-white/10 bg-slate-900/40 text-sm text-white/60">
+              Waiting for location data
+            </div>
           )}
 
-          <ul className="max-h-40 space-y-2 overflow-auto text-sm">
-            {rows.map((r: any, idx: number) => (
-              <li key={idx} className="flex items-start justify-between gap-3 border-b border-white/5 pb-2">
-                <div>
-                  <div className="font-mono text-[11px] text-orange-200/80">{new Date(r.updated_at).toLocaleString()}</div>
-                  <div className="mt-1 text-white/80">Lat: {Number(r.latitude).toFixed(6)}, Lng: {Number(r.longitude).toFixed(6)}</div>
-                  {r.accuracy != null && <div className="text-white/60">Accuracy: {r.accuracy} m</div>}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/5 p-3 text-sm text-white/80">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-semibold text-emerald-100">Rider status</span>
+              <span className="rounded-full border border-emerald-400/25 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-100">
+                Live
+              </span>
+            </div>
+            <div className="mt-2 text-white/70">{new Date(latestRow.updated_at).toLocaleString()}</div>
+            <div className="mt-2 text-white/80">
+              {Number.isFinite(Number(latestRow.latitude)) && Number.isFinite(Number(latestRow.longitude))
+                ? `Lat ${Number(latestRow.latitude).toFixed(6)} · Lng ${Number(latestRow.longitude).toFixed(6)}`
+                : 'Location not available'}
+            </div>
+            {latestRow.accuracy != null && <div className="text-white/60">Accuracy: {latestRow.accuracy} m</div>}
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-slate-900/45 p-3">
+            <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/55">Recent updates</div>
+            <ul className="space-y-2 text-sm">
+              {recentRows.map((r: any, idx: number) => (
+                <li key={idx} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                  <span className="font-mono text-[11px] text-orange-200/80">{new Date(r.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="text-white/70">{r.accuracy != null ? `${r.accuracy} m accuracy` : 'Location shared'}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </section>

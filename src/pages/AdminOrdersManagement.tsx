@@ -8,7 +8,27 @@ import DeliveryLocationControls from '../components/DeliveryLocationControls'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 const nextStatus = (order: any) => ({ placed: 'confirmed', ORDER_PLACED: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: order.meta.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string,string>)[order.status]
-const label = (status: string) => status.split('_').join(' ')
+const label = (status: string) => ({
+  placed: 'Order received',
+  ORDER_PLACED: 'Order received',
+  confirmed: 'Confirmed',
+  preparing: 'Cooking',
+  ready: 'Ready',
+  out_for_delivery: 'Driver on the way',
+  delivered: 'Delivered',
+  picked_up: 'Picked up',
+  awaiting_payment: 'Awaiting payment',
+  cancelled: 'Cancelled',
+} as Record<string, string>)[String(status || '')] || status.split('_').join(' ')
+const actionLabel = (status: string, orderType: string) => ({
+  placed: 'Confirm order',
+  confirmed: 'Start cooking',
+  preparing: 'Mark ready',
+  ready: orderType === 'pickup' ? 'Mark picked up' : 'Send to rider',
+  out_for_delivery: 'Mark delivered',
+  delivered: 'Completed',
+  picked_up: 'Completed',
+} as Record<string, string>)[String(status || '')] || label(status)
 const statusTone = (status: string) => {
   const normalized = String(status || '').toLowerCase()
   if (['out_for_delivery', 'ready', 'confirmed', 'preparing'].includes(normalized)) return 'border-orange-400/35 bg-orange-500/10 text-orange-100'
@@ -64,10 +84,10 @@ export default function AdminOrdersManagement() {
     && (row.order_number + ' ' + row.payload.customer?.name + ' ' + row.payload.customer?.phone).toLowerCase().includes(query.toLowerCase())
   ))
   const summary = [
-    { label: 'Active', value: orders.filter(row => !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status)).length },
+    { label: 'Active orders', value: orders.filter(row => !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status)).length },
     { label: 'Awaiting payment', value: orders.filter(row => row.payload.status === 'awaiting_payment').length },
     { label: 'Completed', value: orders.filter(row => ['delivered', 'picked_up'].includes(row.payload.status)).length },
-    { label: 'All orders', value: orders.length },
+    { label: 'Total orders', value: orders.length },
   ]
 
   return (
@@ -75,8 +95,9 @@ export default function AdminOrdersManagement() {
       <header className="card-premium overflow-hidden p-5 sm:p-6">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <p className="eyebrow">Operations</p>
-            <h1 className="section-title mt-2">Orders</h1>
+            <p className="eyebrow">Restaurant operations</p>
+            <h1 className="section-title mt-2">Dispatch board</h1>
+            <p className="mt-2 text-sm text-white/65">Track live kitchen progress, rider handoff, and customer-ready orders in one place.</p>
           </div>
           <button className="btn-secondary" onClick={() => void refresh()}>Refresh board</button>
         </div>
@@ -159,9 +180,9 @@ export default function AdminOrdersManagement() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {next && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>Mark {label(next)}</button>}
+              {next && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
               {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
-              <button className="btn-secondary" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>Audit</button>
+              <button className="btn-secondary" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
 
             {order.status === 'out_for_delivery' && order.meta.orderType === 'delivery' && (
