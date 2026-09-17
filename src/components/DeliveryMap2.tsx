@@ -11,7 +11,7 @@ export interface DeliveryMapProps {
 }
 
 const customerPin = L.divIcon({ className: 'delivery-map-pin', html: '<span class="delivery-map-pin__label delivery-map-pin__label--customer" aria-label="Customer delivery location">C</span>', iconSize: [36, 36], iconAnchor: [18, 18] })
-const riderPin = L.icon({ iconUrl: '/images/delivery-boy-marker.svg', iconSize: [82, 82], iconAnchor: [41, 72], popupAnchor: [0, -68] })
+const riderPin = L.icon({ iconUrl: '/images/delivery-boy-marker.svg', iconSize: [52, 52], iconAnchor: [26, 46], popupAnchor: [0, -44] })
 
 export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '400px', width = '100%' }: DeliveryMapProps): JSX.Element => {
   const containerRef = useRef<HTMLDivElement | null>(null)
