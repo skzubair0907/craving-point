@@ -14,33 +14,44 @@ export default function AdminOperations({kind}:{kind:Kind}) {
  const [auditRange,setAuditRange]=useState<'all'|'today'|'7d'|'30d'>('all')
  const formatActionLabel=(action:string)=>{
   const labels: Record<string,string> = {
-   'reports.export': 'Report exported',
-   'storefront.update': 'Storefront updated',
-   'storefront.insert': 'Storefront created',
-   'inventory.adjust': 'Inventory adjusted',
-   'admin_staff.insert': 'Staff member added',
-   'admin_staff.update': 'Staff access updated',
+   'reports.export': 'Sales report exported',
+   'storefront.update': 'Storefront content updated',
+   'storefront.insert': 'Storefront content added',
+   'inventory.adjust': 'Stock adjusted',
+   'admin_staff.insert': 'Staff access granted',
+   'admin_staff.update': 'Staff permissions updated',
    'admin_staff.delete': 'Staff access removed',
-   'delivery_staff.insert': 'Delivery staff added',
-   'delivery_staff.update': 'Delivery staff updated',
-   'customer_support.insert': 'Support message created',
-   'customer_support.update': 'Support ticket updated',
-   'admin_notifications.insert': 'Notification created',
+   'delivery_staff.insert': 'Delivery rider added',
+   'delivery_staff.update': 'Delivery rider updated',
+   'customer_support.insert': 'Support request created',
+   'customer_support.update': 'Support request updated',
+   'admin_notifications.insert': 'Customer alert created',
   }
-  return labels[action] || action.split('.').map(part => part.replace(/_/g,' ').replace(/\b\w/g, m => m.toUpperCase())).join(' ')
+  if (labels[action]) return labels[action]
+  if (!action) return 'System activity'
+  return action
+   .split('.')
+   .flatMap(part => part.split('_'))
+   .filter(Boolean)
+   .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+   .join(' ')
  }
  const summarizeAudit=(details:any)=>{
-  if (!details || typeof details !== 'object') return 'No extra details.'
+  if (!details || typeof details !== 'object') return 'No extra details available.'
+  if (details.summary) return details.summary
   if (details.reason) return details.reason
-  if (details.operation) return `Operation: ${details.operation}`
+  if (details.note) return details.note
+  if (details.operation) return `Action: ${details.operation}`
   if (details.change !== undefined || details.quantity !== undefined) {
    const parts = []
-   if (details.change !== undefined) parts.push(`Change: ${details.change}`)
-   if (details.quantity !== undefined) parts.push(`Quantity: ${details.quantity}`)
+   if (details.change !== undefined) parts.push(`Adjusted by ${details.change}`)
+   if (details.quantity !== undefined) parts.push(`Current quantity ${details.quantity}`)
    return parts.join(' • ')
   }
   if (details.to) return `Updated to ${details.to}`
-  return 'Details available in the full record.'
+  if (details.name) return `Updated ${details.name}`
+  if (details.status) return `Status changed to ${details.status}`
+  return 'Review in the activity record for full context.'
  }
  const badgeColor = (action: string) => {
   if (action.includes('inventory')) return 'bg-amber-500/15 text-amber-200 border border-amber-400/30'
@@ -92,11 +103,11 @@ export default function AdminOperations({kind}:{kind:Kind}) {
   {label:'Records', value: String(rows.length)},
   {label:'Page view', value: kind === 'notifications' ? 'Alerts' : kind === 'inventory' ? 'Stock balance' : 'Recent activity'},
 ].map(item => <div key={item.label} className="rounded-2xl border border-white/10 bg-slate-950/40 p-3"><p className="text-[10px] uppercase tracking-[0.14em] text-white/60">{item.label}</p><p className="mt-2 text-xl font-bold text-white">{item.value}</p></div>)}</div></header>
- {kind==='audit'&&<div className="card-premium p-4 space-y-5"><div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div className="flex flex-col gap-3 md:flex-row md:items-center"><input className="admin-input md:max-w-md" value={auditSearch} onChange={e=>setAuditSearch(e.target.value)} placeholder="Search audit log..." aria-label="Search audit log" /><div className="flex flex-wrap gap-2 text-sm">{(['all','inventory','storefront','reports','staff','support'] as const).map(filter => <button type="button" key={filter} className={auditFilter===filter ? 'btn-primary px-3 py-2 text-xs' : 'btn-secondary px-3 py-2 text-xs'} onClick={()=>setAuditFilter(filter)}>{filter === 'all' ? 'All' : filter}</button>)}</div></div><div className="flex flex-wrap gap-2 text-sm">{(['all','today','7d','30d'] as const).map(range => <button type="button" key={range} className={auditRange===range ? 'btn-primary px-3 py-2 text-xs' : 'btn-secondary px-3 py-2 text-xs'} onClick={()=>setAuditRange(range)}>{range === 'all' ? 'All time' : range === 'today' ? 'Today' : range === '7d' ? 'Last 7 days' : 'Last 30 days'}</button>)}</div></div>{auditSummary && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[
-  {label:'Total events', value:auditSummary.total},
-  {label:'Visible in view', value:auditSummary.visible},
+ {kind==='audit'&&<div className="card-premium p-4 space-y-5"><div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"><div className="flex flex-col gap-3 md:flex-row md:items-center"><input className="admin-input md:max-w-md" value={auditSearch} onChange={e=>setAuditSearch(e.target.value)} placeholder="Search activity log..." aria-label="Search activity log" /><div className="flex flex-wrap gap-2 text-sm">{(['all','inventory','storefront','reports','staff','support'] as const).map(filter => <button type="button" key={filter} className={auditFilter===filter ? 'btn-primary px-3 py-2 text-xs' : 'btn-secondary px-3 py-2 text-xs'} onClick={()=>setAuditFilter(filter)}>{filter === 'all' ? 'All' : filter === 'storefront' ? 'Storefront' : filter === 'reports' ? 'Reports' : filter === 'staff' ? 'Staff' : filter === 'support' ? 'Support' : 'Inventory'}</button>)}</div></div><div className="flex flex-wrap gap-2 text-sm">{(['all','today','7d','30d'] as const).map(range => <button type="button" key={range} className={auditRange===range ? 'btn-primary px-3 py-2 text-xs' : 'btn-secondary px-3 py-2 text-xs'} onClick={()=>setAuditRange(range)}>{range === 'all' ? 'All time' : range === 'today' ? 'Today' : range === '7d' ? 'Last 7 days' : 'Last 30 days'}</button>)}</div></div>{auditSummary && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[
+  {label:'Total actions', value:auditSummary.total},
+  {label:'Visible', value:auditSummary.visible},
   {label:'Today', value:auditSummary.today},
-  {label:'Inventory changes', value:auditSummary.inventory},
+  {label:'Stock updates', value:auditSummary.inventory},
 ].map(item => <div key={item.label} className="rounded-2xl border border-white/10 bg-slate-900/40 p-3"><p className="text-[10px] uppercase tracking-[0.12em] text-slate-400">{item.label}</p><p className="mt-2 text-2xl font-bold text-white">{item.value}</p></div>)} </div>}<div className="flex flex-wrap gap-2 text-xs text-slate-300">{[
   {label:'Storefront', value:auditSummary?.storefront ?? 0},
   {label:'Reports', value:auditSummary?.reports ?? 0},
@@ -111,7 +122,7 @@ export default function AdminOperations({kind}:{kind:Kind}) {
  {kind==='staff'&&<>{field('user_id','Authentication user ID')}<label>Role<select className="admin-input" value={draft.role} onChange={e=>setDraft({...draft,role:e.target.value,permissions:Object.fromEntries(roleDefaults[e.target.value].map(s=>[s,['view','create','edit']]))})}>{Object.keys(roleDefaults).map(s=><option key={s}>{s}</option>)}</select></label><label><input type="checkbox" checked={draft.active} onChange={e=>setDraft({...draft,active:e.target.checked})}/> Active staff member</label><div className="overflow-x-auto"><table><thead><tr><th>Section</th>{['view','create','edit','delete','export','manage'].map(a=><th className="p-2" key={a}>{a}</th>)}</tr></thead><tbody>{permissionSections.map(s=><tr key={s}><th>{s}</th>{['view','create','edit','delete','export','manage'].map(a=><td className="p-2" key={a}><input aria-label={s+' '+a} type="checkbox" checked={(draft.permissions[s]||[]).includes(a)} onChange={e=>setDraft({...draft,permissions:{...draft.permissions,[s]:e.target.checked?[...(draft.permissions[s]||[]),a]:(draft.permissions[s]||[]).filter((x:string)=>x!==a)}})}/></td>)}</tr>)}</tbody></table></div></>}
  <div className="flex gap-3"><button className="btn-primary" disabled={busy}>Save</button><button type="button" className="btn-secondary" onClick={()=>setDraft(null)}>Cancel</button></div></form>}
  <div className="grid gap-3">{!busy&&!auditRows.length&&<p>No records found.</p>}{(kind === 'audit' ? auditRows : rows).map((row,index)=><article className="card-premium p-5 space-y-3" key={row.id||row.product_id||row.user_id||index}>
- {kind==='inventory'?<><h2 className="font-bold">{menuItems.find(p=>p.id===row.product_id)?.name||row.product_id}</h2><p>{row.quantity} available · Warning at {row.warning_level} {row.quantity===0?'· OUT OF STOCK':row.quantity<=row.warning_level?'· LOW STOCK':''}</p><button className="btn-secondary" onClick={()=>setDraft({...row,change:0,reason:''})}>Adjust</button> <button onClick={()=>void showHistory(row.product_id)}>Stock history</button></>:kind==='notifications'?<><h2>{row.message}</h2><p>{new Date(row.created_at).toLocaleString()}</p><button disabled={read.includes(row.id)} onClick={async()=>{const r=await supabase.from('notification_reads').insert({notification_id:row.id});if(r.error)setMessage(r.error.message);else void refresh()}}>{read.includes(row.id)?'Read':'Mark as read'}</button></>:kind==='audit'?<><div className="space-y-2"><div className="flex items-center gap-2 flex-wrap"><span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] ${badgeColor(row.action)}`}>{formatActionLabel(row.action)}</span><span className="text-xs opacity-60">{new Date(row.created_at).toLocaleString()}</span></div><p className="text-sm opacity-80">{row.actor ? 'Admin user' : 'System'}</p><p className="text-sm">{summarizeAudit(row.details)}</p>{row.record_id && <p className="text-xs opacity-70 break-all">Record: {row.record_id}</p>}</div></>:<><h2 className="font-bold">{row.name||row.subject||row.user_id}</h2><p>{row.phone||row.customer_phone||row.role} · {row.status||(row.active?'Active':'Disabled')}</p>{row.notes&&<p>{row.notes}</p>}<button className="btn-secondary" onClick={()=>setDraft(row)}>Edit</button></>}
+ {kind==='inventory'?<><h2 className="font-bold">{menuItems.find(p=>p.id===row.product_id)?.name||row.product_id}</h2><p>{row.quantity} available · Warning at {row.warning_level} {row.quantity===0?'· OUT OF STOCK':row.quantity<=row.warning_level?'· LOW STOCK':''}</p><button className="btn-secondary" onClick={()=>setDraft({...row,change:0,reason:''})}>Adjust</button> <button onClick={()=>void showHistory(row.product_id)}>Stock history</button></>:kind==='notifications'?<><h2>{row.message}</h2><p>{new Date(row.created_at).toLocaleString()}</p><button disabled={read.includes(row.id)} onClick={async()=>{const r=await supabase.from('notification_reads').insert({notification_id:row.id});if(r.error)setMessage(r.error.message);else void refresh()}}>{read.includes(row.id)?'Read':'Mark as read'}</button></>:kind==='audit'?<><div className="space-y-2"><div className="flex items-center gap-2 flex-wrap"><span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.12em] ${badgeColor(row.action)}`}>{formatActionLabel(row.action)}</span><span className="text-xs opacity-60">{new Date(row.created_at).toLocaleString()}</span></div><p className="text-sm opacity-80">{row.actor ? `Updated by ${row.actor}` : 'System activity'}</p><p className="text-sm text-white/80">{summarizeAudit(row.details)}</p>{row.record_id && <p className="text-xs opacity-70 break-all">Reference: {row.record_id}</p>}</div></>:<><h2 className="font-bold">{row.name||row.subject||row.user_id}</h2><p>{row.phone||row.customer_phone||row.role} · {row.status||(row.active?'Active':'Disabled')}</p>{row.notes&&<p>{row.notes}</p>}<button className="btn-secondary" onClick={()=>setDraft(row)}>Edit</button></>}
  </article>)}</div><div className="flex gap-4 items-center"><button disabled={page===0||busy} onClick={()=>setPage(p=>p-1)}>Previous</button><span>Page {page+1} · {count} records</span><button disabled={(page+1)*25>=count||busy} onClick={()=>setPage(p=>p+1)}>Next</button></div>
  {!!history.length&&<section className="card-premium p-5"><h2>Latest stock adjustments</h2><button onClick={()=>setHistory([])}>Close history</button>{history.map(h=><p key={h.id}>{new Date(h.created_at).toLocaleString()} · {h.change>0?'+':''}{h.change} → {h.quantity_after} · {h.reason} · {h.actor||'System'}</p>)}</section>}
  </section>

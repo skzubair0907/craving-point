@@ -41,19 +41,23 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
   }, [orderNumber, useAudit])
 
   return (
-    <section className="rounded-xl border border-white/10 bg-white/5 p-4">
-      <h3 className="font-bold mb-2">Recent rider updates</h3>
-      <div className="flex items-center gap-3 mb-2">
-        <label className="text-sm">Show audit history</label>
-        <input type="checkbox" checked={useAudit} onChange={e=>setUseAudit(e.target.checked)} aria-label="Show audit history" />
+    <section className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+      <div className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="text-lg font-bold text-white">Recent rider updates</h3>
+        <label className="inline-flex items-center gap-2 text-sm text-white/70">
+          <input type="checkbox" checked={useAudit} onChange={e=>setUseAudit(e.target.checked)} aria-label="Show audit history" />
+          Show audit history
+        </label>
       </div>
-      {loading && <p className="text-sm">Loading…</p>}
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      {!loading && rows.length === 0 && <p className="text-sm text-accent/60">No recent updates.</p>}
+
+      {loading && <p className="mt-3 text-sm text-white/70">Loading…</p>}
+      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {!loading && rows.length === 0 && <p className="mt-3 text-sm text-white/60">No recent updates.</p>}
+
       {rows.length > 0 && (
-        <div className="space-y-3">
+        <div className="mt-4 space-y-3">
           {latestMapUrl ? (
-            <div style={{ height: 200, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ height: 220, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)' }}>
               <iframe
                 title={`Delivery rider map for ${orderNumber}`}
                 src={latestMapUrl}
@@ -63,15 +67,16 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
               />
             </div>
           ) : (
-            <div style={{ height: 200, borderRadius: 8, overflow: 'hidden' }} id={`delivery-history-map-${orderNumber}`} />
+            <div style={{ height: 220, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.12)' }} id={`delivery-history-map-${orderNumber}`} />
           )}
-          <ul className="text-sm space-y-2 max-h-40 overflow-auto">
+
+          <ul className="max-h-40 space-y-2 overflow-auto text-sm">
             {rows.map((r: any, idx: number) => (
-              <li key={idx} className="flex justify-between items-start gap-3 border-b border-white/5 pb-2">
+              <li key={idx} className="flex items-start justify-between gap-3 border-b border-white/5 pb-2">
                 <div>
-                  <div className="font-mono text-xs text-accent/60">{new Date(r.updated_at).toLocaleString()}</div>
-                  <div>Lat: {Number(r.latitude).toFixed(6)}, Lng: {Number(r.longitude).toFixed(6)}</div>
-                  {r.accuracy != null && <div className="text-accent/60">Accuracy: {r.accuracy} m</div>}
+                  <div className="font-mono text-[11px] text-orange-200/80">{new Date(r.updated_at).toLocaleString()}</div>
+                  <div className="mt-1 text-white/80">Lat: {Number(r.latitude).toFixed(6)}, Lng: {Number(r.longitude).toFixed(6)}</div>
+                  {r.accuracy != null && <div className="text-white/60">Accuracy: {r.accuracy} m</div>}
                 </div>
               </li>
             ))}

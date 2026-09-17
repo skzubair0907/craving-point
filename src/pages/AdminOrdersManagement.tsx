@@ -9,6 +9,14 @@ import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 const nextStatus = (order: any) => ({ placed: 'confirmed', ORDER_PLACED: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: order.meta.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string,string>)[order.status]
 const label = (status: string) => status.split('_').join(' ')
+const statusTone = (status: string) => {
+  const normalized = String(status || '').toLowerCase()
+  if (['out_for_delivery', 'ready', 'confirmed', 'preparing'].includes(normalized)) return 'border-orange-400/35 bg-orange-500/10 text-orange-100'
+  if (['delivered', 'picked_up'].includes(normalized)) return 'border-emerald-400/35 bg-emerald-500/10 text-emerald-100'
+  if (normalized === 'cancelled') return 'border-red-400/35 bg-red-500/10 text-red-100'
+  if (normalized === 'awaiting_payment') return 'border-amber-400/35 bg-amber-500/10 text-amber-100'
+  return 'border-slate-400/25 bg-slate-500/10 text-slate-100'
+}
 export default function AdminOrdersManagement() {
   const { orders, error, loading, refresh } = useAdminOrders()
   const [filter, setFilter] = useState('active')
@@ -104,27 +112,51 @@ export default function AdminOrdersManagement() {
         const next = nextStatus(order)
         return (
           <article className="card-premium p-5 space-y-4" key={row.id}>
-            <div className="flex flex-wrap justify-between gap-3">
-              <div>
-                <h2 className="font-bold text-xl">{order.customer?.name || 'Guest'}</h2>
-                <p className="text-sm break-all text-accent/60">{row.order_number}</p>
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-xl font-black tracking-[-0.03em] text-white">{order.customer?.name || 'Guest'}</h2>
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${statusTone(order.status)}`}>
+                    {label(order.status)}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm break-all text-white/60">{row.order_number}</p>
               </div>
-              <div>
-                <p className="font-bold text-primary capitalize">{label(order.status)}</p>
-                <p>₹{Number(order.total).toFixed(2)} · {order.meta.orderType}</p>
-                <p className="text-sm">{order.meta.payment === 'online' ? 'Online' : 'Cash'} · {order.payment_status || 'pending'}</p>
+
+              <div className="xl:text-right">
+                <p className="text-2xl font-black text-white">₹{Number(order.total).toFixed(2)}</p>
+                <p className="mt-1 text-sm text-white/60">{order.meta.orderType === 'delivery' ? 'Delivery' : 'Pickup'} · {order.meta.payment === 'online' ? 'Online payment' : 'Cash payment'}</p>
+                <p className="text-xs uppercase tracking-[0.12em] text-white/45">{order.payment_status || 'pending'}</p>
               </div>
             </div>
 
-            <p><a href={'tel:' + order.customer?.phone}>{order.customer?.phone}</a>{order.meta.orderType === 'delivery' ? ' · ' + order.customer?.address : ''}</p>
-            {order.customer?.landmark && <p>Landmark: {order.customer.landmark}</p>}
-            {order.customer?.instructions && <p className="text-primary">Instructions: {order.customer.instructions}</p>}
+            <div className="grid gap-3 rounded-2xl border border-white/10 bg-slate-950/25 p-4 md:grid-cols-2">
+              <div className="space-y-2 text-sm text-white/80">
+                <p><span className="font-semibold text-white/60">Phone:</span> <a href={'tel:' + order.customer?.phone} className="text-orange-200 hover:text-orange-100">{order.customer?.phone}</a></p>
+                {order.meta.orderType === 'delivery' && <p><span className="font-semibold text-white/60">Address:</span> {order.customer?.address || 'Not provided'}</p>}
+                {order.customer?.landmark && <p><span className="font-semibold text-white/60">Landmark:</span> {order.customer.landmark}</p>}
+              </div>
+              <div className="space-y-2 text-sm text-white/80">
+                {order.customer?.instructions && <p className="rounded-xl border border-orange-400/20 bg-orange-500/5 p-2 text-orange-100"><span className="font-semibold">Instructions:</span> {order.customer.instructions}</p>}
+                <p><span className="font-semibold text-white/60">Items:</span> {order.items.length}</p>
+                <p><span className="font-semibold text-white/60">Payment:</span> {order.meta.payment === 'online' ? 'Online' : 'Cash'}</p>
+              </div>
+            </div>
 
-            <ul className="space-y-2">
-              {order.items.map((item: any, index: number) => (
-                <li key={index}>{item.quantity} × {item.name} · ₹{(item.price * item.quantity).toFixed(2)}{item.selectedAddons?.length ? ' + ' + item.selectedAddons.map((a: any) => a.name).join(', ') : ''}</li>
-              ))}
-            </ul>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/20 p-4">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/50">Order items</p>
+              <ul className="space-y-2 text-sm text-white/80">
+                {order.items.map((item: any, index: number) => (
+                  <li key={index} className="flex items-start justify-between gap-3 border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                    <span className="flex-1">
+                      <span className="font-medium text-white">{item.quantity} × {item.name}</span>
+                      {item.selectedAddons?.length ? <span className="block text-white/55">{item.selectedAddons.map((a: any) => a.name).join(', ')}</span> : null}
+                    </span>
+                    <span className="font-semibold text-white">₹{(item.price * item.quantity).toFixed(2)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="flex flex-wrap gap-3">
               {next && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>Mark {label(next)}</button>}
@@ -139,7 +171,7 @@ export default function AdminOrdersManagement() {
               </div>
             )}
 
-            {order.status === 'cancelled' && order.payment_status === 'paid' && <p className="text-primary">Captured payment: review and issue any refund in the payment provider dashboard.</p>}
+            {order.status === 'cancelled' && order.payment_status === 'paid' && <p className="rounded-xl border border-amber-400/20 bg-amber-500/5 p-3 text-sm text-amber-100">Captured payment: review and issue any refund in the payment provider dashboard.</p>}
 
             <AdminOrderDetails row={row} />
           </article>

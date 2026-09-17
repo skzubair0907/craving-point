@@ -29,30 +29,49 @@ export default function DeliveryLocationControls({ orderId, orderNumber, onMessa
   }
   const startSharing=()=>{if(!navigator.geolocation){onMessage('Location is unavailable in this browser.');return}if(watchId.current!==null)return;setSharing(true);setBusy(true);onMessage('Starting live rider location sharing…');watchId.current=navigator.geolocation.watchPosition(async position=>{try{await publish(position.coords.latitude,position.coords.longitude,position.coords.accuracy);setLatitude(String(position.coords.latitude));setLongitude(String(position.coords.longitude));setAccuracy(String(Math.round(position.coords.accuracy)));onMessage('Live rider location is sharing. The customer map updates within 3 seconds.')}catch(error){onMessage(error instanceof Error?error.message:'Unable to share rider location.')}finally{setBusy(false)}},()=>{setBusy(false);setSharing(false);watchId.current=null;onMessage('Location permission was denied. Use the delivery phone and allow location permission.')},{enableHighAccuracy:true,timeout:15000,maximumAge:5000})}
   return (
-    <section className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3" data-order-id={orderId}>
-      <div>
-        <h3 className="font-bold">Live rider location</h3>
-        <p className="text-sm text-accent/70">Open this on the delivery rider’s phone. Start sharing to update the customer map automatically.</p>
+    <section className="rounded-2xl border border-orange-400/30 bg-gradient-to-br from-[#261d1a] via-[#171312] to-[#0f0d0b] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.28)]" data-order-id={orderId}>
+      <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p>
+          <h3 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">Live order tracking</h3>
+        </div>
+        <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${sharing ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200' : 'border-orange-400/30 bg-orange-500/10 text-orange-200'}`}>
+          {sharing ? 'Live sharing' : 'Ready to share'}
+        </span>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <button className="btn-primary" type="button" disabled={busy||sharing} onClick={startSharing}>{busy ? 'Starting…' : 'Start live sharing'}</button>
-        {sharing && <button className="btn-secondary" type="button" onClick={stopSharing}>Stop live sharing</button>}
-        <button className="btn-secondary" type="button" onClick={()=>setShowHistory(!showHistory)}>{showHistory ? 'Hide recent updates' : 'View recent updates'}</button>
+      <div className="mt-4 space-y-4">
+        <div className="rounded-2xl border border-white/10 bg-slate-950/30 p-4">
+          <p className="text-sm text-white/70">Open this on the rider’s phone to keep the customer updated with accurate delivery progress.</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button className="btn-primary" type="button" disabled={busy || sharing} onClick={startSharing}>{busy ? 'Starting…' : 'Start live sharing'}</button>
+            {sharing && <button className="btn-secondary" type="button" onClick={stopSharing}>Stop live sharing</button>}
+            <button className="btn-secondary" type="button" onClick={()=>setShowHistory(!showHistory)}>{showHistory ? 'Hide recent updates' : 'View recent updates'}</button>
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <label className="grid gap-2 text-sm text-white/70">
+            Latitude
+            <input aria-label="Rider latitude" className="admin-input" type="number" step="any" placeholder="12.345678" value={latitude} onChange={event=>setLatitude(event.target.value)} />
+          </label>
+          <label className="grid gap-2 text-sm text-white/70">
+            Longitude
+            <input aria-label="Rider longitude" className="admin-input" type="number" step="any" placeholder="76.456789" value={longitude} onChange={event=>setLongitude(event.target.value)} />
+          </label>
+          <label className="grid gap-2 text-sm text-white/70">
+            Accuracy
+            <input aria-label="Location accuracy" className="admin-input" type="number" min="0" step="1" placeholder="50 m" value={accuracy} onChange={event=>setAccuracy(event.target.value)} />
+          </label>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <button className="btn-secondary" type="button" disabled={busy} onClick={currentLocation}>Use this device location once</button>
+          <button className="btn-secondary" type="button" disabled={busy} onClick={()=>void save()}>{busy ? 'Sending…' : 'Send one location update'}</button>
+        </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <input aria-label="Rider latitude" className="admin-input" type="number" step="any" placeholder="Latitude" value={latitude} onChange={event=>setLatitude(event.target.value)} />
-        <input aria-label="Rider longitude" className="admin-input" type="number" step="any" placeholder="Longitude" value={longitude} onChange={event=>setLongitude(event.target.value)} />
-        <input aria-label="Location accuracy" className="admin-input" type="number" min="0" step="1" placeholder="Accuracy (metres)" value={accuracy} onChange={event=>setAccuracy(event.target.value)} />
-      </div>
-
-      <div className="flex flex-wrap gap-3">
-        <button className="btn-secondary" type="button" disabled={busy} onClick={currentLocation}>Use this device location once</button>
-        <button className="btn-secondary" type="button" disabled={busy} onClick={()=>void save()}>{busy ? 'Sending…' : 'Send one location update'}</button>
-      </div>
-
-      {showHistory && <DeliveryHistoryPanel orderNumber={orderNumber} />}
+      {showHistory && <div className="mt-4"><DeliveryHistoryPanel orderNumber={orderNumber} /></div>}
     </section>
   )
 }
