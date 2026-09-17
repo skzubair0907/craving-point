@@ -32,7 +32,7 @@ const AdminSidebar = () => {
     <div ref={drawer} className={'admin-workspace-nav '+(open?'is-open':'')} role={open?'dialog':undefined} aria-modal={open?true:undefined} aria-label="Administration navigation">
       <div className="admin-workspace-brand">
         <div className="admin-workspace-brand-mark">
-          <img src="/images/logo-new.png" alt="Craving Point" width="92" height="30" />
+          <img src="/images/logo-new.png" alt="Craving Point" width="120" height="40" />
           <div>
             <small>CRAVING POINT</small>
             <strong>Operations</strong>
