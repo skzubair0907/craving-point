@@ -7,7 +7,7 @@ import { useCartStore } from '../store/useCartStore'
 import { useUIStore } from '../store/useUIStore'
 import CartDrawer from './CartDrawer'
 import ThemeToggle from './ThemeToggle'
-const links = [{name:'Home',to:'/'},{name:'Menu',to:'/menu'},{name:'About',to:'/#about'},{name:'The grill',to:'/grill'},{name:'Reels',to:'/#reels'},{name:'Gifting',to:'/#gifting'},{name:'Visit',to:'/#location'}]
+const links = [{name:'Home',to:'/'},{name:'Menu',to:'/menu'},{name:'About',to:'/#about'},{name:'The grill',to:'/#grill'},{name:'Reels',to:'/#reels'},{name:'Gifting',to:'/#gifting'},{name:'Visit',to:'/#location'}]
 export default function Navbar() {
   const [open,setOpen]=useState(false)
   const panel=useRef<HTMLDivElement>(null)
