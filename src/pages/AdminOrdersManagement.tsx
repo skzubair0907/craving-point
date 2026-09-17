@@ -55,10 +55,32 @@ export default function AdminOrdersManagement() {
     (filter === 'all' || filter === 'pending' ? filter === 'all' || row.payload.status === 'awaiting_payment' : !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status))
     && (row.order_number + ' ' + row.payload.customer?.name + ' ' + row.payload.customer?.phone).toLowerCase().includes(query.toLowerCase())
   ))
+  const summary = [
+    { label: 'Active', value: orders.filter(row => !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status)).length },
+    { label: 'Awaiting payment', value: orders.filter(row => row.payload.status === 'awaiting_payment').length },
+    { label: 'Completed', value: orders.filter(row => ['delivered', 'picked_up'].includes(row.payload.status)).length },
+    { label: 'All orders', value: orders.length },
+  ]
 
   return (
     <div className="p-4 sm:p-8 space-y-6">
-      <h1 className="section-title">Orders</h1>
+      <header className="card-premium overflow-hidden p-5 sm:p-6">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="eyebrow">Operations</p>
+            <h1 className="section-title mt-2">Orders</h1>
+          </div>
+          <button className="btn-secondary" onClick={() => void refresh()}>Refresh board</button>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {summary.map(item => (
+            <div key={item.label} className="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{item.label}</p>
+              <p className="mt-2 text-2xl font-black text-white">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </header>
       <OrderAlerts orders={orders} loading={loading} />
 
       <div className="flex flex-wrap gap-3">
