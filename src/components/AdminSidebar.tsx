@@ -27,12 +27,12 @@ const AdminSidebar = () => {
 
   const current=menuItems.find(item=>item.path===location.pathname)?.label || 'Administration'
   return <>
-    <div className="admin-mobile-topbar"><button className="admin-drawer-toggle" aria-label="Open admin navigation" onClick={()=>setOpen(true)}><Menu size={22}/></button><div><small>CRAVING POINT / ADMIN</small><strong>{current}</strong></div><Link to="/" aria-label="View restaurant website"><img src="/images/logo-generated.svg" width="120" height="40" alt="Craving Point"/></Link></div>
+    <div className="admin-mobile-topbar"><button className="admin-drawer-toggle" aria-label="Open admin navigation" onClick={()=>setOpen(true)}><Menu size={22}/></button><div><small>CRAVING POINT / ADMIN</small><strong>{current}</strong></div><Link to="/" aria-label="View restaurant website"><img src="/images/logo-admin.png" width="120" height="40" alt="Craving Point"/></Link></div>
     {open&&<button className="admin-drawer-shade" aria-label="Dismiss admin navigation" onClick={()=>setOpen(false)}/>}
     <div ref={drawer} className={'admin-workspace-nav '+(open?'is-open':'')} role={open?'dialog':undefined} aria-modal={open?true:undefined} aria-label="Administration navigation">
       <div className="admin-workspace-brand">
         <div className="admin-workspace-brand-mark">
-          <img src="/images/logo-generated.svg" alt="Craving Point" width="92" height="30" />
+          <img src="/images/logo-admin.png" alt="Craving Point" width="92" height="30" />
           <div>
             <small>CRAVING POINT</small>
             <strong>Operations</strong>
