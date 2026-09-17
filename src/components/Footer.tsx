@@ -13,7 +13,7 @@ export default function Footer() {
     <div className="reference-footer-shell">
       <div className="reference-footer-top">
         <div className="reference-footer-intro">
-          <Link to="/" aria-label="Craving Point home"><img src="/images/logo.svg" alt="Craving Point" width="70" height="70" loading="lazy" /></Link>
+          <Link to="/" aria-label="Craving Point home"><img src="/images/logo.png" alt="Craving Point" width="70" height="70" loading="lazy" /></Link>
           <p>Waffles, loaded tubs<br />and charcoal wraps<br />in Cheeta Camp,<br />Trombay. Made when<br />you ask, not before.</p>
         </div>
         <nav aria-label="Footer explore" className="reference-footer-column"><h2>Explore</h2>{links.map(([label,to]) => <Link key={to} to={to}>{label}</Link>)}</nav>
