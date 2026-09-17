@@ -88,11 +88,9 @@ export default function CatalogEditor({ section }: { section: Section }) {
       <div className="grid gap-5 sm:grid-cols-2">
         {section !== 'coupons' ? field('name', 'Name') : field('code', 'Coupon code')}
         {section === 'menuItems' && <>
-          {field('price', 'Base price (₹)', 'number')}{field('slug', 'Product URL name')}{field('portion', 'Portion / serving size')}
+          {field('price', 'Base price (₹)', 'number')}
           <label className="grid gap-2">Category<select className="admin-input" value={draft.category_id} onChange={e => setDraft({ ...draft, category_id: e.target.value })}>{catalog.categories.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
-          {field('image_url', 'Main photo URL or local image path')}
           <label className="grid gap-2">Upload product photos<input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e => setPhoto(Array.from(e.target.files || []))} /></label>
-          {['ingredients', 'allergens'].map(name => <label className="grid gap-2" key={name}>{name === 'ingredients' ? 'Ingredients (separate with commas)' : 'Allergens (separate with commas)'}<input className="admin-input" value={(draft[name] || []).join(', ')} onChange={e => setDraft({ ...draft, [name]: e.target.value.split(',').map(v => v.trimStart()) })} /></label>)}
         </>}
         {section !== 'coupons' && <label className="grid gap-2 sm:col-span-2">Description<textarea className="admin-input" rows={3} value={draft.description || ''} onChange={e => setDraft({ ...draft, description: e.target.value })} /></label>}
         {section === 'categories' && <>{field('display_order', 'Display order', 'number')}<label className="grid gap-2">Menu type<select className="admin-input" value={draft.menu_type || 'sweet'} onChange={e => setDraft({ ...draft, menu_type: e.target.value })}><option value="sweet">Sweet</option><option value="savoury">Savoury</option></select></label>{flag('is_active', 'Visible on the menu')}</>}
