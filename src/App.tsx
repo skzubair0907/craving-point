@@ -34,6 +34,7 @@ import { MapPin, Clock3, ChevronRight } from 'lucide-react'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 import StickyBottomBar from './components/StickyBottomBar'
 import BackToTop from './components/BackToTop'
+import AppInstallPrompt from './components/AppInstallPrompt'
 import { useRestaurantData, useLiveRestaurant } from './store/useRestaurantData'
 import clsx from 'clsx'
 
@@ -165,6 +166,7 @@ const MainLayout = () => (
     <FloatingWhatsApp />
     <BackToTop />
     <StickyBottomBar />
+    <AppInstallPrompt />
   </div>
 )
 

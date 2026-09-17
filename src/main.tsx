@@ -7,6 +7,10 @@ import './styles/fonts.css'
 import './index.css'
 import './styles/editorial.css'
 
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => { void navigator.serviceWorker.register('/service-worker.js') })
+}
+
 // Basic global error handlers to capture runtime errors in the browser console
 window.addEventListener('error', (ev) => {
   // eslint-disable-next-line no-console
