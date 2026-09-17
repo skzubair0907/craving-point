@@ -56,7 +56,7 @@ const CartDrawer: React.FC = () => {
 
             {items.map((it) => (
               <div key={it.id} className="mb-4 flex items-center gap-3">
-                <img src={productMedia({ ...it, id: it.productId || it.id }) || '/images/logo-generated.svg'} alt={productMedia({ ...it, id: it.productId || it.id }) ? it.name : 'Craving Point logo'} className="h-16 w-16 rounded-md object-cover" />
+                <img src={productMedia({ ...it, id: it.productId || it.id }) || '/images/logo-new.png'} alt={productMedia({ ...it, id: it.productId || it.id }) ? it.name : 'Craving Point logo'} className="h-16 w-16 rounded-md object-cover" />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div className="font-bold text-white">{it.name}</div>
