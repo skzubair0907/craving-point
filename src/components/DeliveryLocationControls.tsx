@@ -20,7 +20,12 @@ export default function DeliveryLocationControls({ orderId, orderNumber, custome
   const currentLocation=()=>{
     if(!navigator.geolocation){onMessage('Location is unavailable on this device. Enter the rider location manually.');return}
     setBusy(true)
-    navigator.geolocation.getCurrentPosition(position=>{setLatitude(String(position.coords.latitude));setLongitude(String(position.coords.longitude));setAccuracy(String(Math.round(position.coords.accuracy)));setBusy(false);onMessage('Phone location is ready. Send it to the customer map.')},()=>{setBusy(false);onMessage('Location permission was denied. Enter the rider location manually.')},{enableHighAccuracy:true,timeout:15000,maximumAge:10000})
+    onMessage('Finding and sharing this device location…')
+    navigator.geolocation.getCurrentPosition(async position=>{
+      const lat=position.coords.latitude,lng=position.coords.longitude,meters=position.coords.accuracy
+      setLatitude(String(lat));setLongitude(String(lng));setAccuracy(String(Math.round(meters)))
+      try{await publish(lat,lng,meters);onMessage('Rider location is now live on the customer map.')}catch(error){onMessage(error instanceof Error?error.message:'Location was found, but could not be sent to the customer map.')}finally{setBusy(false)}
+    },()=>{setBusy(false);onMessage('Location permission was denied. Enter the rider location manually.')},{enableHighAccuracy:true,timeout:15000,maximumAge:0})
   }
   const save=async()=>{
     const lat=Number(latitude),lng=Number(longitude),meters=accuracy===''?null:Number(accuracy)
@@ -85,7 +90,7 @@ export default function DeliveryLocationControls({ orderId, orderNumber, custome
             disabled={busy}
             onClick={currentLocation}
           >
-            Use this device location once
+            {busy ? 'Finding location…' : 'Use and share this device location'}
           </button>
           <button
             className="flex w-full items-center justify-center rounded-xl border border-white/10 bg-slate-900/55 px-5 py-3 text-[13px] font-bold uppercase tracking-[0.14em] text-white/90 transition hover:border-white/20 hover:bg-slate-800/70 disabled:cursor-not-allowed disabled:opacity-70"
