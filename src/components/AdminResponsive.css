@@ -188,6 +188,19 @@
  .admin-content table{font-size:13px}.admin-content th,.admin-content td{padding:10px 8px}.admin-content [role=alert],.admin-content [role=status]{overflow-wrap:anywhere}
  .admin-content input[type=checkbox],.admin-content input[type=radio]{min-width:20px;min-height:20px}
 }
+
+/* Keep the desktop workspace usable on compact laptops and tablets. */
+@media(min-width:768px) and (max-width:1100px){
+ .admin-workspace-nav{width:212px;padding:20px 10px}.admin-workspace-brand{padding-inline:8px}.admin-workspace-brand-mark img{width:112px;height:42px}
+ .admin-workspace-badge{display:none}.admin-workspace-nav nav a{padding:11px 9px;gap:9px;font-size:12px}
+ .admin-content>div,.admin-content>section{padding:24px clamp(16px,2.5vw,28px) 36px}
+ .admin-content .card-premium{min-width:0}.admin-content :is(input,select,textarea){min-width:0;max-width:100%}
+ .admin-content table{display:block;max-width:100%;overflow-x:auto}.admin-content .grid{min-width:0}
+}
+@media(max-width:420px){
+ .admin-mobile-topbar{gap:8px;padding-inline:10px}.admin-mobile-logo{min-width:82px}.admin-mobile-topbar img{width:82px;height:30px}
+ .admin-mobile-topbar strong{font-size:14px}.admin-content>div,.admin-content>section{padding-inline:12px}
+}
 /* Workspace navigation and compact mobile dashboard styling */
 .admin-mobile-topbar,.admin-drawer-shade{display:none}
 .admin-workspace-nav{width:248px;flex-shrink:0;position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;overflow-y:auto;background:linear-gradient(180deg, rgba(29, 25, 23, 1), rgba(17, 15, 14, 1));border-right:1px solid rgba(255,255,255,0.08);color:#e8e3dc;padding:28px 16px;box-shadow:8px 0 28px rgba(0,0,0,0.18)}
