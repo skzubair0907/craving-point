@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Outlet, Link, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import CustomerSignInPrompt from './components/CustomerSignInPrompt'
@@ -7,28 +7,28 @@ import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import Home from './pages/Home'
 import LegalPage from './pages/LegalPage'
-const AdminDispatch = lazy(() => import('./pages/AdminDispatch'))
-const Menu = lazy(() => import('./pages/Menu'))
-const Cart = lazy(() => import('./pages/Cart'))
-const Checkout = lazy(() => import('./pages/Checkout'))
-const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'))
-const OrderTracking = lazy(() => import('./pages/OrderTracking'))
-const DeliveryTracking = lazy(() => import('./pages/DeliveryTracking'))
-const Account = lazy(() => import('./pages/Account'))
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
-const AdminLogin = lazy(() => import('./pages/AdminLogin'))
-const AdminOperations = lazy(() => import('./pages/AdminOperations'))
-const AdminReports = lazy(() => import('./pages/AdminReports'))
-const AdminMenuManagement = lazy(() => import('./pages/AdminMenuManagement'))
-const AdminCategoryManagement = lazy(() => import('./pages/AdminCategoryManagement'))
-const AdminOrdersManagement = lazy(() => import('./pages/AdminOrdersManagement'))
-const AdminSettings = lazy(() => import('./pages/AdminSettings'))
-const AdminGuard = lazy(() => import('./components/AdminGuard'))
-const AdminSidebar = lazy(() => import('./components/AdminSidebar'))
-const ProductDetail = lazy(() => import('./pages/ProductDetail'))
-const AdminCustomers = lazy(() => import('./pages/AdminCustomers'))
-const AdminCoupons = lazy(() => import('./pages/AdminCoupons'))
-const AdminReviews = lazy(() => import('./pages/AdminReviews'))
+import AdminDispatch from './pages/AdminDispatch'
+import Menu from './pages/Menu'
+import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import OrderConfirmation from './pages/OrderConfirmation'
+import OrderTracking from './pages/OrderTracking'
+import DeliveryTracking from './pages/DeliveryTracking'
+import Account from './pages/Account'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminLogin from './pages/AdminLogin'
+import AdminOperations from './pages/AdminOperations'
+import AdminReports from './pages/AdminReports'
+import AdminMenuManagement from './pages/AdminMenuManagement'
+import AdminCategoryManagement from './pages/AdminCategoryManagement'
+import AdminOrdersManagement from './pages/AdminOrdersManagement'
+import AdminSettings from './pages/AdminSettings'
+import AdminGuard from './components/AdminGuard'
+import AdminSidebar from './components/AdminSidebar'
+import ProductDetail from './pages/ProductDetail'
+import AdminCustomers from './pages/AdminCustomers'
+import AdminCoupons from './pages/AdminCoupons'
+import AdminReviews from './pages/AdminReviews'
 import { MapPin, Clock3, ChevronRight } from 'lucide-react'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 import StickyBottomBar from './components/StickyBottomBar'
@@ -173,8 +173,7 @@ const App = () => {
     <Router>
       <RouteScroll />
       <Metadata />
-      <Suspense fallback={<p role="status" className="p-12">Loading page...</p>}>
-        <Routes>
+      <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="menu" element={<Menu />} />
@@ -207,8 +206,7 @@ const App = () => {
             <Route path="reviews" element={<AdminReviews />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
-        </Routes>
-      </Suspense>
+      </Routes>
     </Router>
   )
 }
