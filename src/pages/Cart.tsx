@@ -78,7 +78,7 @@ const CartPage = () => {
               exit={{ opacity: 0, x: 20 }}
               className="card-premium p-4 flex items-center gap-4"
             >
-              <img src={productMedia({ ...item, id: item.productId || item.id }) || '/images/logo-new.png'} alt={productMedia({ ...item, id: item.productId || item.id }) ? item.name : 'Craving Point logo'} className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-xl" />
+              <img src={productMedia({ ...item, id: item.productId || item.id }) || '/images/logo-generated.svg'} alt={productMedia({ ...item, id: item.productId || item.id }) ? item.name : 'Craving Point logo'} className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-xl" />
               <div className="flex-grow">
                 <h3 className="font-bold text-accent">{item.name}</h3>
                 <p className="text-sm text-accent/60 mb-2">₹{item.price}</p>
