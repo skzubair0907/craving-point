@@ -4,6 +4,7 @@ import { useRestaurantStore, type Catalog } from '../store/useRestaurantData'
 import { supabase } from '../lib/supabase'
 import CatalogActions from './CatalogActions'
 import { productMedia } from '../lib/productMedia'
+import { normalizeMenuItemDraft } from '../lib/menuItemNormalize.js'
 
 type Section = 'menuItems' | 'categories' | 'coupons'
 const money = (value: unknown) => Number(value || 0).toFixed(2)
@@ -35,6 +36,8 @@ export default function CatalogEditor({ section }: { section: Section }) {
       if (useRestaurantStore.getState().revision !== baseRevision) throw new Error('The catalog changed while you were editing. Close and reopen this item to use the latest version.')
       const next = { ...draft }
       if (section === 'menuItems') {
+        const normalizedDraft = normalizeMenuItemDraft(next)
+        Object.assign(next, normalizedDraft)
         next.image_override = true
         next.slug = next.slug.trim() || next.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
         if (!next.slug || records.some(row => row.id !== original && row.slug === next.slug)) throw new Error('Use a unique product URL name.')
