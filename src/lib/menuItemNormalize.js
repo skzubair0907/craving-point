@@ -22,10 +22,21 @@ export function normalizeMenuItemDraft(item = {}) {
       })).filter((variant) => variant.label || variant.price > 0)
     : []
 
-  draft.price_variants = normalizedVariants
-
+  const firstPositiveVariantPrice = normalizedVariants.find((variant) => variant.price > 0)?.price ?? 0
   const basePrice = toNumber(draft.price)
-  draft.price = basePrice > 0 ? basePrice : normalizedVariants.length ? toNumber(normalizedVariants[0].price) : 0
+
+  if (normalizedVariants.length) {
+    draft.price_variants = normalizedVariants.map((variant) => ({
+      ...variant,
+      price: variant.price > 0 ? variant.price : firstPositiveVariantPrice || basePrice || 0,
+    }))
+  } else {
+    draft.price_variants = []
+  }
+
+  draft.price = basePrice > 0
+    ? basePrice
+    : (firstPositiveVariantPrice > 0 ? firstPositiveVariantPrice : 0)
 
   draft.ingredients = toStringArray(draft.ingredients)
   draft.allergens = toStringArray(draft.allergens)

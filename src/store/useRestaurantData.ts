@@ -22,9 +22,13 @@ export const defaultCatalog: Catalog = {
 
 export function normalizeCatalogData(input: Partial<Catalog> = defaultCatalog): Catalog {
   const source = { ...defaultCatalog, ...input }
+  const menuItems = (source.menuItems ?? [])
+    .map((item) => normalizeMenuItemDraft(item) as MenuItem)
+    .filter((item) => Number(item.price) > 0 || (item.price_variants ?? []).some((variant) => Number(variant.price) > 0))
+
   return {
     ...source,
-    menuItems: (source.menuItems ?? []).map((item) => normalizeMenuItemDraft(item) as MenuItem),
+    menuItems,
   }
 }
 
