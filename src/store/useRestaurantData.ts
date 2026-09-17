@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { useEffect } from 'react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { menuItems, categories, restaurantSettings, offers } from '../data/mockData'
+import { normalizeMenuItemDraft } from '../lib/menuItemNormalize.js'
 import type { MenuItem, Category, RestaurantSettings, Offer, Review } from '../types'
 
 export type Coupon = { code: string; type: 'fixed' | 'percentage'; value: number; minimum: number; active: boolean }
@@ -18,6 +19,15 @@ export const defaultCatalog: Catalog = {
     { code: 'NEWUSER15', type: 'percentage', value: 15, minimum: 0, active: true },
   ],
 }
+
+export function normalizeCatalogData(input: Partial<Catalog> = defaultCatalog): Catalog {
+  const source = { ...defaultCatalog, ...input }
+  return {
+    ...source,
+    menuItems: (source.menuItems ?? []).map((item) => normalizeMenuItemDraft(item) as MenuItem),
+  }
+}
+
 interface State { catalog: Catalog; revision: number; loaded: boolean; error: string; refresh: () => Promise<void>; publish: <K extends keyof Catalog>(key: K, value: Catalog[K]) => Promise<void> }
 let pending: Promise<void> | null = null
 export const useRestaurantStore = create<State>((set, get) => ({
@@ -33,10 +43,14 @@ export const useRestaurantStore = create<State>((set, get) => ({
         const reviews = (reviewResult.data || []).map((r: any) => ({ ...r, date: r.created_at }))
         if (data) {
           const stockResult = await supabase.from('product_stock').select('product_id,quantity')
-          const products = (data.data.menuItems || []).map((item: MenuItem) => { const stock = stockResult.data?.find((s: any) => s.product_id === item.id); return stock ? { ...item, stock_quantity: stock.quantity } : item })
-          set({ catalog: { ...defaultCatalog, ...data.data, menuItems: products, reviews }, revision: data.revision, error: stockResult.error ? 'Live stock is unavailable. Checkout will verify availability.' : '' })
+          const products = (data.data.menuItems || []).map((item: MenuItem) => {
+            const normalized = normalizeMenuItemDraft(item)
+            const stock = stockResult.data?.find((s: any) => s.product_id === normalized.id)
+            return stock ? { ...normalized, stock_quantity: stock.quantity } : normalized
+          })
+          set({ catalog: normalizeCatalogData({ ...defaultCatalog, ...data.data, menuItems: products, reviews }), revision: data.revision, error: stockResult.error ? 'Live stock is unavailable. Checkout will verify availability.' : '' })
         }
-        else set({ catalog: { ...defaultCatalog, reviews }, error: '' })
+        else set({ catalog: normalizeCatalogData({ ...defaultCatalog, reviews }), error: '' })
       } catch { set({ error: 'The live menu could not be refreshed. Prices and availability will be checked at checkout.' }) }
       finally { set({ loaded: true }); pending = null }
     })()
@@ -45,8 +59,9 @@ export const useRestaurantStore = create<State>((set, get) => ({
   publish: async (key, value) => {
     if (!isSupabaseConfigured) throw new Error('Connect Supabase before publishing changes.')
     const { catalog, revision } = get()
-    const next = { ...catalog, [key]: value }
-    const result = await supabase.rpc('publish_catalog', { p_section: key, p_value: value, p_revision: revision })
+    const normalizedValue = key === 'menuItems' ? (Array.isArray(value) ? value.map((item) => normalizeMenuItemDraft(item)) : value) : value
+    const next = normalizeCatalogData({ ...catalog, [key]: normalizedValue })
+    const result = await supabase.rpc('publish_catalog', { p_section: key, p_value: normalizedValue, p_revision: revision })
     if (result.error) throw new Error(result.error.message)
     if (!result.data) { await get().refresh(); throw new Error('Another administrator changed the store. Reload this page before publishing your edits.') }
     set({ catalog: next, revision: result.data, error: '' })

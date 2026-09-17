@@ -44,7 +44,6 @@ export default function CatalogEditor({ section }: { section: Section }) {
         if (!next.category_id || !catalog.categories.some(c => c.id === next.category_id)) throw new Error('Choose a category first.')
         next.ingredients = (next.ingredients || []).map((v: string) => v.trim()).filter(Boolean)
         next.allergens = (next.allergens || []).map((v: string) => v.trim()).filter(Boolean)
-        if (next.price_variants?.length) next.price = next.price_variants[0].price
         if (new Set((next.price_variants || []).map((v: any) => v.label.trim())).size !== (next.price_variants || []).length) throw new Error('Each size needs a different name.')
         if (photo.length) {
           if (photo.length > 6 || photo.some(file => !['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024)) throw new Error('Choose up to 6 JPG, PNG or WebP images, each under 5 MB.')

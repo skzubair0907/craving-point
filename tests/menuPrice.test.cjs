@@ -15,8 +15,18 @@ test('menu item prices are normalized before publishing', async () => {
     allergens: ['nuts'],
   })
 
+  const fallbackItem = normalize({
+    id: 'waffle-fallback',
+    name: 'Waffle fallback',
+    slug: 'waffle-fallback',
+    category_id: 'waffle',
+    price: '',
+    price_variants: [{ label: 'Regular', price: '89' }],
+  })
+
   assert.equal(item.price, 129)
   assert.equal(item.price_variants[0].price, 99)
+  assert.equal(fallbackItem.price, 89)
   assert.deepEqual(item.ingredients, ['milk', 'flour'])
   assert.deepEqual(item.allergens, ['nuts'])
 })
