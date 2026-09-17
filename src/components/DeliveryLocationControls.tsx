@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import DeliveryHistoryPanel from './DeliveryHistoryPanel'
+import { DeliveryMap } from './DeliveryMap2'
 
-export default function DeliveryLocationControls({ orderId, orderNumber, onMessage }:{orderId:string;orderNumber:string;onMessage:(message:string)=>void}) {
+export default function DeliveryLocationControls({ orderId, orderNumber, customerLocation, onMessage }:{orderId:string;orderNumber:string;customerLocation?:{lat?:number;lng?:number}|null;onMessage:(message:string)=>void}) {
   const [latitude,setLatitude]=useState('')
   const [longitude,setLongitude]=useState('')
   const [accuracy,setAccuracy]=useState('')
@@ -107,7 +108,7 @@ export default function DeliveryLocationControls({ orderId, orderNumber, onMessa
       </div>
 
       {showHistory && <div className="mt-4"><DeliveryHistoryPanel orderNumber={orderNumber} /></div>}
+      {customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number' && <div className="mt-5 overflow-hidden rounded-xl border border-white/10"><DeliveryMap customerLocation={{lat:customerLocation.lat,lng:customerLocation.lng}} riderLocation={latitude.trim()!==''&&longitude.trim()!==''&&Number.isFinite(Number(latitude))&&Number.isFinite(Number(longitude))?{lat:Number(latitude),lng:Number(longitude)}:null} height="250px" /></div>}
     </section>
   )
 }
-

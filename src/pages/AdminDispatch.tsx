@@ -135,7 +135,7 @@ export default function AdminDispatch() {
 
                                 {o.status === 'out_for_delivery' && (
                                     <div className="grid gap-3 md:grid-cols-2">
-                                        <DeliveryLocationControls orderId={row.id} orderNumber={row.order_number} onMessage={setMessage} />
+                                        <DeliveryLocationControls orderId={row.id} orderNumber={row.order_number} customerLocation={o.customerLocation} onMessage={setMessage} />
                                         <DeliveryHistoryPanel orderNumber={row.order_number} />
                                     </div>
                                 )}

@@ -26,6 +26,15 @@
 
 /* Leaflet controls use a high layer; the fixed site navigation must remain above maps. */
 .editorial-header{z-index:1100}
+
+/* Delivery maps stay beneath navigation and keep all map controls inside the card. */
+.delivery-map-surface{position:relative;isolation:isolate;overflow:hidden;border:1px solid var(--brand-border);border-radius:12px;background:#e8e4dc;z-index:0}
+.delivery-map-surface .leaflet-pane,.delivery-map-surface .leaflet-top,.delivery-map-surface .leaflet-bottom{z-index:auto}
+.delivery-map-surface .leaflet-control{box-shadow:0 2px 10px #0003}
+.delivery-map-pin{background:transparent!important;border:0!important}
+.delivery-map-pin__label{display:grid;place-items:center;width:36px;height:36px;border:3px solid #fff;border-radius:999px;box-shadow:0 2px 9px #0008;color:#fff;font:800 14px Inter,system-ui,sans-serif}
+.delivery-map-pin__label--customer{background:#2563eb}
+.delivery-map-pin__label--rider{background:#16a34a}
 .brand-logo::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,#fff9 48%,transparent 70%);transform:translateX(-130%);opacity:0;transition:transform .55s ease,opacity .2s ease}
 @media(hover:hover) and (pointer:fine){.brand-logo:hover{transform:translateY(-2px) rotate(-2deg) scale(1.04);box-shadow:0 6px 20px #ef952d45,0 0 0 2px #f8b84499}.brand-logo:hover::after{transform:translateX(130%);opacity:1}}
 .brand-logo:focus-visible{box-shadow:0 0 0 3px #ffbc55,0 5px 18px #ef952d45}
