@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+  <title id="title">Craving Point logo</title>
+  <desc id="desc">Stylized Craving Point wordmark with fork and spoon emblem.</desc>
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffd36b"/>
+      <stop offset="50%" stop-color="#ff9f1c"/>
+      <stop offset="100%" stop-color="#e86f1b"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" x2="1">
+      <stop offset="0%" stop-color="#3bb273"/>
+      <stop offset="100%" stop-color="#2da063"/>
+    </linearGradient>
+    <filter id="ds" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Emblem: spoon+fork inside a rounded badge -->
+  <g transform="translate(120,80)">
+    <rect x="0" y="0" width="260" height="260" rx="36" ry="36" fill="#0f0d0c" />
+    <rect x="8" y="8" width="244" height="244" rx="30" ry="30" fill="#13100f" stroke="#3b342f" stroke-width="2" />
+
+    <!-- decorative circle behind utensils -->
+    <circle cx="130" cy="110" r="70" fill="url(#g1)" opacity="0.95" filter="url(#ds)" />
+
+    <!-- fork (left) -->
+    <g transform="translate(90,60) rotate(-18)">
+      <rect x="-6" y="-6" width="12" height="110" rx="6" ry="6" fill="#2c1f18" />
+      <g fill="#fff" opacity="0.92">
+        <rect x="-18" y="-64" width="8" height="44" rx="3" />
+        <rect x="-2" y="-64" width="8" height="44" rx="3" />
+        <rect x="14" y="-64" width="8" height="44" rx="3" />
+      </g>
+    </g>
+
+    <!-- spoon (right) -->
+    <g transform="translate(170,70) rotate(6)">
+      <path d="M6 0c22 0 54 20 54 48s-32 48-54 48c-22 0-42-20-42-48S-16 0 6 0z" fill="#2c1f18"/>
+      <rect x="-6" y="88" width="12" height="72" rx="6" ry="6" fill="#2c1f18" />
+      <ellipse cx="24" cy="36" rx="46" ry="62" fill="rgba(255,255,255,0.06)" />
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(420,240)">
+    <text x="0" y="-20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-weight="800" font-size="96" fill="url(#g1)" style="letter-spacing: -2px; text-transform: none;" filter="url(#ds)">Craving</text>
+    <text x="0" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-weight="800" font-size="96" fill="url(#g2)" style="letter-spacing: -2px; text-transform: none;">Point</text>
+
+    <!-- target accent for the 'o' in Point -->
+    <g transform="translate(220,-12)">
+      <circle cx="0" cy="65" r="18" fill="#fff" opacity="0.95" />
+      <circle cx="0" cy="65" r="12" fill="#ff3c1f" />
+      <circle cx="0" cy="65" r="5" fill="#fff" />
+    </g>
+
+    <!-- subtle underline swoosh -->
+    <path d="M-10 120 C 120 170, 320 170, 540 120" fill="none" stroke="url(#g1)" stroke-width="18" stroke-linecap="round" opacity="0.95" />
+    <path d="M-10 120 C 120 150, 320 150, 540 120" fill="none" stroke="url(#g2)" stroke-width="8" stroke-linecap="round" opacity="0.9" />
+  </g>
+
+  <!-- background strip for legibility -->
+  <rect x="0" y="0" width="1200" height="400" fill="transparent" />
+</svg>
