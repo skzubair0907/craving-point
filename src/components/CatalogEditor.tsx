@@ -88,7 +88,7 @@ export default function CatalogEditor({ section }: { section: Section }) {
       <div className="grid gap-5 sm:grid-cols-2">
         {section !== 'coupons' ? field('name', 'Name') : field('code', 'Coupon code')}
         {section === 'menuItems' && <>
-          {field('price', 'Base price (₹)', 'number')}{field('slug', 'Product URL name')}{field('portion', 'Portion / serving size')}
+          {field('price', 'Base price (₹)', 'number')}
           <label className="grid gap-2">Category<select className="admin-input" value={draft.category_id} onChange={e => setDraft({ ...draft, category_id: e.target.value })}>{catalog.categories.filter(c => c.id !== 'all').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
           {field('image_url', 'Main photo URL or local image path')}
         </>}
