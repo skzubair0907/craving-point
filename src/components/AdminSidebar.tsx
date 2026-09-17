@@ -32,11 +32,7 @@ const AdminSidebar = () => {
     <div ref={drawer} className={'admin-workspace-nav '+(open?'is-open':'')} role={open?'dialog':undefined} aria-modal={open?true:undefined} aria-label="Administration navigation">
       <div className="admin-workspace-brand">
         <div className="admin-workspace-brand-mark">
-          <img src="/images/logo-new.png" alt="Craving Point" width="120" height="40" />
-          <div>
-            <small>CRAVING POINT</small>
-            <strong>Operations</strong>
-          </div>
+          <img src="/images/logo-new.png" alt="Craving Point" width="136" height="48" />
         </div>
         <span className="admin-workspace-badge">LIVE OPS</span>
         <button aria-label="Close admin navigation" onClick={()=>setOpen(false)}><X size={22}/></button>
