@@ -28,14 +28,17 @@ grant execute on function public.is_delivery_partner() to authenticated;
 -- a technical Auth user ID.
 create or replace function public.activate_my_delivery_partner_account()
 returns boolean language plpgsql security definer set search_path = public as $$
-declare linked boolean := false;
+declare
+  linked boolean := false;
+  linked_count integer := 0;
 begin
   update public.delivery_staff
   set user_id = auth.uid()
   where active = true
     and user_id is null
     and lower(email) = lower(coalesce(auth.jwt()->>'email', ''));
-  get diagnostics linked = row_count > 0;
+  get diagnostics linked_count = row_count;
+  linked := linked_count > 0;
   return linked or exists (
     select 1 from public.delivery_staff
     where active = true and user_id = auth.uid()
