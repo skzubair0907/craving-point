@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { calculateDistance } from '../lib/mapUtils'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Bike, CheckCircle2, ClipboardList, Clock3, LogOut, MapPin, Navigation, Phone, RefreshCw, Route } from 'lucide-react'
@@ -9,8 +10,52 @@ export default function DeliveryPartner(){
  const message=(text:string)=>setNotice(text.includes('delivery_partner_')?'Delivery portal setup is pending. Ask the owner to run the Delivery Partner SQL setup once in Supabase.':text)
 const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.getSession();setUser(session?.user??null);if(!session?.user)return;const activation=await supabase.rpc('activate_my_delivery_partner_account');if(activation.error){message(activation.error.message);return}if(!activation.data){setJobs([]);setNotice(`The website is signed in as ${session.user.email||'an unknown email'}, but that email is not linked to an active delivery boy. In Admin → Delivery, save this exact email for the rider.`);return}const [orders,summary]=await Promise.all([supabase.rpc('delivery_partner_orders'),supabase.rpc('delivery_partner_earnings')]);if(orders.error)message(orders.error.message);else{setJobs(orders.data||[]);setNotice('')}if(!summary.error)setEarnings(summary.data?.[0]||null)},[])
  useEffect(()=>{void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>{clearInterval(timer);watches.current.forEach(id=>navigator.geolocation.clearWatch(id))}},[refresh])
- const publish=async(job:Job,pos:GeolocationPosition)=>{const r=await supabase.rpc('set_delivery_location',{p_order_number:job.order_number,p_latitude:pos.coords.latitude,p_longitude:pos.coords.longitude,p_accuracy:pos.coords.accuracy});if(r.error)throw Error(r.error.message)}
- function share(job:Job){if(!navigator.geolocation){message('Location is not supported on this phone.');return}if(watches.current.has(job.id))return;setBusy(job.id);const ok=(pos:GeolocationPosition)=>void publish(job,pos).then(()=>{setSharing(s=>({...s,[job.id]:true}));setNotice('Live location is sharing with the customer.')}).catch(e=>message(e.message)).finally(()=>setBusy(''));navigator.geolocation.getCurrentPosition(ok,e=>{message('Allow location access: '+e.message);setBusy('')},{enableHighAccuracy:true,timeout:20000});watches.current.set(job.id,navigator.geolocation.watchPosition(ok,e=>message('Live location paused: '+e.message),{enableHighAccuracy:true,maximumAge:5000,timeout:20000}))}
+ const publish=async(job:Job,lat:number,lng:number,accuracy?:number)=>{const r=await supabase.rpc('set_delivery_location',{p_order_number:job.order_number,p_latitude:lat,p_longitude:lng,p_accuracy:accuracy});if(r.error)throw Error(r.error.message)}
+
+	// per-job last publish metadata for throttling
+	const lastPublish = useRef(new Map<string,{ts:number,lat:number,lng:number}>())
+
+	function share(job:Job){
+		if(!navigator.geolocation){message('Location is not supported on this phone.');return}
+		if(watches.current.has(job.id))return
+		setBusy(job.id)
+
+		const throttleMs = 2500
+		const minMeters = 10
+
+		const wrapped = (pos:GeolocationPosition)=>{
+			try {
+				const lat = pos.coords.latitude
+				const lng = pos.coords.longitude
+				const accuracy = pos.coords.accuracy
+				const now = Date.now()
+				const prev = lastPublish.current.get(job.id)
+				let should = false
+				if (!prev) should = true
+				else {
+					const dt = now - prev.ts
+					const dist = calculateDistance(prev.lat, prev.lng, lat, lng)
+					if (dt >= throttleMs || dist >= minMeters) should = true
+				}
+				if (should) {
+					// publish numeric coords
+					void publish(job, lat, lng, accuracy).then(()=>{
+						lastPublish.current.set(job.id, { ts: now, lat, lng })
+						setSharing(s=>({...s,[job.id]:true}))
+						setNotice('Live location is sharing with the customer.')
+					}).catch(e=>message(e.message)).finally(()=>setBusy(''))
+				}
+			} catch (err:any) { message(err?.message || 'Failed to process location') }
+		}
+
+		const onError = (e:any) => { message('Live location paused: '+e.message) }
+
+		// initial getCurrentPosition to request permission and publish once
+		navigator.geolocation.getCurrentPosition((pos)=>{ wrapped(pos) }, e=>{message('Allow location access: '+e.message); setBusy('')}, { enableHighAccuracy:true, timeout:20000 })
+
+		const id = navigator.geolocation.watchPosition(wrapped, onError, { enableHighAccuracy:true, maximumAge:2000, timeout:20000 })
+		watches.current.set(job.id, id)
+	}
  async function start(job:Job){setBusy(job.id);const r=await supabase.rpc('delivery_partner_set_status',{p_order_id:job.id,p_status:'out_for_delivery'});if(r.error)message(r.error.message);else{setNotice('Delivery started. Connecting live location…');share(job);await refresh()}setBusy('')}
  async function complete(job:Job){setBusy(job.id);const r=await supabase.rpc('delivery_partner_confirm_delivery',{p_order_id:job.id,p_otp:otp[job.id]||''});if(r.error)message(r.error.message);else{setNotice('Delivery confirmed. Great work.');await refresh()}setBusy('')}
  const signIn=async()=>{const r=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/delivery-partner'}});if(r.error)message(r.error.message)}
