@@ -1,6 +1,7 @@
 import { useFocusTrap } from '../lib/focusTrap'
 import { useEffect, useRef, useState } from 'react'
 import './AdminResponsive.css'
+import './AdminSidebarFix.css'
 import { LayoutDashboard, ShoppingBag, Utensils, Layers, Users, Ticket, Star, Settings, TrendingUp, Menu, X, LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { Link, useLocation } from 'react-router-dom'

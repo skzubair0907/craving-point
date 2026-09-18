@@ -4,7 +4,6 @@ import { useAdminOrders } from '../hooks/useAdminOrders'
 import { supabase } from '../lib/supabase'
 import AdminOrderDetails from '../components/AdminOrderDetails'
 import OrderCancellationDialog from '../components/OrderCancellationDialog'
-import DeliveryLocationControls from '../components/DeliveryLocationControls'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 const nextStatus = (order: any) => ({ placed: 'confirmed', ORDER_PLACED: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: order.meta.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string,string>)[order.status]
@@ -58,20 +57,7 @@ export default function AdminOrdersManagement() {
         setMessage("Order status updated. The customer's tracking page will refresh automatically.")
         return
       }
-      if (!navigator.geolocation) {
-        setMessage('Order is out for delivery. Open this order on the rider phone and start live sharing.')
-        return
-      }
-      setMessage('Order is out for delivery. Allow location permission to publish the first rider position.')
-      navigator.geolocation.getCurrentPosition(async position => {
-        try {
-          const saved = await supabase.rpc('set_delivery_location', { p_order_number: orderNumber, p_latitude: position.coords.latitude, p_longitude: position.coords.longitude, p_accuracy: position.coords.accuracy })
-          if (saved.error) throw new Error(saved.error.message)
-          setMessage('First rider position saved. Open the live rider location panel to keep sharing during delivery.')
-        } catch (error) {
-          setMessage(error instanceof Error ? error.message : 'Order status changed, but rider location could not be saved.')
-        }
-      }, () => setMessage('Order is out for delivery. Location permission was not granted; start live sharing on the rider phone.'), { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 })
+      setMessage('The rider must start delivery from their own Delivery Partner portal. Admin GPS is never used.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to update order.')
     } finally {
@@ -180,16 +166,17 @@ export default function AdminOrdersManagement() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {next && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
+              {next && !(order.meta.orderType === 'delivery' && ['out_for_delivery', 'delivered'].includes(next)) && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
               {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
               <button className="btn-secondary" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
 
-            {order.status === 'out_for_delivery' && order.meta.orderType === 'delivery' && (
-              <div className="grid gap-3 md:grid-cols-2">
-                <DeliveryLocationControls orderId={row.id} orderNumber={row.order_number} customerLocation={order.customerLocation} onMessage={setMessage} />
-                <DeliveryHistoryPanel orderNumber={row.order_number} />
-              </div>
+            {order.meta.orderType === 'delivery' && ['ready', 'out_for_delivery'].includes(order.status) && (
+              <section className="rounded-2xl border border-orange-400/25 bg-gradient-to-br from-[#201913] via-[#171311] to-[#0f0d0b] p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p><h3 className="mt-1 text-xl font-black text-white">{order.status === 'ready' ? 'Waiting for rider collection' : 'Rider is on the way'}</h3></div><span className={order.status === 'out_for_delivery' ? 'rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-200' : 'rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-bold text-orange-200'}>{order.status === 'out_for_delivery' ? 'LIVE' : 'READY'}</span></div>
+                <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
+                {order.status === 'out_for_delivery' && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} /></div>}
+              </section>
             )}
 
             {order.status === 'cancelled' && order.payment_status === 'paid' && <p className="rounded-xl border border-amber-400/20 bg-amber-500/5 p-3 text-sm text-amber-100">Captured payment: review and issue any refund in the payment provider dashboard.</p>}
