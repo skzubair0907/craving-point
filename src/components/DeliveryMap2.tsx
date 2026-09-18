@@ -31,6 +31,7 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
   const positionsRef = useRef<Array<{lat:number,lng:number,ts:number,accuracy?:number}>>([])
   const [etaSeconds, setEtaSeconds] = useState<number | null>(null)
   const [ready, setReady] = useState(false)
+  const [lastError, setLastError] = useState<string | null>(null)
   const customer = isValidLocation(customerLocation)
     ? customerLocation
     : resolveMapCenter({ customerLocation, riderLocation, fallbackLocation: { lat: 19.0175, lng: 72.8905 } })
@@ -171,7 +172,7 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
             const fallbackDistance = calculateDistance(to.lat, to.lng, customer.lat, customer.lng)
             setEtaSeconds(Math.max(5, Math.round(fallbackDistance / 8)))
           } catch (err) {
-            try { console.error('getRouteGeoJSON failed', err) } catch (e) {}
+            try { console.error('getRouteGeoJSON failed', err); setLastError(String(err || 'route error')) } catch (e) {}
             const pts = [to, L.latLng(customer.lat, customer.lng)]
             if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
             else riderPolylineRef.current.setLatLngs(pts)
@@ -199,7 +200,7 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
       try { map.setView(customerPoint, 16) } catch (e) {}
     }
     } catch (err) {
-      try { console.error('DeliveryMap effect error', err) } catch (e) {}
+      try { console.error('DeliveryMap effect error', err); setLastError(String(err || 'map effect error')) } catch (e) {}
     }
   }, [ready, customer.lat, customer.lng, riderLocation?.lat, riderLocation?.lng, riderLocation?.accuracy, riderLocation?.timestamp])
 
@@ -213,6 +214,12 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
   return (
     <div className="relative" style={{ width, height }}>
       <div className="delivery-map-surface rounded-md" ref={containerRef} style={{ width: '100%', height: '100%' }} />
+      {lastError && (
+        <div className="absolute right-3 bottom-3 z-50 rounded-md bg-red-700/80 px-3 py-2 text-white text-xs max-w-xs break-words">
+          <div className="font-bold">Map error</div>
+          <div className="mt-1">{lastError}</div>
+        </div>
+      )}
       {riderLocation && (
         <div className="absolute left-3 top-3 z-50 rounded-xl bg-black/60 px-3 py-2 text-white text-sm">
           <div className="font-bold">Live tracking</div>
