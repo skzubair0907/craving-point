@@ -61,6 +61,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
     const customerLocation = row.payload.customerLocation || null
     let deliveryLocation = null
     let deliveryVerification = null
+    let deliveryRider = null
     try {
       deliveryLocation = await repo.deliveryLocation(row.order_number)
     } catch {
@@ -68,6 +69,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
     }
     if (row.payload.status === 'out_for_delivery') {
       try { deliveryVerification = await repo.deliveryOtp(row.id) } catch { /* OTP is optional until its database migration is applied. */ }
+      try { deliveryRider = await repo.deliveryRider?.(row.id) } catch { /* Rider identity is optional for tracking. */ }
     }
     return {
       order: {
@@ -84,6 +86,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
         customerLocation,
         deliveryLocation,
         deliveryOtp: deliveryVerification?.verified_at ? null : deliveryVerification?.otp || null,
+        deliveryRider,
       },
     }
   }

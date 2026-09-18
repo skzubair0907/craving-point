@@ -145,12 +145,9 @@ export default function DeliveryTracking() {
 
   const liveLastUpdated = lastUpdated ?? order?.updated_at ?? new Date().toISOString();
 
-  // Fetch rider info (optional) - placeholder for now
   useEffect(() => {
-    // In a real implementation, you would fetch rider info from an API
-    // For now, we'll leave it empty or mock it
-    // setRiderInfo({ name: 'John Doe', phone: '9876543210', vehicle: 'Bike' });
-  }, [order?.id]);
+    setRiderInfo(order?.deliveryRider?.name ? { name: order.deliveryRider.name, vehicle: 'Delivery partner' } : {})
+  }, [order?.deliveryRider?.name]);
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[var(--brand-bg)] text-white">

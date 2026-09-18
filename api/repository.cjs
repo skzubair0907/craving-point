@@ -109,6 +109,12 @@ function repository(local = false) {
       const rows = await rest(`delivery_verifications?order_id=eq.${encodeURIComponent(orderId)}&select=otp,verified_at&limit=1`)
       return rows[0] || null
     },
+    async deliveryRider(orderId) {
+      if (local && !configured()) return null
+      const rows = await rest(`order_admin_details?order_id=eq.${encodeURIComponent(orderId)}&select=delivery_staff(name)&limit=1`)
+      const rider = rows[0]?.delivery_staff
+      return rider?.name ? { name: rider.name } : null
+    },
     async review(row) {
       if (local && !configured()) throw Object.assign(new Error('Reviews require the connected restaurant database.'), { statusCode: 503 })
       return rest('customer_reviews', { method: 'POST', body: JSON.stringify(row) })
