@@ -23,6 +23,27 @@ $$;
 revoke all on function public.is_delivery_partner() from public, anon;
 grant execute on function public.is_delivery_partner() to authenticated;
 
+-- The rider opens their portal with Google once. Link that authenticated account
+-- to the matching rider email automatically, so the manager never has to handle
+-- a technical Auth user ID.
+create or replace function public.activate_my_delivery_partner_account()
+returns boolean language plpgsql security definer set search_path = public as $$
+declare linked boolean := false;
+begin
+  update public.delivery_staff
+  set user_id = auth.uid()
+  where active = true
+    and user_id is null
+    and lower(email) = lower(coalesce(auth.jwt()->>'email', ''));
+  get diagnostics linked = row_count > 0;
+  return linked or exists (
+    select 1 from public.delivery_staff
+    where active = true and user_id = auth.uid()
+  );
+end $$;
+revoke all on function public.activate_my_delivery_partner_account() from public, anon;
+grant execute on function public.activate_my_delivery_partner_account() to authenticated;
+
 create or replace function public.delivery_partner_orders()
 returns table (
   id uuid,
