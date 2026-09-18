@@ -4,41 +4,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useRestaurantData } from '../store/useRestaurantData'
 import { useFavoritesStore } from '../store/useFavoritesStore'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
-const key = 'craving-point-profile'
-export default function Account() {
-const navigate = useNavigate()
-  const { menuItems } = useRestaurantData()
-  const { ids, toggle } = useFavoritesStore()
-  const [message, setMessage] = useState('')
-  const [profile, setProfile] = useState<Record<string, string>>(() => {
-    try { const saved = JSON.parse(localStorage.getItem(key) || '{}'); return saved && typeof saved === 'object' ? saved : {} } catch { return {} }
-  })
-  const [user, setUser] = useState<{ email?: string; user_metadata?: { full_name?: string; name?: string } } | null>(null)
-  const [signingIn, setSigningIn] = useState(false)
-  useEffect(() => {
-    if (!isSupabaseConfigured) return
-    const applyUser = (nextUser: typeof user) => {
-      setUser(nextUser)
-      if (nextUser) setProfile(current => ({ ...current, name: current.name || nextUser.user_metadata?.full_name || nextUser.user_metadata?.name || '', email: current.email || nextUser.email || '' }))
-    }
-    void supabase.auth.getUser().then(({ data }: { data: { user: typeof user } }) => applyUser(data.user))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user: typeof user } | null) => applyUser(session?.user ?? null))
-    return () => subscription.unsubscribe()
-  }, [])
-  const signInWithGoogle = async () => {
-    setSigningIn(true)
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/account' } })
-    if (error) { setMessage(error.message); setSigningIn(false) }
-  }
-  const signOut = async () => { await supabase.auth.signOut(); setMessage('You are signed out.') }
-  return <div className="mx-auto max-w-4xl px-4 py-12 space-y-8">
-    <div><h1 className="section-title">Your details</h1><p className="mt-3 text-accent/60">Save your details on this device for your next order.</p></div>
-    {isSupabaseConfigured && <section className="card-premium p-6"><h2 className="text-2xl font-bold">{user ? 'Signed in' : 'Save details with Google'}</h2><p className="mt-2 text-accent/70">{user ? `Signed in as ${user.email || 'your Google account'}.` : 'Sign in to keep your name and email connected to your customer account.'}</p>{user ? <button type="button" className="mt-4 text-primary underline" onClick={signOut}>Sign out</button> : <button type="button" className="btn-primary mt-4" disabled={signingIn} onClick={signInWithGoogle}>{signingIn ? 'Opening Google…' : 'Continue with Google'}</button>}</section>}
-    <form className="card-premium p-6 space-y-5" onSubmit={(event) => { event.preventDefault(); try { localStorage.setItem(key, JSON.stringify(profile)); navigate('/', { replace: true }) } catch { setMessage('Your browser could not save these details.') } }}>
-      {Object.entries({ name: 'Full name', email: 'Email', phone: 'Phone number', address: 'Delivery address' }).map(([field, label]) => <div key={field}><label className="block mb-2" htmlFor={field}>{label}</label><input id={field} value={profile[field] || ''} type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'} onChange={(event) => setProfile({ ...profile, [field]: event.target.value })} className="w-full border border-[var(--brand-border)] rounded-xl px-4 py-3" /></div>)}
-      <button className="btn-primary" type="submit">Save details</button><p role="status">{message}</p>
-    </form>
-    <OrderHistory/>
-    <section className="card-premium p-6"><h2 className="text-2xl font-bold mb-4">Favorites</h2>{ids.length === 0 && <p>No favorites saved yet. <Link className="text-primary underline" to="/menu">Browse menu</Link></p>}{menuItems.filter(item => ids.includes(item.id)).map(item => <div key={item.id} className="flex items-center justify-between gap-4 py-3"><Link to={'/menu/' + item.slug}>{item.name}</Link><button onClick={() => toggle(item.id)} className="text-primary" aria-label={'Remove ' + item.name + ' from favorites'}>Remove</button></div>)}</section>
-  </div>
+import { Home, MapPin, Plus, Trash2 } from 'lucide-react'
+const key='craving-point-profile'
+type Address={id:string;label:string;address:string}
+export default function Account(){
+ const navigate=useNavigate(),{menuItems}=useRestaurantData(),{ids,toggle}=useFavoritesStore();const [message,setMessage]=useState(''),[signingIn,setSigningIn]=useState(false)
+ const [profile,setProfile]=useState<any>(()=>{try{const saved=JSON.parse(localStorage.getItem(key)||'{}');return saved&&typeof saved==='object'?saved:{}}catch{return{}}})
+ const [addresses,setAddresses]=useState<Address[]>(()=>{try{const saved=JSON.parse(localStorage.getItem(key)||'{}');return Array.isArray(saved.addresses)?saved.addresses:[]}catch{return[]}})
+ const [draft,setDraft]=useState<Address>({id:'',label:'Home',address:''}),[user,setUser]=useState<any>(null)
+ useEffect(()=>{if(!isSupabaseConfigured)return;const apply=(next:any)=>{setUser(next);if(next)setProfile((current:any)=>({...current,name:current.name||next.user_metadata?.full_name||next.user_metadata?.name||'',email:current.email||next.email||''}))};void supabase.auth.getUser().then(({data}:any)=>apply(data.user));const {data:{subscription}}=supabase.auth.onAuthStateChange((_event:string,session:any)=>apply(session?.user));return()=>subscription.unsubscribe()},[])
+ const save=(event:React.FormEvent)=>{event.preventDefault();const next={...profile,address:addresses[0]?.address||profile.address||'',addresses};try{localStorage.setItem(key,JSON.stringify(next));setProfile(next);setMessage('Your profile and saved addresses are ready for checkout.')}catch{setMessage('Your browser could not save these details.')}}
+ const addAddress=()=>{if(!draft.address.trim())return;setAddresses(current=>[...current,{...draft,id:crypto.randomUUID?.()||String(Date.now()),address:draft.address.trim()}]);setDraft({id:'',label:'Home',address:''})}
+ const signIn=async()=>{setSigningIn(true);const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/account'}});if(error){setMessage(error.message);setSigningIn(false)}}
+ return <div className="mx-auto max-w-5xl space-y-8 px-4 py-12"><header><p className="eyebrow">Customer account</p><h1 className="section-title mt-2">Your details</h1><p className="mt-3 text-white/65">Save checkout details and delivery addresses for faster orders.</p></header>{isSupabaseConfigured&&<section className="card-premium flex flex-wrap items-center justify-between gap-4 p-6"><div><h2 className="text-xl font-bold">{user?'Signed in':'Keep your account connected'}</h2><p className="mt-1 text-sm text-white/65">{user?user.email:'Use Google to keep your name and email connected.'}</p></div>{user?<button className="btn-secondary" onClick={()=>void supabase.auth.signOut()}>Sign out</button>:<button className="btn-primary" disabled={signingIn} onClick={()=>void signIn()}>{signingIn?'Opening Google…':'Continue with Google'}</button>}</section>}<form className="grid gap-6 lg:grid-cols-[1fr_.9fr]" onSubmit={save}><section className="card-premium space-y-5 p-6"><h2 className="text-xl font-bold">Contact details</h2>{Object.entries({name:'Full name',email:'Email',phone:'Phone number'}).map(([field,label])=><label className="grid gap-2" key={field}>{label}<input className="admin-input" type={field==='email'?'email':field==='phone'?'tel':'text'} value={profile[field]||''} onChange={e=>setProfile({...profile,[field]:e.target.value})}/></label>)}<button className="btn-primary">Save profile</button>{message&&<p role="status" className="text-sm text-orange-200">{message}</p>}</section><section className="card-premium p-6"><div className="flex items-center gap-2"><MapPin className="text-primary" size={20}/><h2 className="text-xl font-bold">Saved addresses</h2></div><p className="mt-2 text-sm text-white/60">Choose a saved address during checkout.</p><div className="mt-5 space-y-3">{addresses.map(address=><div key={address.id} className="flex gap-3 rounded-xl border border-white/10 bg-black/10 p-3"><Home className="mt-1 text-orange-200" size={17}/><div className="min-w-0 flex-1"><b className="text-sm">{address.label}</b><p className="mt-1 text-sm text-white/65">{address.address}</p></div><button type="button" aria-label={'Remove '+address.label} onClick={()=>setAddresses(current=>current.filter(item=>item.id!==address.id))}><Trash2 className="text-red-300" size={17}/></button></div>)}</div><div className="mt-5 space-y-3 border-t border-white/10 pt-5"><p className="flex items-center gap-2 font-bold"><Plus size={17}/>Add address</p><select className="admin-input w-full" value={draft.label} onChange={e=>setDraft({...draft,label:e.target.value})}>{['Home','Work','Other'].map(label=><option key={label}>{label}</option>)}</select><textarea className="admin-input min-h-24 w-full" value={draft.address} onChange={e=>setDraft({...draft,address:e.target.value})} placeholder="Flat, building, street, area and landmark"/><button type="button" className="btn-secondary" onClick={addAddress}>Add saved address</button></div></section></form><OrderHistory/><section className="card-premium p-6"><h2 className="text-2xl font-bold">Favorites</h2>{ids.length===0?<p className="mt-3">No favorites saved yet. <Link className="text-primary underline" to="/menu">Browse menu</Link></p>:menuItems.filter(item=>ids.includes(item.id)).map(item=><div key={item.id} className="flex items-center justify-between gap-4 border-b border-white/10 py-3 last:border-0"><Link to={'/menu/'+item.slug}>{item.name}</Link><button type="button" onClick={()=>toggle(item.id)} className="text-primary">Remove</button></div>)}</section></div>
 }

@@ -33,7 +33,7 @@ const CheckoutPage = () => {
     setRewardApplied,
   } = useCartStore()
   const [pendingPayload, setPendingPayload] = useState<any>(null)
-  const [profile] = useState<Record<string, string>>(() => { try { return JSON.parse(localStorage.getItem('craving-point-profile') || '{}') || {} } catch { return {} } })
+  const [profile] = useState<any>(() => { try { return JSON.parse(localStorage.getItem('craving-point-profile') || '{}') || {} } catch { return {} } })
   const [error, setError] = useState('')
   const [orderType, setOrderType] = useState<'delivery' | 'pickup'>(restaurantSettings.delivery_available === false ? 'pickup' : 'delivery')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -172,6 +172,7 @@ const CheckoutPage = () => {
                 <div className="space-y-6">
                   <div className="space-y-2">
                       <label htmlFor="address" className="text-sm font-bold text-accent/60">Full Address</label>
+                    {Array.isArray(profile.addresses)&&profile.addresses.length>0&&<select className="mb-3 w-full rounded-xl border border-secondary-dark px-4 py-3" defaultValue="" onChange={event=>{const saved=profile.addresses.find((item:any)=>item.id===event.target.value);if(saved)setAddress(saved.address)}}><option value="">Choose a saved address</option>{profile.addresses.map((item:any)=><option key={item.id} value={item.id}>{item.label} — {item.address}</option>)}</select>}
                     <textarea id="address" name="address" value={address} onChange={event => setAddress(event.target.value)} required rows={3} placeholder="House No, Street, Area..." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
                     <div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary text-sm" onClick={()=>{if(!navigator.geolocation){setLocationMessage('Location is unavailable in this browser.');return}setLocationMessage('Finding your location…');navigator.geolocation.getCurrentPosition(async position=>{const location={lat:position.coords.latitude,lng:position.coords.longitude};setCustomerLocation(location);setLocationMessage('Finding your full address…');try{const response=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`,{headers:{Accept:'application/json'}});const result=await response.json();if(!response.ok||!result.display_name)throw new Error('Address unavailable');setAddress(result.display_name);setLocationMessage('Address filled from your location. Add your flat or house number if it is missing.')}catch{setLocationMessage('Exact delivery location saved. Please enter your full address manually.')}},()=>setLocationMessage('Location permission was denied. Your typed address will still be used.'),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}}>Use my current location</button>{locationMessage&&<span className="text-sm text-accent/70">{locationMessage}</span>}</div>
                   </div>
