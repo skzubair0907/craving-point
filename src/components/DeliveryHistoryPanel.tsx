@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { supabase } from '../lib/supabase'
+import { DeliveryMap } from './DeliveryMap2'
 
-export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: string }) {
+export default function DeliveryHistoryPanel({ orderNumber, customerLocation }: { orderNumber: string, customerLocation?: { lat?: number; lng?: number } | null }) {
   const [rows, setRows] = useState<Array<any>>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -61,21 +62,29 @@ export default function DeliveryHistoryPanel({ orderNumber }: { orderNumber: str
 
       {latestRow && (
         <div className="mt-4 space-y-3">
-          {latestMapUrl ? (
-            <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 220 }}>
-              <iframe
-                title={`Delivery rider location for ${orderNumber}`}
-                src={latestMapUrl}
-                loading="lazy"
-                style={{ width: '100%', height: '100%', border: 0 }}
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          ) : (
-            <div className="flex h-[220px] items-center justify-center rounded-xl border border-dashed border-white/10 bg-slate-900/40 text-sm text-white/60">
-              Waiting for location data
-            </div>
-          )}
+              {customerLocation && latestRow ? (
+                <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 220 }}>
+                  <DeliveryMap
+                    customerLocation={{ lat: Number(customerLocation.lat || 0), lng: Number(customerLocation.lng || 0) }}
+                    riderLocation={Number(latestRow.latitude) && Number(latestRow.longitude) ? { lat: Number(latestRow.latitude), lng: Number(latestRow.longitude) } : null}
+                    height={220}
+                  />
+                </div>
+              ) : latestMapUrl ? (
+                <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 220 }}>
+                  <iframe
+                    title={`Delivery rider location for ${orderNumber}`}
+                    src={latestMapUrl}
+                    loading="lazy"
+                    style={{ width: '100%', height: '100%', border: 0 }}
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-[220px] items-center justify-center rounded-xl border border-dashed border-white/10 bg-slate-900/40 text-sm text-white/60">
+                  Waiting for location data
+                </div>
+              )}
 
           <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/5 p-3 text-sm text-white/80">
             <div className="flex items-center justify-between gap-3">

@@ -112,7 +112,7 @@ export default function DeliveryLocationControls({ orderId, orderNumber, custome
         </div>
       </div>
 
-      {showHistory && <div className="mt-4"><DeliveryHistoryPanel orderNumber={orderNumber} /></div>}
+      {showHistory && <div className="mt-4"><DeliveryHistoryPanel orderNumber={orderNumber} customerLocation={customerLocation} /></div>}
       {customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number' && <div className="mt-5 overflow-hidden rounded-xl border border-white/10"><DeliveryMap customerLocation={{lat:customerLocation.lat,lng:customerLocation.lng}} riderLocation={latitude.trim()!==''&&longitude.trim()!==''&&Number.isFinite(Number(latitude))&&Number.isFinite(Number(longitude))?{lat:Number(latitude),lng:Number(longitude)}:null} height="250px" /></div>}
     </section>
   )
