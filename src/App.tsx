@@ -35,6 +35,7 @@ import FloatingWhatsApp from './components/FloatingWhatsApp'
 import StickyBottomBar from './components/StickyBottomBar'
 import BackToTop from './components/BackToTop'
 import AppInstallPrompt from './components/AppInstallPrompt'
+import LocationPermissionPrompt from './components/LocationPermissionPrompt'
 import { useRestaurantData, useLiveRestaurant } from './store/useRestaurantData'
 import clsx from 'clsx'
 
@@ -176,6 +177,7 @@ const App = () => {
     <Router>
       <RouteScroll />
       <Metadata />
+      <LocationPermissionPrompt />
       <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />

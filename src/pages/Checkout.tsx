@@ -39,9 +39,11 @@ const CheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [previewOrder, setPreviewOrder] = useState<any | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-  const [customerLocation, setCustomerLocation] = useState<{lat:number;lng:number}|null>(null)
+  const [customerLocation, setCustomerLocation] = useState<{lat:number;lng:number}|null>(()=>{try{const saved=JSON.parse(localStorage.getItem('craving-point-current-location')||'null');return saved&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lng)?{lat:saved.lat,lng:saved.lng}:null}catch{return null}})
   const [locationMessage, setLocationMessage] = useState('')
   const [address, setAddress] = useState(profile.address || '')
+
+  useEffect(()=>{const update=(event:Event)=>{const location=(event as CustomEvent).detail;if(location?.lat&&location?.lng)setCustomerLocation({lat:location.lat,lng:location.lng})};window.addEventListener('craving-point-location',update);return()=>window.removeEventListener('craving-point-location',update)},[])
 
   const subtotal = getTotal()
   const couponDiscount = getCouponDiscount(subtotal)
