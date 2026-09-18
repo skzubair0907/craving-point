@@ -49,6 +49,7 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
     const map = mapRef.current
     const layers = layersRef.current
     if (!ready || !map || !layers) return
+    try {
     // when map is in a container that may have been hidden, ensure correct sizing
     setTimeout(() => { try { map.invalidateSize() } catch (e) {} }, 50)
 
@@ -151,7 +152,8 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
         ;(riderPolylineRef as any).__routeKey = routeKey
         // fetch route in background
         void (async () => {
-          const json = await getRouteGeoJSON({ lat: to.lat, lng: to.lng }, { lat: customer.lat, lng: customer.lng })
+          try {
+            const json = await getRouteGeoJSON({ lat: to.lat, lng: to.lng }, { lat: customer.lat, lng: customer.lng })
             if (json && Array.isArray(json.routes) && json.routes[0] && json.routes[0].geometry && json.routes[0].geometry.coordinates) {
               const coords: L.LatLngExpression[] = (json.routes[0].geometry.coordinates as Array<[number, number]>).map(([lng, lat]) => [lat, lng])
               if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(coords, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
@@ -160,14 +162,20 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
               // Mapbox returns duration in seconds
               if (typeof json.routes[0].duration === 'number') setEtaSeconds(Math.round(json.routes[0].duration))
               return
-          }
-          // fallback: straight polyline
+            }
+            // fallback: straight polyline
             const pts = [to, L.latLng(customer.lat, customer.lng)]
             if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
             else riderPolylineRef.current.setLatLngs(pts)
             // fallback ETA estimate: assume average speed 8 m/s (≈28.8 km/h)
             const fallbackDistance = calculateDistance(to.lat, to.lng, customer.lat, customer.lng)
             setEtaSeconds(Math.max(5, Math.round(fallbackDistance / 8)))
+          } catch (err) {
+            try { console.error('getRouteGeoJSON failed', err) } catch (e) {}
+            const pts = [to, L.latLng(customer.lat, customer.lng)]
+            if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+            else riderPolylineRef.current.setLatLngs(pts)
+          }
         })()
       } else {
         // already have requested this route - just update straight line if no routed shape yet
@@ -187,8 +195,11 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
       if (riderPolylineRef.current) { riderPolylineRef.current.remove(); riderPolylineRef.current = null }
       if (accuracyCircleRef.current) { accuracyCircleRef.current.remove(); accuracyCircleRef.current = null }
       // clear smoothing buffer
-      positionsRef.current = []
+      try { positionsRef.current = [] } catch(e){}
       try { map.setView(customerPoint, 16) } catch (e) {}
+    }
+    } catch (err) {
+      try { console.error('DeliveryMap effect error', err) } catch (e) {}
     }
   }, [ready, customer.lat, customer.lng, riderLocation?.lat, riderLocation?.lng, riderLocation?.accuracy, riderLocation?.timestamp])
 

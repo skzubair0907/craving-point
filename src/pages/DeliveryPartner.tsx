@@ -8,6 +8,7 @@ type Job={id:string;order_number:string;payload:any}
 const cash=(v:any)=>`₹${Number(v||0).toFixed(2)}`
 export default function DeliveryPartner(){
  const [user,setUser]=useState<any>(null),[jobs,setJobs]=useState<Job[]>([]),[notice,setNotice]=useState(''),[busy,setBusy]=useState(''),[otp,setOtp]=useState<Record<string,string>>({}),[earnings,setEarnings]=useState<any>(null),[sharing,setSharing]=useState<Record<string,boolean>>({});const watches=useRef(new Map<string,number>())
+ const [selectedJob, setSelectedJob] = useState<string | null>(null)
  const message=(text:string)=>setNotice(text.includes('delivery_partner_')?'Delivery portal setup is pending. Ask the owner to run the Delivery Partner SQL setup once in Supabase.':text)
 const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.getSession();setUser(session?.user??null);if(!session?.user)return;const activation=await supabase.rpc('activate_my_delivery_partner_account');if(activation.error){message(activation.error.message);return}if(!activation.data){setJobs([]);setNotice(`The website is signed in as ${session.user.email||'an unknown email'}, but that email is not linked to an active delivery boy. In Admin → Delivery, save this exact email for the rider.`);return}const [orders,summary]=await Promise.all([supabase.rpc('delivery_partner_orders'),supabase.rpc('delivery_partner_earnings')]);if(orders.error)message(orders.error.message);else{setJobs(orders.data||[]);setNotice('')}if(!summary.error)setEarnings(summary.data?.[0]||null)},[])
  useEffect(()=>{void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>{clearInterval(timer);watches.current.forEach(id=>navigator.geolocation.clearWatch(id))}},[refresh])
@@ -108,3 +109,36 @@ const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.g
 			<DeliveryMap customerLocation={cust||{lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.lat,lng:riderLoc.lng,accuracy:riderLoc.accuracy}:null} height={180} />
 		</div>
 	}
+
+function SelectedJobMap({ orderNumber }: { orderNumber: string }){
+	const [riderLoc, setRiderLoc] = useState<{lat:number,lng:number,accuracy?:number}|null>(null)
+	const [customer, setCustomer] = useState<any|null>(null)
+	useEffect(()=>{
+		let mounted = true
+		const load = async ()=>{
+			try{
+				const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,accuracy,updated_at').eq('order_number', orderNumber).order('updated_at',{ascending:false}).limit(1)
+				let orderData: any = null
+				try { const od = await supabase.from('orders').select('payload').eq('order_number', orderNumber).limit(1); orderData = od.data } catch(err){ try{ console.error('orders fetch error', err) }catch(e){} }
+				if(!mounted) return
+				if(data && data.length){ const r = data[0]; setRiderLoc({ lat: Number(r.latitude), lng: Number(r.longitude), accuracy: r.accuracy }) }
+				if(orderData && orderData.length){ try { const p = (orderData[0] as any).payload; setCustomer(p.customer) } catch(e){ try{ console.error('parse order payload', e) }catch(_){} } }
+			}catch(e){ try{ console.error('SelectedJobMap load error', e) }catch(_){} }
+		}
+		void load()
+		let channel:any=null
+		try{
+			channel = supabase.channel(`delivery_tracking_order_${orderNumber}`)
+			channel.on('postgres_changes',{ event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload:any)=>{
+				try{ const rec = payload.new || payload.record || payload; if(rec && typeof rec.latitude==='number' && typeof rec.longitude==='number'){ setRiderLoc({ lat: Number(rec.latitude), lng: Number(rec.longitude), accuracy: rec.accuracy }) } }catch(e){}
+			}).subscribe()
+		}catch(e){}
+		return ()=>{ mounted=false; try{ if(channel) supabase.removeChannel(channel) }catch(e){} }
+	},[orderNumber])
+
+	if(!customer) return <div className="p-4 text-sm text-accent/70">Loading map…</div>
+	const cust = (customer && typeof customer.lat==='number' && typeof customer.lng==='number') ? { lat: Number(customer.lat), lng: Number(customer.lng) } : null
+	return <div className="overflow-hidden rounded-md" style={{ height: 420 }}>
+		<DeliveryMap customerLocation={cust||{lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.lat,lng:riderLoc.lng,accuracy:riderLoc.accuracy}:null} height={420} />
+	</div>
+}
