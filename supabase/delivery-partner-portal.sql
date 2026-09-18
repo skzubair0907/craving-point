@@ -35,7 +35,6 @@ begin
   update public.delivery_staff
   set user_id = auth.uid()
   where active = true
-    and user_id is null
     and lower(email) = lower(coalesce(auth.jwt()->>'email', ''));
   get diagnostics linked_count = row_count;
   linked := linked_count > 0;
