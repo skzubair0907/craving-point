@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { calculateDistance, isValidLocation, resolveMapCenter } from '../lib/mapUtils'
+import { getRouteGeoJSON } from '../lib/directions'
 
 export interface DeliveryMapProps {
   customerLocation: { lat: number; lng: number }
@@ -77,12 +78,33 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
       }
       requestAnimationFrame(step)
 
-      // update or create polyline to customer
-      const pts = [to, L.latLng(customer.lat, customer.lng)]
-      if (!riderPolylineRef.current) {
-        riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+      // update or create polyline to customer (prefer routed polyline)
+      const routeKey = `${to.lat.toFixed(5)}:${to.lng.toFixed(5)}|${customer.lat.toFixed(5)}:${customer.lng.toFixed(5)}`
+      const lastRouteKey = (riderPolylineRef as any).__routeKey
+      if (routeKey !== lastRouteKey) {
+        ;(riderPolylineRef as any).__routeKey = routeKey
+        // fetch route in background
+        void (async () => {
+          const json = await getRouteGeoJSON({ lat: to.lat, lng: to.lng }, { lat: customer.lat, lng: customer.lng })
+          if (json && Array.isArray(json.routes) && json.routes[0] && json.routes[0].geometry && json.routes[0].geometry.coordinates) {
+            const coords: L.LatLngExpression[] = (json.routes[0].geometry.coordinates as Array<[number, number]>).map(([lng, lat]) => [lat, lng])
+            if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(coords, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+            else riderPolylineRef.current.setLatLngs(coords)
+            ;(riderPolylineRef as any).__wasRouted = true
+            return
+          }
+          // fallback: straight polyline
+          const pts = [to, L.latLng(customer.lat, customer.lng)]
+          if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+          else riderPolylineRef.current.setLatLngs(pts)
+        })()
       } else {
-        riderPolylineRef.current.setLatLngs(pts)
+        // already have requested this route - just update straight line if no routed shape yet
+        if (!(riderPolylineRef as any).__wasRouted) {
+          const pts = [to, L.latLng(customer.lat, customer.lng)]
+          if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+          else riderPolylineRef.current.setLatLngs(pts)
+        }
       }
 
       const distance = calculateDistance(to.lat, to.lng, customer.lat, customer.lng)
