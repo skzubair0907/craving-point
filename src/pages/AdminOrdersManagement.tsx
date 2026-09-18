@@ -6,6 +6,7 @@ import AdminOrderDetails from '../components/AdminOrderDetails'
 import OrderCancellationDialog from '../components/OrderCancellationDialog'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
+import ForceDeliverDialog from '../components/ForceDeliverDialog'
 const nextStatus = (order: any) => ({ placed: 'confirmed', ORDER_PLACED: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: order.meta.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string,string>)[order.status]
 const label = (status: string) => ({
   placed: 'Order received',
@@ -43,6 +44,7 @@ export default function AdminOrdersManagement() {
   const [message, setMessage] = useState('')
   const [query, setQuery] = useState('')
   const [cancelOrder, setCancelOrder] = useState<any>(null)
+  const [forceOrder, setForceOrder] = useState<{ id: string; orderNumber: string } | null>(null)
   const [showAudit, setShowAudit] = useState(false)
   const [auditOrder, setAuditOrder] = useState<string | undefined>(undefined)
 
@@ -171,10 +173,7 @@ export default function AdminOrdersManagement() {
                 <button
                   className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
                   disabled={busy === row.id}
-                  onClick={() => {
-                    if (!window.confirm('Force mark this order as delivered? This bypasses rider confirmation.')) return
-                    void update(row.id, 'delivered', undefined, row.order_number)
-                  }}
+                  onClick={() => setForceOrder({ id: row.id, orderNumber: row.order_number })}
                 >Force mark delivered</button>
               )}
               {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
@@ -198,6 +197,13 @@ export default function AdminOrdersManagement() {
 
       {cancelOrder && <OrderCancellationDialog orderNumber={cancelOrder.order_number} total={Number(cancelOrder.payload.total)} paid={cancelOrder.payload.payment_status === 'paid'} onClose={() => setCancelOrder(null)} onConfirm={reason => { void update(cancelOrder.id, 'cancelled', reason); setCancelOrder(null) }} />}
       {showAudit && <DeliveryAuditBrowser defaultOrder={auditOrder} />}
+      {forceOrder && (
+        <ForceDeliverDialog
+          orderNumber={forceOrder.orderNumber}
+          onClose={() => setForceOrder(null)}
+          onConfirm={async (reason) => { setForceOrder(null); await update(forceOrder.id, 'delivered', reason, forceOrder.orderNumber) }}
+        />
+      )}
     </div>
   )
 }

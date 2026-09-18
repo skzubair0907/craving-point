@@ -8,6 +8,7 @@ import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 import DeliveryMetricsPanel from '../components/DeliveryMetricsPanel'
 import AdminOperations from './AdminOperations'
 import OrderAlerts from '../components/OrderAlerts'
+import ForceDeliverDialog from '../components/ForceDeliverDialog'
 
 const stages = [['preparing', 'In kitchen'], ['ready', 'Ready to dispatch'], ['out_for_delivery', 'On the way'], ['delivered', 'Delivered']]
 
@@ -25,10 +26,12 @@ export default function AdminDispatch() {
     const matches = (status: string, stage: string) => stage === 'preparing' ? ['placed', 'confirmed', 'preparing'].includes(status) : status === stage
     const visible = deliveries.filter(r => matches(r.payload.status, tab) && [r.order_number, r.payload.customer?.name, r.payload.customer?.phone, r.payload.customer?.address].join(' ').toLowerCase().includes(query.toLowerCase()))
 
-    async function advance(row: any, status: string) {
+    const [forceOrder, setForceOrder] = useState<{ id: string; orderNumber: string } | null>(null)
+
+    async function advance(row: any, status: string, reason?: string | null) {
         setBusy(row.id); setMessage('')
         try {
-            const { error } = await supabase.rpc('set_order_status', { p_id: row.id, p_status: status, p_reason: null })
+            const { error } = await supabase.rpc('set_order_status', { p_id: row.id, p_status: status, p_reason: reason ?? null })
             if (error) throw error
             await refresh()
 
@@ -120,10 +123,7 @@ export default function AdminDispatch() {
                                         <button
                                             className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
                                             disabled={busy === row.id}
-                                            onClick={() => {
-                                                if (!window.confirm('Force mark this order as delivered? This bypasses rider confirmation.')) return
-                                                void advance(row, 'delivered')
-                                            }}
+                                            onClick={() => setForceOrder({ id: row.id, orderNumber: row.order_number })}
                                         >Force mark delivered</button>
                                     )}
                                     {o.status === 'ready' && <span className="rounded-lg border border-primary/50 bg-primary/10 px-3 py-2 text-sm text-primary">The assigned rider starts delivery from their own phone.</span>}
@@ -148,6 +148,17 @@ export default function AdminDispatch() {
                             <div className="mt-4">
                                 <DeliveryMetricsPanel />
                             </div>
+                        )}
+                        {forceOrder && (
+                            <ForceDeliverDialog
+                                orderNumber={forceOrder.orderNumber}
+                                onClose={() => setForceOrder(null)}
+                                onConfirm={async (reason) => {
+                                    const fakeRow = { id: forceOrder.id }
+                                    setForceOrder(null)
+                                    await advance(fakeRow, 'delivered', reason)
+                                }}
+                            />
                         )}
                 </>
             )}
