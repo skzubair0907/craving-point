@@ -116,6 +116,16 @@ export default function AdminDispatch() {
                                     <a className="btn-secondary flex items-center gap-2" href={'tel:' + o.customer?.phone}><Phone size={16} />Call customer</a>
                                     {o.customer?.address && <a className="btn-secondary" href={'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.customer.address)} target="_blank" rel="noreferrer">Open address in Maps</a>}
                                     {next && next !== 'out_for_delivery' && next !== 'delivered' && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />Mark {next}</button>}
+                                    {o.status === 'out_for_delivery' && (
+                                        <button
+                                            className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
+                                            disabled={busy === row.id}
+                                            onClick={() => {
+                                                if (!window.confirm('Force mark this order as delivered? This bypasses rider confirmation.')) return
+                                                void advance(row, 'delivered')
+                                            }}
+                                        >Force mark delivered</button>
+                                    )}
                                     {o.status === 'ready' && <span className="rounded-lg border border-primary/50 bg-primary/10 px-3 py-2 text-sm text-primary">The assigned rider starts delivery from their own phone.</span>}
                                 </div>
 

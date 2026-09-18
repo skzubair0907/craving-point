@@ -167,6 +167,16 @@ export default function AdminOrdersManagement() {
 
             <div className="flex flex-wrap gap-3">
               {next && !(order.meta.orderType === 'delivery' && ['out_for_delivery', 'delivered'].includes(next)) && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
+              {order.status === 'out_for_delivery' && (
+                <button
+                  className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
+                  disabled={busy === row.id}
+                  onClick={() => {
+                    if (!window.confirm('Force mark this order as delivered? This bypasses rider confirmation.')) return
+                    void update(row.id, 'delivered', undefined, row.order_number)
+                  }}
+                >Force mark delivered</button>
+              )}
               {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
               <button className="btn-secondary" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
