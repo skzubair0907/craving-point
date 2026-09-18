@@ -12,7 +12,28 @@ export default function DeliveryPartner(){
  const message=(text:string)=>setNotice(text.includes('delivery_partner_')?'Delivery portal setup is pending. Ask the owner to run the Delivery Partner SQL setup once in Supabase.':text)
 const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.getSession();setUser(session?.user??null);if(!session?.user)return;const activation=await supabase.rpc('activate_my_delivery_partner_account');if(activation.error){message(activation.error.message);return}if(!activation.data){setJobs([]);setNotice(`The website is signed in as ${session.user.email||'an unknown email'}, but that email is not linked to an active delivery boy. In Admin → Delivery, save this exact email for the rider.`);return}const [orders,summary]=await Promise.all([supabase.rpc('delivery_partner_orders'),supabase.rpc('delivery_partner_earnings')]);if(orders.error)message(orders.error.message);else{setJobs(orders.data||[]);setNotice('')}if(!summary.error)setEarnings(summary.data?.[0]||null)},[])
  useEffect(()=>{void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>{clearInterval(timer);watches.current.forEach(id=>navigator.geolocation.clearWatch(id))}},[refresh])
- const publish=async(job:Job,lat:number,lng:number,accuracy?:number)=>{const r=await supabase.rpc('set_delivery_location',{p_order_number:job.order_number,p_latitude:lat,p_longitude:lng,p_accuracy:accuracy});if(r.error)throw Error(r.error.message)}
+ const publish=async(job:Job,lat:number,lng:number,accuracy?:number)=>{
+		try{
+			const r = await supabase.rpc('set_delivery_location', { p_order_number: job.order_number, p_latitude: lat, p_longitude: lng, p_accuracy: accuracy })
+			if (r.error) {
+				// Surface the exact DB/RPC error for debugging and user guidance
+				console.error('set_delivery_location error', r.error)
+				const msg = r.error?.message || String(r.error)
+				// If permission denied, give actionable guidance
+				if (/access denied/i.test(msg) || /not authorized/i.test(msg)) {
+					message('Permission denied. Ensure you are signed in with the delivery partner account linked by the manager, or ask the owner to run the Delivery Partner SQL setup in Supabase.')
+				} else {
+					message(msg)
+				}
+				return { error: r.error }
+			}
+			return { data: r.data }
+		}catch(err:any){
+			console.error('publish exception', err)
+			message(err?.message || 'Unable to publish location')
+			return { error: err }
+		}
+ }
 
 	// per-job last publish metadata for throttling
 	const lastPublish = useRef(new Map<string,{ts:number,lat:number,lng:number}>())
@@ -41,7 +62,18 @@ const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.g
 				}
 				if (should) {
 					// publish numeric coords
-					void publish(job, lat, lng, accuracy).then(()=>{
+					void publish(job, lat, lng, accuracy).then((res:any)=>{
+						if (res && res.error) {
+							// Stop sharing on permission errors to avoid continuous failures
+							if (/access denied/i.test(res.error?.message||String(res.error))) {
+								message('Location sharing failed due to permission error. Sign in with the assigned delivery partner account or ask the manager to link your email in Supabase.')
+								try { if (watches.current.has(job.id)) { navigator.geolocation.clearWatch(watches.current.get(job.id)!) ; watches.current.delete(job.id) } } catch(e){}
+								setBusy('')
+								return
+							}
+							message(res.error?.message || String(res.error))
+							return
+						}
 						lastPublish.current.set(job.id, { ts: now, lat, lng })
 						setSharing(s=>({...s,[job.id]:true}))
 						setNotice('Live location is sharing with the customer.')
