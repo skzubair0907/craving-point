@@ -20,7 +20,7 @@ begin
   if not exists (
     select 1 from public.order_requests o join public.order_admin_details d on d.order_id=o.id
     join public.delivery_staff s on s.id=d.delivery_staff_id
-    where o.id=p_order_id and s.user_id=auth.uid() and s.active=true and o.payload->>'status'='out_for_delivery'
+    where o.id=p_order_id and s.active=true and (s.user_id=auth.uid() or lower(s.email)=lower(coalesce(auth.jwt()->>'email',''))) and o.payload->>'status'='out_for_delivery'
   ) then raise exception 'This active delivery is not assigned to you'; end if;
   select otp into expected_otp from public.delivery_verifications where order_id=p_order_id;
   if expected_otp is null then raise exception 'Delivery confirmation code is not ready yet'; end if;
@@ -38,7 +38,7 @@ returns void language plpgsql security definer set search_path = public as $$
 declare current_status text;
 begin
   if p_status <> 'out_for_delivery' then raise exception 'Only starting a delivery is allowed here'; end if;
-  select o.payload->>'status' into current_status from public.order_requests o join public.order_admin_details d on d.order_id=o.id join public.delivery_staff s on s.id=d.delivery_staff_id where o.id=p_order_id and s.user_id=auth.uid() and s.active=true;
+  select o.payload->>'status' into current_status from public.order_requests o join public.order_admin_details d on d.order_id=o.id join public.delivery_staff s on s.id=d.delivery_staff_id where o.id=p_order_id and s.active=true and (s.user_id=auth.uid() or lower(s.email)=lower(coalesce(auth.jwt()->>'email','')));
   if not found then raise exception 'This delivery is not assigned to you'; end if;
   if current_status <> 'ready' then raise exception 'Only ready orders can be started'; end if;
   update public.order_requests set payload=jsonb_set(jsonb_set(payload,'{status}',to_jsonb('out_for_delivery'::text),true),'{updated_at}',to_jsonb(now()),true) where id=p_order_id;
@@ -55,7 +55,7 @@ language sql stable security definer set search_path = public as $$
    coalesce(sum(coalesce((o.payload->>'delivery')::numeric,0)),0),
    coalesce(sum(case when o.payload->'meta'->>'payment'='cod' then coalesce((o.payload->>'total')::numeric,0) else 0 end),0)
  from public.order_requests o join public.order_admin_details d on d.order_id=o.id join public.delivery_staff s on s.id=d.delivery_staff_id
- where s.user_id=auth.uid() and s.active=true and o.payload->>'status'='delivered'
+ where s.active=true and (s.user_id=auth.uid() or lower(s.email)=lower(coalesce(auth.jwt()->>'email',''))) and o.payload->>'status'='delivered'
 $$;
 revoke all on function public.delivery_partner_earnings() from public, anon;
 grant execute on function public.delivery_partner_earnings() to authenticated;

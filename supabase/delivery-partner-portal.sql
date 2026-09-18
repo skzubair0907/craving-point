@@ -5,14 +5,19 @@
 alter table public.delivery_staff
   add column if not exists user_id uuid references auth.users(id) on delete set null;
 
+alter table public.delivery_staff
+  add column if not exists email text;
+
 create unique index if not exists delivery_staff_user_id_unique
   on public.delivery_staff(user_id) where user_id is not null;
+create unique index if not exists delivery_staff_email_unique
+  on public.delivery_staff(lower(email)) where email is not null;
 
 create or replace function public.is_delivery_partner()
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (
     select 1 from public.delivery_staff
-    where user_id = auth.uid() and active = true
+    where active = true and (user_id = auth.uid() or lower(email) = lower(coalesce(auth.jwt()->>'email','')))
   );
 $$;
 revoke all on function public.is_delivery_partner() from public, anon;
@@ -30,8 +35,8 @@ returns table (
   from public.order_requests o
   join public.order_admin_details d on d.order_id = o.id
   join public.delivery_staff s on s.id = d.delivery_staff_id
-  where s.user_id = auth.uid()
-    and s.active = true
+  where s.active = true
+    and (s.user_id = auth.uid() or lower(s.email) = lower(coalesce(auth.jwt()->>'email','')))
     and coalesce(o.payload->'meta'->>'orderType', 'delivery') = 'delivery'
     and coalesce(o.payload->>'status', '') in ('ready', 'out_for_delivery')
   order by o.created_at asc;
@@ -53,8 +58,8 @@ begin
     join public.order_admin_details d on d.order_id = o.id
     join public.delivery_staff s on s.id = d.delivery_staff_id
     where o.order_number = p_order_number
-      and s.user_id = auth.uid()
       and s.active = true
+      and (s.user_id = auth.uid() or lower(s.email) = lower(coalesce(auth.jwt()->>'email','')))
   ) then
     raise exception 'Access denied';
   end if;
@@ -86,7 +91,7 @@ begin
   from public.order_requests o
   join public.order_admin_details d on d.order_id = o.id
   join public.delivery_staff s on s.id = d.delivery_staff_id
-  where o.id = p_order_id and s.user_id = auth.uid() and s.active = true;
+  where o.id = p_order_id and s.active = true and (s.user_id = auth.uid() or lower(s.email) = lower(coalesce(auth.jwt()->>'email','')));
   if not found then raise exception 'This delivery is not assigned to you'; end if;
   if p_status = 'out_for_delivery' and current_status <> 'ready' then
     raise exception 'Only ready orders can be started';
