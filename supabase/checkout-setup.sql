@@ -204,6 +204,15 @@ create table if not exists public.order_admin_details (
 create table if not exists public.admin_notifications (
  id bigint generated always as identity primary key, kind text not null, message text not null, order_id uuid, created_at timestamptz not null default now()
 );
+create table if not exists public.notification_subscriptions (
+  id bigint generated always as identity primary key,
+  user_id uuid references auth.users(id),
+  endpoint text not null unique,
+  p256dh text,
+  auth text,
+  order_number text,
+  created_at timestamptz not null default now()
+);
 create table if not exists public.notification_reads (
  notification_id bigint references admin_notifications(id) on delete cascade, user_id uuid default auth.uid() references auth.users(id), primary key(notification_id,user_id)
 );

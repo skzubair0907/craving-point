@@ -399,6 +399,18 @@
     @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em];
   }
 
+  /* Mobile-first: make primary/secondary buttons and form inputs full-width on small screens for touch targets */
+  @media (max-width: 640px) {
+    .btn-primary,
+    .btn-secondary {
+      width: 100% !important;
+      justify-content: center;
+    }
+    .admin-input {
+      width: 100% !important;
+    }
+  }
+
   .status-pill--open {
     color: #4ade80;
     border: 1px solid rgba(74, 222, 128, 0.35);

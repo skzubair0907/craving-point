@@ -7,6 +7,8 @@ import { DeliveryStatusStepper } from '../components/DeliveryStatusStepper';
 import { DeliveryInfoPanel } from '../components/DeliveryInfoPanel';
 import { calculateDistance, isValidLocation, resolveMapCenter } from '../lib/mapUtils';
 import clsx from 'clsx';
+import useNotificationsStore from '../store/useNotificationsStore'
+import registerPush from '../lib/push'
 
 export default function DeliveryTracking() {
   const location = useLocation();
@@ -142,6 +144,39 @@ export default function DeliveryTracking() {
 
     setEtaMinutes(etaMin);
   }, [order, effectiveRiderLocation]);
+
+  // Auto-notify customer when order becomes delivered/picked_up
+  const addNotification = useNotificationsStore(state => state.add)
+  useEffect(() => {
+    if (!order) return
+    const status = String(order.status || '').toLowerCase()
+    if (status === 'delivered' || status === 'picked_up') {
+      const title = 'Order completed'
+      const message = `Your order ${order.orderNumber || order.id} is ${status}. Enjoy!`
+      try {
+        addNotification({ title, message })
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+          new Notification(title, { body: message })
+        } else if (typeof Notification !== 'undefined' && Notification.permission !== 'denied') {
+          Notification.requestPermission().then(perm => { if (perm === 'granted') new Notification(title, { body: message }) })
+        }
+      } catch (e) {
+        // ignore notification errors
+      }
+    }
+  }, [order?.status])
+
+  // Try registering for Web Push (VAPID) and save subscription server-side.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    void (async () => {
+      try {
+        await registerPush(order?.id || order?.orderNumber || null)
+      } catch {
+        // ignore registration errors
+      }
+    })()
+  }, [])
 
   const liveLastUpdated = lastUpdated ?? order?.updated_at ?? new Date().toISOString();
 
@@ -476,14 +511,14 @@ export default function DeliveryTracking() {
               {/* Main Content: Map and Info */}
               <div className="grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
-                <div className="bg-white/10 rounded-xl p-4">
+                <div className="bg-white/10 rounded-xl p-4 h-64 sm:h-96">
                   <>
                     <DeliveryMap
                       customerLocation={displayCustomerLocation}
                       riderLocation={effectiveRiderLocation
-                        ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude }
+                        ? { lat: effectiveRiderLocation.latitude, lng: effectiveRiderLocation.longitude, accuracy: effectiveRiderLocation.accuracy }
                         : null}
-                      height="400px"
+                      height="100%"
                       width="100%"
                     />
                     {!customerLoc && (

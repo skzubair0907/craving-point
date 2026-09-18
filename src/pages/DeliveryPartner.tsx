@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { calculateDistance } from '../lib/mapUtils'
+import { DeliveryMap } from '../components/DeliveryMap2'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Bike, CheckCircle2, ClipboardList, Clock3, LogOut, MapPin, Navigation, Phone, RefreshCw, Route } from 'lucide-react'
@@ -57,8 +58,53 @@ const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.g
 		watches.current.set(job.id, id)
 	}
  async function start(job:Job){setBusy(job.id);const r=await supabase.rpc('delivery_partner_set_status',{p_order_id:job.id,p_status:'out_for_delivery'});if(r.error)message(r.error.message);else{setNotice('Delivery started. Connecting live location…');share(job);await refresh()}setBusy('')}
- async function complete(job:Job){setBusy(job.id);const r=await supabase.rpc('delivery_partner_confirm_delivery',{p_order_id:job.id,p_otp:otp[job.id]||''});if(r.error)message(r.error.message);else{setNotice('Delivery confirmed. Great work.');await refresh()}setBusy('')}
+ async function complete(job:Job){
+		setBusy(job.id)
+		const r = await supabase.rpc('delivery_partner_confirm_delivery', { p_order_id: job.id, p_otp: otp[job.id] || '' })
+		if (r.error) message(r.error.message)
+		else {
+			setNotice('Delivery confirmed. Great work.')
+			await refresh()
+			try {
+				const { data: { session } } = await supabase.auth.getSession()
+				const token = session?.access_token
+				await fetch('/.netlify/functions/push-trigger', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ order_id: job.order_number, title: 'Delivery confirmed', message: `Your order ${job.order_number} has been delivered.` }) })
+			} catch (e) { /* ignore push errors */ }
+		}
+		setBusy('')
+ }
+
  const signIn=async()=>{const r=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/delivery-partner'}});if(r.error)message(r.error.message)}
  if(!user)return <main className="min-h-screen bg-[#100d0c] p-5 text-white"><div className="mx-auto max-w-md pt-8"><div className="mb-10 flex items-center gap-3"><img src="/images/logo-new.png" className="h-14 w-14 rounded-2xl bg-white object-contain"/><div><p className="text-xs font-bold tracking-widest text-orange-300">CRAVING POINT</p><b>Delivery partner</b></div></div><section className="rounded-3xl border border-orange-400/20 bg-gradient-to-br from-orange-500/20 via-[#211816] to-[#141111] p-7 shadow-2xl"><Bike size={34} className="text-primary"/><p className="mt-8 text-xs font-bold tracking-[.2em] text-orange-200">RIDER WORKSPACE</p><h1 className="mt-2 text-4xl font-black">Deliver with confidence.</h1><p className="mt-5 leading-7 text-white/70">Sign in with the Google account linked by your restaurant manager. You will see only your assigned deliveries.</p><button className="btn-primary mt-7 w-full justify-center" onClick={()=>void signIn()}>Continue with Google</button></section>{notice&&<p className="mt-5 rounded-2xl border border-orange-400/30 bg-orange-500/10 p-4 text-sm">{notice}</p>}</div></main>
  return <main className="min-h-screen bg-[#100d0c] p-4 text-white sm:p-7"><div className="mx-auto max-w-5xl"><header className="flex items-center justify-between border-b border-white/10 pb-5"><Link to="/" className="flex items-center gap-3"><img src="/images/logo-new.png" className="h-12 w-12 rounded-xl bg-white object-contain"/><div><p className="text-[10px] font-bold tracking-widest text-orange-300">CRAVING POINT</p><b>Rider workspace</b></div></Link><button className="btn-secondary flex gap-2 px-4 py-2 text-xs" onClick={()=>void supabase.auth.signOut()}><LogOut size={15}/>Sign out</button></header><section className="mt-6 rounded-3xl border border-orange-400/20 bg-gradient-to-r from-[#281611] via-[#1c1715] to-[#141212] p-6 sm:p-8"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs font-bold tracking-[.2em] text-orange-200">ON SHIFT</p><h1 className="mt-2 text-4xl font-black">Your delivery desk</h1><p className="mt-3 text-sm text-white/65">Assigned jobs, live location, customer contact and safe delivery confirmation.</p></div><button className="btn-secondary flex gap-2" onClick={()=>void refresh()}><RefreshCw size={16}/>Refresh jobs</button></div></section><div className="mt-5 grid gap-3 sm:grid-cols-3">{[[<ClipboardList size={17}/>,'Assigned',jobs.length],[<CheckCircle2 size={17}/>,'Completed',earnings?.completed_deliveries||0],[<Bike size={17}/>,'Earnings',cash(earnings?.delivery_earnings)]].map(([icon,label,value])=><div key={String(label)} className="rounded-2xl border border-white/10 bg-[#1a1614] p-4"><div className="flex justify-between text-orange-200">{icon}<span className="text-xs font-bold uppercase">{label}</span></div><b className="mt-3 block text-2xl">{value as any}</b></div>)}</div>{notice&&<p className="mt-5 rounded-2xl border border-orange-400/30 bg-orange-500/10 p-4 text-sm">{notice}</p>}<section className="mt-8"><p className="text-xs font-bold tracking-[.2em] text-orange-300">ASSIGNED TO YOU</p><h2 className="mt-2 text-2xl font-black">Active deliveries</h2>{!jobs.length?<div className="mt-5 rounded-3xl border border-dashed border-white/15 bg-[#171412] p-12 text-center"><Clock3 className="mx-auto text-orange-300"/><h3 className="mt-4 text-xl font-bold">No active deliveries</h3><p className="mt-2 text-sm text-white/60">New jobs appear here after your manager assigns them and marks the order ready.</p></div>:<div className="mt-5 grid gap-5">{jobs.map(job=>{const o=job.payload,active=o.status==='out_for_delivery';return <article key={job.id} className="rounded-3xl border border-white/10 bg-[#1a1614]"><div className="flex flex-wrap justify-between gap-4 border-b border-white/10 p-5"><div><p className="text-xs text-white/45">{job.order_number}</p><h3 className="mt-2 text-2xl font-black">{o.customer?.name||'Customer'}</h3><p className="mt-2 text-sm font-bold text-orange-200">{active?'● ON THE WAY':'READY FOR COLLECTION'}</p></div><b className="text-xl">{cash(o.total)}</b></div><div className="grid gap-5 p-5 lg:grid-cols-[1fr_auto]"><div><p className="text-sm text-white/70">{o.items.map((i:any)=>`${i.quantity} × ${i.name}`).join(' · ')}</p><div className="mt-4 flex flex-wrap gap-3"><a className="btn-secondary flex gap-2" href={'tel:'+o.customer?.phone}><Phone size={16}/>Call customer</a><a className="btn-secondary flex gap-2" target="_blank" rel="noreferrer" href={'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(o.customer?.address||'')}><MapPin size={16}/>Navigate</a></div>{active&&<p className="mt-4 text-sm text-emerald-300">{sharing[job.id]?'● Customer can see your live location':'Location is not sharing yet.'}</p>}</div><div className="flex flex-col gap-3 lg:w-64">{!active?<button className="btn-primary justify-center" disabled={busy===job.id} onClick={()=>void start(job)}><Route size={17}/>Start delivery</button>:<><button className="btn-primary justify-center" disabled={busy===job.id||sharing[job.id]} onClick={()=>share(job)}><Navigation size={17}/>{sharing[job.id]?'Live location on':'Start live location'}</button><div className="flex gap-2"><input className="admin-input min-w-0" inputMode="numeric" maxLength={4} value={otp[job.id]||''} onChange={e=>setOtp(v=>({...v,[job.id]:e.target.value.replace(/\D/g,'')}))} placeholder="Customer OTP"/><button className="btn-secondary" disabled={(otp[job.id]||'').length!==4||busy===job.id} onClick={()=>void complete(job)}>Complete</button></div></>}</div></div></article>})}</div>}</section></div></main>
 }
+
+	function RiderMiniMap({ orderNumber, customer }: { orderNumber: string, customer?: any }){
+		const [riderLoc, setRiderLoc] = useState<{lat:number,lng:number,accuracy?:number}|null>(null)
+		useEffect(()=>{
+			let mounted=true
+			const load = async ()=>{
+				try{
+					const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,accuracy,updated_at').eq('order_number', orderNumber).order('updated_at',{ascending:false}).limit(1)
+					if(!mounted) return
+					if(data && data.length){ const r = data[0]; setRiderLoc({ lat: Number(r.latitude), lng: Number(r.longitude), accuracy: r.accuracy }) }
+				}catch(e){ }
+			}
+                            
+			void load()
+			let channel:any=null
+			try{
+				channel = supabase.channel(`delivery_tracking_order_${orderNumber}`)
+				channel.on('postgres_changes',{ event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload:any)=>{
+					try{ const rec = payload.new || payload.record || payload; if(rec && typeof rec.latitude==='number' && typeof rec.longitude==='number'){ setRiderLoc({ lat: Number(rec.latitude), lng: Number(rec.longitude), accuracy: rec.accuracy }) } }catch(e){}
+				}).subscribe()
+			}catch(e){}
+			return ()=>{ mounted=false; try{ if(channel) supabase.removeChannel(channel) }catch(e){} }
+		},[orderNumber])
+
+		if(!customer) return null
+		const cust = (customer && typeof customer.lat==='number' && typeof customer.lng==='number') ? { lat: Number(customer.lat), lng: Number(customer.lng) } : null
+		return <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 180 }}>
+			<DeliveryMap customerLocation={cust||{lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.lat,lng:riderLoc.lng,accuracy:riderLoc.accuracy}:null} height={180} />
+		</div>
+	}

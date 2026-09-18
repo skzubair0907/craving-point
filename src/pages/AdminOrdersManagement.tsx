@@ -1,5 +1,6 @@
 import OrderAlerts from '../components/OrderAlerts'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { calculateDistance } from '../lib/mapUtils'
 import { useAdminOrders } from '../hooks/useAdminOrders'
 import { supabase } from '../lib/supabase'
 import AdminOrderDetails from '../components/AdminOrderDetails'
@@ -48,6 +49,42 @@ export default function AdminOrdersManagement() {
   const [showAudit, setShowAudit] = useState(false)
   const [auditOrder, setAuditOrder] = useState<string | undefined>(undefined)
 
+  function OrderEta({ orderNumber, customer }: { orderNumber: string; customer?: any }) {
+    const [loc, setLoc] = useState<{ latitude: number; longitude: number } | null>(null)
+    const [eta, setEta] = useState<string | null>(null)
+    useEffect(() => {
+      let active = true
+      const fetchLatest = async () => {
+        try {
+          const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,updated_at').eq('order_number', orderNumber).order('updated_at', { ascending: false }).limit(1)
+          if (!active) return
+          if (data && data.length) setLoc({ latitude: data[0].latitude, longitude: data[0].longitude })
+        } catch (e) {}
+      }
+      void fetchLatest()
+      let channel: any = null
+      try {
+        channel = supabase.channel(`delivery_tracking_admin_${orderNumber}`)
+        channel.on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload: any) => {
+          const rec = payload.new || payload.record || payload
+          if (rec && typeof rec.latitude === 'number' && typeof rec.longitude === 'number') setLoc({ latitude: rec.latitude, longitude: rec.longitude })
+        }).subscribe()
+      } catch (e) {}
+      return () => { active = false; try { if (channel) supabase.removeChannel(channel) } catch (e) {} }
+    }, [orderNumber])
+
+    useEffect(() => {
+      if (!loc || !customer || typeof customer.lat !== 'number' || typeof customer.lng !== 'number') { setEta(null); return }
+      const dist = calculateDistance(loc.latitude, loc.longitude, customer.lat, customer.lng)
+      const speedMs = (15 * 1000) / 3600
+      const seconds = dist / speedMs
+      const mins = Math.max(0, Math.round(seconds / 60))
+      setEta(`${mins} min`)
+    }, [loc, customer])
+
+    return <div className="text-sm text-accent/60">ETA: {eta ?? '––'}</div>
+  }
+
   async function update(id: string, status: string, reason?: string, orderNumber?: string) {
     setBusy(id)
     setMessage('')
@@ -58,6 +95,16 @@ export default function AdminOrdersManagement() {
       if (status !== 'out_for_delivery' || !orderNumber) {
         setMessage("Order status updated. The customer's tracking page will refresh automatically.")
         return
+      }
+      // If marking out_for_delivery, no push needed. If marking delivered/picked_up elsewhere, trigger push.
+      if (['delivered', 'picked_up'].includes(status) && orderNumber) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession()
+          const token = session?.access_token
+          await fetch('/.netlify/functions/push-trigger', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ order_id: orderNumber, title: 'Order update', message: `Your order ${orderNumber} is now ${status}.` }) })
+        } catch (e) {
+          // ignore push errors
+        }
       }
       setMessage('The rider must start delivery from their own Delivery Partner portal. Admin GPS is never used.')
     } catch (error) {
@@ -167,23 +214,66 @@ export default function AdminOrdersManagement() {
               </ul>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              {next && !(order.meta.orderType === 'delivery' && ['out_for_delivery', 'delivered'].includes(next)) && <button className="btn-primary" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button className="btn-secondary w-full sm:w-auto" onClick={async () => {
+                try {
+                  const text = prompt('Push message to send', `Test notification for ${row.order_number}`)
+                  if (!text) return
+                  const { data: { session } } = await supabase.auth.getSession()
+                  const token = session?.access_token
+                  await fetch('/.netlify/functions/push-trigger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+                    body: JSON.stringify({ action: 'send', order_id: row.order_number, title: 'Test notification', message: text })
+                  })
+                  // simple UX feedback
+                  // eslint-disable-next-line no-alert
+                  alert('Push requested')
+                } catch (e) {
+                  // eslint-disable-next-line no-alert
+                  alert('Failed to request push')
+                }
+              }}>Send push</button>
+              <button className="btn-secondary w-full sm:w-auto" onClick={async () => {
+                try {
+                  const { data: { session } } = await supabase.auth.getSession()
+                  const token = session?.access_token
+                  const res = await fetch('/.netlify/functions/push-trigger', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+                    body: JSON.stringify({ action: 'list', order_id: row.order_number })
+                  })
+                  const text = await res.text()
+                  if (res.ok) {
+                    const parsed = JSON.parse(text)
+                    // eslint-disable-next-line no-alert
+                    alert(`Subscriptions for ${row.order_number}: ${parsed.count}`)
+                  } else {
+                    // eslint-disable-next-line no-alert
+                    alert('Failed to fetch subscriptions')
+                  }
+                } catch (e) {
+                  // eslint-disable-next-line no-alert
+                  alert('Failed to fetch subscriptions')
+                }
+              }}>View subscriptions</button>
+              {next && !(order.meta.orderType === 'delivery' && ['out_for_delivery', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
               {order.status === 'out_for_delivery' && (
                 <button
-                  className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
+                  className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10"
                   disabled={busy === row.id}
                   onClick={() => setForceOrder({ id: row.id, orderNumber: row.order_number })}
                 >Force mark delivered</button>
               )}
-              {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
-              <button className="btn-secondary" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
+              {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
+              <button className="btn-secondary w-full sm:w-auto" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
 
             {order.meta.orderType === 'delivery' && ['ready', 'out_for_delivery'].includes(order.status) && (
               <section className="rounded-2xl border border-orange-400/25 bg-gradient-to-br from-[#201913] via-[#171311] to-[#0f0d0b] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p><h3 className="mt-1 text-xl font-black text-white">{order.status === 'ready' ? 'Waiting for rider collection' : 'Rider is on the way'}</h3></div><span className={order.status === 'out_for_delivery' ? 'rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-200' : 'rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-bold text-orange-200'}>{order.status === 'out_for_delivery' ? 'LIVE' : 'READY'}</span></div>
-                <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
+                    <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
+                    {order.status === 'out_for_delivery' && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={order.customer} /></div>}
                 {order.status === 'out_for_delivery' && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} /></div>}
               </section>
             )}
