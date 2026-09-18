@@ -17,6 +17,9 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<L.Map | null>(null)
   const layersRef = useRef<L.LayerGroup | null>(null)
+  const riderMarkerRef = useRef<L.Marker | null>(null)
+  const riderPolylineRef = useRef<L.Polyline | null>(null)
+  const accuracyCircleRef = useRef<L.Circle | null>(null)
   const [ready, setReady] = useState(false)
   const customer = isValidLocation(customerLocation)
     ? customerLocation
@@ -36,17 +39,62 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
     const map = mapRef.current
     const layers = layersRef.current
     if (!ready || !map || !layers) return
+
+    // customer marker
     layers.clearLayers()
     const customerPoint: L.LatLngExpression = [customer.lat, customer.lng]
     L.marker(customerPoint, { icon: customerPin, title: 'Customer delivery location', keyboard: true }).bindPopup('Customer delivery location').addTo(layers)
+
+    // handle rider marker and animation
     if (riderLocation && isValidLocation(riderLocation)) {
-      const riderPoint: L.LatLngExpression = [riderLocation.lat, riderLocation.lng]
-      L.marker(riderPoint, { icon: riderPin, title: 'Delivery rider live location', keyboard: true }).bindPopup('Delivery rider live location').addTo(layers)
-      L.polyline([riderPoint, customerPoint], { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(layers)
-      const distance = calculateDistance(riderLocation.lat, riderLocation.lng, customer.lat, customer.lng)
-      if (distance <= 30) map.setView(customerPoint, 17)
-      else map.fitBounds(L.latLngBounds([riderPoint, customerPoint]), { padding: [48, 48], maxZoom: 16 })
-    } else map.setView(customerPoint, 16)
+      const riderLatLng = L.latLng(riderLocation.lat, riderLocation.lng)
+
+      // create marker if needed
+      if (!riderMarkerRef.current) {
+        riderMarkerRef.current = L.marker(riderLatLng, { icon: riderPin, title: 'Delivery rider live location' }).addTo(map)
+      }
+
+      // create or update accuracy circle
+      if (!accuracyCircleRef.current) {
+        accuracyCircleRef.current = L.circle(riderLatLng, { radius: riderLocation['accuracy'] || 20, color: '#ef3f25', opacity: 0.2, fillOpacity: 0.05 }).addTo(map)
+      } else {
+        accuracyCircleRef.current.setLatLng(riderLatLng)
+        if (typeof riderLocation['accuracy'] === 'number') accuracyCircleRef.current.setRadius(riderLocation['accuracy'])
+      }
+
+      // animate marker smoothly from previous to new position
+      const marker = riderMarkerRef.current
+      const from = marker.getLatLng()
+      const to = riderLatLng
+      const duration = 800
+      const start = performance.now()
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / duration)
+        const lat = from.lat + (to.lat - from.lat) * t
+        const lng = from.lng + (to.lng - from.lng) * t
+        marker.setLatLng([lat, lng])
+        if (t < 1) requestAnimationFrame(step)
+      }
+      requestAnimationFrame(step)
+
+      // update or create polyline to customer
+      const pts = [to, L.latLng(customer.lat, customer.lng)]
+      if (!riderPolylineRef.current) {
+        riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
+      } else {
+        riderPolylineRef.current.setLatLngs(pts)
+      }
+
+      const distance = calculateDistance(to.lat, to.lng, customer.lat, customer.lng)
+      if (distance <= 30) map.setView([customer.lat, customer.lng], 17)
+      else map.fitBounds(L.latLngBounds([to, customerPoint]), { padding: [48, 48], maxZoom: 16 })
+    } else {
+      // no rider - reset view
+      if (riderMarkerRef.current) { riderMarkerRef.current.remove(); riderMarkerRef.current = null }
+      if (riderPolylineRef.current) { riderPolylineRef.current.remove(); riderPolylineRef.current = null }
+      if (accuracyCircleRef.current) { accuracyCircleRef.current.remove(); accuracyCircleRef.current = null }
+      map.setView(customerPoint, 16)
+    }
   }, [ready, customer.lat, customer.lng, riderLocation?.lat, riderLocation?.lng])
 
   return <div className="delivery-map-surface" ref={containerRef} style={{ width, height }} />

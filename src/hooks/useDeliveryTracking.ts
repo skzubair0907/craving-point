@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { orderApi } from '../lib/orderApi'
+import { supabase } from '../lib/supabase'
 
 export interface DeliveryTrackingData {
   latitude: number
@@ -71,9 +72,42 @@ export function useDeliveryTracking(
       if (document.visibilityState === 'visible') void refresh()
     }, 3000)
 
+    // subscribe to realtime updates for delivery_tracking row for this order number
+    let channel: any = null
+    try {
+      channel = supabase.channel(`delivery_tracking_order_${orderId}`)
+      channel.on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderId}` },
+        (payload: any) => {
+          if (!active) return
+          try {
+            const rec = payload.new || payload.record || payload
+            if (rec && typeof rec.latitude === 'number' && typeof rec.longitude === 'number') {
+              const next = {
+                latitude: rec.latitude,
+                longitude: rec.longitude,
+                accuracy: rec.accuracy ?? undefined,
+                timestamp: rec.updated_at || new Date().toISOString(),
+                riderId: rec.updated_by || undefined,
+              }
+              setData(next)
+              setLastUpdated(next.timestamp)
+              setError(null)
+            }
+          } catch (e) {
+            // ignore payload parse errors
+          }
+        }
+      ).subscribe()
+    } catch (e) {
+      // no-op if realtime unsupported
+    }
+
     return () => {
       active = false
       window.clearInterval(timer)
+      try { if (channel) supabase.removeChannel(channel) } catch (e) {}
     }
   }, [orderId, token])
 
