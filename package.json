@@ -15,7 +15,7 @@
     "check:production": "node scripts/check-production.cjs"
   },
   "dependencies": {
-    "web-push": "^4.2.0",
+    "web-push": "^3.6.7",
     "@react-three/drei": "^9.56.0",
     "@react-three/fiber": "^8.13.0",
     "@sentry/react": "^10.74.0",
