@@ -38,21 +38,6 @@ $$;
 revoke all on function public.is_delivery_partner() from public, anon;
 grant execute on function public.is_delivery_partner() to authenticated;
 
--- Ensure the audit table exists so delivery-partner setup can be run independently
--- of the earlier delivery-tracking migration. This makes the portal setup
--- idempotent for environments where only the delivery-partner script is applied.
-create table if not exists public.delivery_tracking_audit (
-  id bigserial primary key,
-  order_number text references public.order_requests(order_number) on delete cascade,
-  latitude double precision not null,
-  longitude double precision not null,
-  accuracy double precision,
-  updated_at timestamptz not null default now(),
-  updated_by uuid references auth.users(id) on delete set null
-);
-grant insert on public.delivery_tracking_audit to service_role;
-grant select on public.delivery_tracking_audit to authenticated;
-
 -- The rider opens their portal with Google once. Link that authenticated account
 -- to the matching rider email automatically, so the manager never has to handle
 -- a technical Auth user ID.
