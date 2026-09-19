@@ -61,9 +61,9 @@ const CartPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div className="cart-page max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
       {/* Cart Items */}
-      <div className="lg:col-span-2 space-y-6">
+      <div className="cart-items lg:col-span-2 space-y-6">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-black text-accent">Your Order</h1>
           <button onClick={clearCart} className="text-sm font-bold text-primary hover:underline">Clear All</button>
@@ -116,7 +116,7 @@ const CartPage = () => {
       </div>
 
       {/* Order Summary */}
-      <div className="lg:col-span-1">
+      <div className="cart-summary lg:col-span-1">
         <div className="card-premium p-6 sticky top-24">
           <h2 className="text-xl font-black text-accent mb-6">Order Summary</h2>
           

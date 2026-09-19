@@ -405,7 +405,7 @@ export default function DeliveryTracking() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--brand-bg)] text-white">
+    <div className="tracking-page min-h-screen flex flex-col bg-[var(--brand-bg)] text-white">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:z-[100] focus:bg-primary focus:p-4"
@@ -485,11 +485,11 @@ export default function DeliveryTracking() {
       </header>
 
       <main id="main-content" className="flex-grow">
-        <div className="px-4 py-8 sm:px-6">
-          <div className="mx-auto max-w-4xl px-4">
-            <div className="space-y-8">
+        <div className="tracking-shell px-4 py-8 sm:px-6">
+          <div className="tracking-inner mx-auto max-w-4xl px-4">
+            <div className="tracking-content space-y-8">
               {/* Order Header */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="tracking-header flex items-center justify-between mb-4">
                 <div>
                   <h1 className="text-2xl font-bold">Order #{order.orderNumber || order.id}</h1>
                   <p className="mt-1 text-accent/40">
@@ -509,9 +509,9 @@ export default function DeliveryTracking() {
               )}
 
               {/* Main Content: Map and Info */}
-              <div className="grid gap-6 md:grid-cols-[1fr_1fr]">
+              <div className="tracking-grid grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
-                <div className="bg-white/10 rounded-xl p-4 h-64 sm:h-96">
+                <div className="tracking-map bg-white/10 rounded-xl p-4 h-64 sm:h-96">
                   <>
                     <DeliveryMap
                       customerLocation={displayCustomerLocation}
@@ -567,7 +567,7 @@ export default function DeliveryTracking() {
               )}
 
               {/* Order Status Stepper */}
-              <div className="bg-white/10 rounded-xl p-6">
+              <div className="tracking-status bg-white/10 rounded-xl p-6">
                 <h2 className="text-xl font-bold mb-4">Order Status</h2>
                 <DeliveryStatusStepper
                   currentStatus={order.status}
@@ -576,7 +576,7 @@ export default function DeliveryTracking() {
               </div>
 
               {/* Footer Actions */}
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="tracking-actions flex flex-col sm:flex-row sm:justify-between sm:items-center mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link
                   to="/"
                   className="btn-secondary w-full sm:w-auto"

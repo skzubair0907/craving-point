@@ -160,7 +160,7 @@ const MainLayout = () => (
     <CustomerSignInPrompt />
     <CustomCursor />
 
-    <main id="main-content" className="flex-grow pt-[88px]">
+    <main id="main-content" className="flex-grow pt-[72px] md:pt-[88px]">
       <Outlet />
     </main>
     <Footer />

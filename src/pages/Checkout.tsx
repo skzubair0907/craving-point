@@ -113,10 +113,10 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <div className="checkout-page max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-black text-accent mb-10 text-center">Complete Your Order</h1><p role="status" className="mb-6">{restaurantSettings.online_ordering_enabled ? `Estimated preparation: ${restaurantSettings.preparation_minutes || 30} minutes. Delivery time is additional.` : 'Ordering is temporarily paused. Please call the restaurant or try again later.'}</p>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="checkout-page-grid grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Form Section */}
         <div className="lg:col-span-2 space-y-8">
           <form onSubmit={handlePlaceOrder} className="space-y-8">
@@ -236,7 +236,7 @@ const CheckoutPage = () => {
 
         {/* Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="card-premium p-6 sticky top-24">
+          <div className="checkout-summary card-premium p-6 sticky top-24">
             <h2 className="text-xl font-black text-accent mb-6">Order Summary</h2>
             <div className="space-y-4 mb-6">
               <div className="flex justify-between text-accent/70">
