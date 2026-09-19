@@ -8,6 +8,21 @@ alter table public.delivery_staff
 alter table public.delivery_staff
   add column if not exists email text;
 
+-- Some older installations ran the delivery portal setup without the tracking
+-- migration. Create the location-write audit table here as well so a rider's
+-- GPS update can never fail just because that optional migration was skipped.
+create table if not exists public.delivery_tracking_audit (
+  id bigserial primary key,
+  order_number text references public.order_requests(order_number) on delete cascade,
+  latitude double precision not null,
+  longitude double precision not null,
+  accuracy double precision,
+  updated_at timestamptz not null default now(),
+  updated_by uuid references auth.users(id) on delete set null
+);
+grant insert on public.delivery_tracking_audit to service_role;
+grant select on public.delivery_tracking_audit to authenticated;
+
 create unique index if not exists delivery_staff_user_id_unique
   on public.delivery_staff(user_id) where user_id is not null;
 create unique index if not exists delivery_staff_email_unique
