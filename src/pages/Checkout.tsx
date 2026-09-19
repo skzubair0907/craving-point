@@ -1,7 +1,7 @@
 import { randomId } from '../lib/randomId'
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CreditCard, MapPin, User, ShoppingBag, CheckCircle } from 'lucide-react'
+import { CreditCard, MapPin, User, ShoppingBag, CheckCircle, ArrowLeft, ChevronRight, Minus, Plus, BadgePercent, CircleHelp } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useCartStore } from '../store/useCartStore'
 import { useRestaurantData } from '../store/useRestaurantData'
@@ -42,6 +42,8 @@ const CheckoutPage = () => {
   const [customerLocation, setCustomerLocation] = useState<{lat:number;lng:number}|null>(()=>{try{const saved=JSON.parse(localStorage.getItem('craving-point-current-location')||'null');return saved&&Number.isFinite(saved.lat)&&Number.isFinite(saved.lng)?{lat:saved.lat,lng:saved.lng}:null}catch{return null}})
   const [locationMessage, setLocationMessage] = useState('')
   const [address, setAddress] = useState(profile.address || '')
+  const [showAddressForm, setShowAddressForm] = useState(!profile.address)
+  const [showContactForm, setShowContactForm] = useState(!profile.name && !profile.phone)
 
   useEffect(()=>{const update=(event:Event)=>{const location=(event as CustomEvent).detail;if(location?.lat&&location?.lng)setCustomerLocation({lat:location.lat,lng:location.lng})};window.addEventListener('craving-point-location',update);return()=>window.removeEventListener('craving-point-location',update)},[])
 
@@ -113,186 +115,342 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="checkout-page max-w-5xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-black text-accent mb-10 text-center">Complete Your Order</h1><p role="status" className="mb-6">{restaurantSettings.online_ordering_enabled ? `Estimated preparation: ${restaurantSettings.preparation_minutes || 30} minutes. Delivery time is additional.` : 'Ordering is temporarily paused. Please call the restaurant or try again later.'}</p>
-      
-      <div className="checkout-page-grid grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Form Section */}
-        <div className="lg:col-span-2 space-y-8">
-          <form onSubmit={handlePlaceOrder} className="space-y-8">
-            {/* Order Type */}
-            <div className="grid grid-cols-2 gap-4">
-              <button 
-                type="button"
-                disabled={restaurantSettings.delivery_available === false}
-                onClick={() => setOrderType('delivery')}
-                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${orderType === 'delivery' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-secondary-dark bg-[var(--brand-surface-2)]'}`}
-              >
-                <MapPin className={orderType === 'delivery' ? 'text-primary' : 'text-accent/40'} />
-                <span className={`font-bold ${orderType === 'delivery' ? 'text-primary' : 'text-accent'}`}>Home Delivery</span>
-              </button>
-              <button 
-                type="button"
-                disabled={restaurantSettings.pickup_available === false}
-                onClick={() => setOrderType('pickup')}
-                className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${orderType === 'pickup' ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-secondary-dark bg-[var(--brand-surface-2)]'}`}
-              >
-                <ShoppingBag className={orderType === 'pickup' ? 'text-primary' : 'text-accent/40'} />
-                <span className={`font-bold ${orderType === 'pickup' ? 'text-primary' : 'text-accent'}`}>Self Pickup</span>
-              </button>
-            </div>
+    <div className="checkout-page max-w-5xl mx-auto px-3 pb-24 pt-3 sm:px-4 sm:py-8">
+      <header className="checkout-header">
+        <button type="button" className="checkout-icon-button" onClick={() => navigate(-1)} aria-label="Go back">
+          <ArrowLeft size={18} />
+        </button>
+        <div className="checkout-header__text">
+          <h1>Checkout</h1>
+          <p>Craving Point • Cheeta Camp</p>
+        </div>
+        <button type="button" className="checkout-icon-button" aria-label="Help">
+          <CircleHelp size={18} />
+        </button>
+      </header>
 
-            {/* Customer Details */}
-            <div className="card-premium p-6 space-y-6">
-              <h3 className="text-xl font-bold text-accent mb-4 flex items-center gap-2">
-                <User size={20} /> Personal Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-bold text-accent/60">Full Name</label>
-                    <input id="name" name="name" defaultValue={profile.name || ''} required type="text" placeholder="Enter your name" className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-bold text-accent/60">Mobile Number</label>
-                    <input id="phone" name="phone" defaultValue={profile.phone || ''} required type="tel" pattern="[+0-9 ()-]{10,20}" autoComplete="tel" placeholder="Enter your mobile number" className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                    <label htmlFor="email" className="text-sm font-bold text-accent/60">Email (Optional)</label>
-                    <input id="email" name="email" defaultValue={profile.email || ''} type="email" placeholder="email@example.com" className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                </div>
+      <div className="checkout-progress" aria-label="Checkout progress">
+        <span className="is-done">Cart <CheckCircle size={13} /></span>
+        <span className="is-current">Delivery <span className="progress-dot" /></span>
+        <span>Payment <span className="progress-dot muted" /></span>
+      </div>
+
+      <div className="checkout-page-grid grid grid-cols-1 lg:grid-cols-[1.5fr_0.9fr] gap-4 lg:gap-8">
+        <div className="space-y-4">
+          <form id="checkout-form" onSubmit={handlePlaceOrder} className="space-y-4">
+            <div className="checkout-card">
+              <div className="checkout-selector" role="tablist" aria-label="Delivery or pickup">
+                <button
+                  type="button"
+                  disabled={restaurantSettings.delivery_available === false}
+                  onClick={() => setOrderType('delivery')}
+                  className={`checkout-type-button ${orderType === 'delivery' ? 'checkout-type-button--active' : ''}`}
+                >
+                  <MapPin size={17} />
+                  <span>Delivery</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={restaurantSettings.pickup_available === false}
+                  onClick={() => setOrderType('pickup')}
+                  className={`checkout-type-button ${orderType === 'pickup' ? 'checkout-type-button--active' : ''}`}
+                >
+                  <ShoppingBag size={17} />
+                  <span>Pickup</span>
+                </button>
+              </div>
+
+              <div className="checkout-meta-row">
+                <span className="checkout-meta-label">Estimated preparation</span>
+                <strong>{restaurantSettings.preparation_minutes || 30} min</strong>
+                <span>Delivery time may vary.</span>
               </div>
             </div>
 
-            {/* Address Details */}
-            {orderType === 'delivery' && (
-              <div className="card-premium p-6 space-y-6">
-                <h3 className="text-xl font-bold text-accent mb-4 flex items-center gap-2">
-                  <MapPin size={20} /> Delivery Address
-                </h3>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                      <label htmlFor="address" className="text-sm font-bold text-accent/60">Full Address</label>
-                    {Array.isArray(profile.addresses)&&profile.addresses.length>0&&<select className="mb-3 w-full rounded-xl border border-secondary-dark px-4 py-3" defaultValue="" onChange={event=>{const saved=profile.addresses.find((item:any)=>item.id===event.target.value);if(saved)setAddress(saved.address)}}><option value="">Choose a saved address</option>{profile.addresses.map((item:any)=><option key={item.id} value={item.id}>{item.label} — {item.address}</option>)}</select>}
-                    <textarea id="address" name="address" value={address} onChange={event => setAddress(event.target.value)} required rows={3} placeholder="House No, Street, Area..." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                    <div className="flex flex-wrap items-center gap-3"><button type="button" className="btn-secondary text-sm" onClick={()=>{if(!navigator.geolocation){setLocationMessage('Location is unavailable in this browser.');return}setLocationMessage('Finding your location…');navigator.geolocation.getCurrentPosition(async position=>{const location={lat:position.coords.latitude,lng:position.coords.longitude};setCustomerLocation(location);setLocationMessage('Finding your full address…');try{const response=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`,{headers:{Accept:'application/json'}});const result=await response.json();if(!response.ok||!result.display_name)throw new Error('Address unavailable');setAddress(result.display_name);setLocationMessage('Address filled from your location. Add your flat or house number if it is missing.')}catch{setLocationMessage('Exact delivery location saved. Please enter your full address manually.')}},()=>setLocationMessage('Location permission was denied. Your typed address will still be used.'),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})}}>Use my current location</button>{locationMessage&&<span className="text-sm text-accent/70">{locationMessage}</span>}</div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="landmark" className="text-sm font-bold text-accent/60">Landmark</label>
-                    <input id="landmark" name="landmark" type="text" placeholder="Near Noor Masjid, etc." className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="instructions" className="text-sm font-bold text-accent/60">Special Instructions</label>
-                    <input id="instructions" name="instructions" type="text" placeholder="e.g. Ring bell twice" className="w-full px-4 py-3 rounded-xl border border-secondary-dark outline-none focus:ring-2 focus:ring-primary" />
-                    </div>
-                  </div>
+            {orderType === 'delivery' ? (
+              <div className="checkout-card">
+                <div className="checkout-section-header">
+                  <span className="checkout-section-icon"><MapPin size={16} /></span>
+                  <h3>Delivering to</h3>
                 </div>
+
+                {!address || showAddressForm ? (
+                  <div className="checkout-address-stack">
+                    {!address && (
+                      <button type="button" className="checkout-link-button" onClick={() => setShowAddressForm(true)}>
+                        <span className="checkout-pill">+ Add delivery address</span>
+                      </button>
+                    )}
+
+                    {showAddressForm && (
+                      <div className="checkout-address-form">
+                        <button type="button" className="checkout-ghost-btn checkout-ghost-btn--full" onClick={() => {
+                          if (!navigator.geolocation) {
+                            setLocationMessage('We could not access your location. Enter your address manually.')
+                            return
+                          }
+                          setLocationMessage('Getting your location...')
+                          navigator.geolocation.getCurrentPosition(
+                            async (position) => {
+                              const location = { lat: position.coords.latitude, lng: position.coords.longitude }
+                              setCustomerLocation(location)
+                              setLocationMessage('Location detected ✓')
+                              try {
+                                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.lat}&lon=${location.lng}&zoom=18&addressdetails=1`, { headers: { Accept: 'application/json' } })
+                                const result = await response.json()
+                                if (!response.ok || !result.display_name) throw new Error('Address unavailable')
+                                setAddress(result.display_name)
+                                setShowAddressForm(false)
+                              } catch {
+                                setLocationMessage("We couldn't access your location. Enter your address manually.")
+                              }
+                            },
+                            () => {
+                              setLocationMessage("We couldn't access your location. Enter your address manually.")
+                            },
+                            { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
+                          )
+                        }}>
+                          Use current location
+                        </button>
+
+                        <div className="checkout-field">
+                          <label htmlFor="address">Full Address</label>
+                          <textarea id="address" name="address" value={address} onChange={(event) => setAddress(event.target.value)} required rows={3} placeholder="House No, Street, Area..." className="checkout-input checkout-textarea" />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="checkout-field">
+                            <label htmlFor="landmark">Landmark</label>
+                            <input id="landmark" name="landmark" type="text" placeholder="Near Noor Masjid, etc." className="checkout-input" />
+                          </div>
+                          <div className="checkout-field">
+                            <label htmlFor="instructions">Delivery instructions</label>
+                            <input id="instructions" name="instructions" type="text" placeholder="e.g. Ring bell twice" className="checkout-input" />
+                          </div>
+                        </div>
+
+                        <div className="checkout-inline-actions">
+                          <button type="button" className="checkout-mini-button" onClick={() => setShowAddressForm(false)}>
+                            Cancel
+                          </button>
+                          <button type="button" className="checkout-primary-button" onClick={() => setShowAddressForm(false)}>
+                            Save address
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="checkout-address-summary">
+                    <input type="hidden" name="address" value={address} />
+                    <input type="hidden" name="landmark" value={profile.landmark || ''} />
+                    <input type="hidden" name="instructions" value={profile.instructions || ''} />
+                    <div className="checkout-address-summary__top">
+                      <div className="checkout-address-badge">Home</div>
+                      <button type="button" className="checkout-link-button" onClick={() => setShowAddressForm(true)}>Change</button>
+                    </div>
+                    <p>{address}</p>
+                  </div>
+                )}
+
+                {locationMessage && <p className="checkout-helper-text checkout-helper-text--inline">{locationMessage}</p>}
+              </div>
+            ) : (
+              <div className="checkout-card">
+                <div className="checkout-section-header">
+                  <span className="checkout-section-icon"><ShoppingBag size={16} /></span>
+                  <h3>Pickup from</h3>
+                </div>
+                <div className="checkout-pickup-panel">
+                  <h4>Craving Point</h4>
+                  <p>Shop No. 29, F-Sector, Cheeta Camp Road</p>
+                  <p>Near Noor Masjid, Trombay, Mumbai 400088</p>
+                </div>
+                <button type="button" className="checkout-link-button checkout-link-button--spaced">View on map</button>
               </div>
             )}
 
-            {orderType === 'pickup' && (
-              <div className="card-premium p-6 bg-blue-50 border-blue-200">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-blue-600 text-white rounded-full">
-                    <ShoppingBag size={24} />
+            <div className="checkout-card">
+              <div className="checkout-section-header">
+                <span className="checkout-section-icon"><User size={16} /></span>
+                <h3>Contact details</h3>
+              </div>
+
+              {!showContactForm ? (
+                <div className="checkout-contact-summary">
+                  <input type="hidden" name="name" value={profile.name || ''} />
+                  <input type="hidden" name="phone" value={profile.phone || ''} />
+                  <input type="hidden" name="email" value={profile.email || ''} />
+                  <div>
+                    <label>Customer</label>
+                    <p>{profile.name || 'Your name'}</p>
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-blue-900">Pickup Location</h3>
-                    <p className="text-blue-700 text-sm leading-relaxed">
-                      Shop No. 29, F-Sector, Cheeta Camp Road, Near Noor Masjid, Cheeta Camp, Trombay, Mumbai 400088
-                    </p>
+                    <label>Phone</label>
+                    <p>{profile.phone || '+91 ••••• ••469'}</p>
+                  </div>
+                  <button type="button" className="checkout-link-button" onClick={() => setShowContactForm(true)}>Edit</button>
+                </div>
+              ) : (
+                <div className="checkout-contact-form">
+                  <div className="checkout-field">
+                    <label htmlFor="name">Customer name</label>
+                    <input id="name" name="name" defaultValue={profile.name || ''} required type="text" placeholder="Enter your name" className="checkout-input" />
+                  </div>
+                  <div className="checkout-field">
+                    <label htmlFor="phone">Mobile number</label>
+                    <div className="checkout-phone-field">
+                      <span>+91</span>
+                      <input id="phone" name="phone" defaultValue={profile.phone || ''} required type="tel" inputMode="numeric" autoComplete="tel" pattern="[0-9]{10}" placeholder="85912 45469" className="checkout-input" />
+                    </div>
+                  </div>
+                  <div className="checkout-field">
+                    <label htmlFor="email">Email (optional)</label>
+                    <input id="email" name="email" defaultValue={profile.email || ''} type="email" placeholder="email@example.com" className="checkout-input" />
+                  </div>
+                  <div className="checkout-inline-actions">
+                    <button type="button" className="checkout-mini-button" onClick={() => setShowContactForm(false)}>Cancel</button>
+                    <button type="button" className="checkout-primary-button" onClick={() => setShowContactForm(false)}>Save</button>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {/* Payment Method */}
-            <div className="card-premium p-6 space-y-6">
-              <h3 className="text-xl font-bold text-accent mb-4 flex items-center gap-2">
-                <CreditCard size={20} /> Payment Method
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="flex items-center p-4 border-2 border-secondary-dark rounded-2xl cursor-pointer hover:bg-secondary-dark transition-all">
-                  <input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={() => setPayment('cod')} className="w-4 h-4 text-primary" />
-                  <span className="ml-3 font-bold text-accent">{orderType === 'pickup' ? 'Pay at Pickup' : 'Cash on Delivery'}</span>
+            <div className="checkout-card">
+              <div className="checkout-section-header">
+                <span className="checkout-section-icon"><ShoppingBag size={16} /></span>
+                <h3>Your order</h3>
+              </div>
+
+              <div className="checkout-order-list">
+                {items.map((item) => (
+                  <div key={item.id} className="checkout-order-item">
+                    <div className="checkout-order-item__image" aria-hidden="true">
+                      {item.name?.slice(0, 1).toUpperCase() || 'I'}
+                    </div>
+                    <div className="checkout-order-item__details">
+                      <div className="checkout-order-item__row">
+                        <div>
+                          <strong>{item.name}</strong>
+                          <span>{item.selectedVariant || 'Regular'}</span>
+                        </div>
+                        <strong>₹{(item.price * item.quantity).toFixed(2)}</strong>
+                      </div>
+
+                      <div className="checkout-order-item__controls">
+                        <button type="button" aria-label={`Decrease ${item.name}`} onClick={() => useCartStore.getState().updateQuantity(item.id, item.quantity - 1)}>
+                          <Minus size={14} />
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button type="button" aria-label={`Increase ${item.name}`} onClick={() => useCartStore.getState().updateQuantity(item.id, item.quantity + 1)}>
+                          <Plus size={14} />
+                        </button>
+                        <button type="button" className="checkout-remove-link" onClick={() => useCartStore.getState().removeItem(item.id)}>Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button type="button" className="checkout-link-button checkout-link-button--spaced" onClick={() => navigate('/menu')}>
+                + Add more items
+              </button>
+            </div>
+
+            <div className="checkout-card checkout-card--compact">
+              <div className="checkout-section-header">
+                <span className="checkout-section-icon"><BadgePercent size={16} /></span>
+                <h3>Apply coupon</h3>
+                <button type="button" className="checkout-link-button">View offers</button>
+              </div>
+            </div>
+
+            <div className="checkout-card">
+              <div className="checkout-section-header">
+                <span className="checkout-section-icon"><CreditCard size={16} /></span>
+                <h3>Payment method</h3>
+              </div>
+
+              <div className="checkout-payment-grid">
+                <label className={`checkout-payment-option ${payment === 'cod' ? 'checkout-payment-option--selected' : ''}`}>
+                  <input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
+                  <div>
+                    <span className="checkout-payment-title">Cash on Delivery</span>
+                    <small>Pay when your order arrives</small>
+                  </div>
                 </label>
-                <label className="flex items-center p-4 border-2 border-secondary-dark rounded-2xl cursor-pointer hover:bg-secondary-dark transition-all">
-                  <input type="radio" name="payment" value="online" checked={payment === 'online'} onChange={() => setPayment('online')} disabled={!onlineAvailable} className="w-4 h-4 text-primary" />
-                  <span className="ml-3 font-bold text-accent">{onlineAvailable ? 'Pay securely online' : 'Online payment unavailable'}</span>
+
+                <label className={`checkout-payment-option ${payment === 'online' ? 'checkout-payment-option--selected' : ''} ${!onlineAvailable ? 'checkout-payment-option--disabled' : ''}`}>
+                  <input type="radio" name="payment" value="online" checked={payment === 'online'} onChange={() => setPayment('online')} disabled={!onlineAvailable} />
+                  <div>
+                    <span className="checkout-payment-title">{onlineAvailable ? 'Online payment' : 'Online payment unavailable'}</span>
+                    <small>{onlineAvailable ? 'UPI / Cards / Wallets' : 'Currently unavailable'}</small>
+                  </div>
                 </label>
               </div>
             </div>
 
-            {error && <p role="alert" className="text-red-400">{error}</p>}
-            <button 
-              type="submit" 
-              disabled={isProcessing || !restaurantSettings.online_ordering_enabled}
-              className="btn-primary w-full py-5 text-xl shadow-xl disabled:opacity-50"
-            >
-              {isProcessing ? 'Processing Order...' : 'Place Order Now'}
-            </button>
+            <div className="checkout-card">
+              <div className="checkout-section-header">
+                <span className="checkout-section-icon"><CheckCircle size={16} /></span>
+                <h3>Bill details</h3>
+              </div>
+
+              <div className="checkout-bill">
+                <div><span>Item total</span><strong>₹{subtotal}</strong></div>
+                <div><span>Delivery fee</span><strong>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</strong></div>
+                <div className="checkout-bill__discount"><span>Discount</span><strong>-₹{(couponDiscount + rewardDiscount).toFixed(2)}</strong></div>
+                <div><span>Taxes</span><strong>₹{tax.toFixed(2)}</strong></div>
+                <div className="checkout-bill__total"><span>Total</span><strong>₹{total.toFixed(2)}</strong></div>
+              </div>
+            </div>
+
+            {error && <p role="alert" className="checkout-error">{error}</p>}
           </form>
         </div>
 
-        {/* Summary Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="checkout-summary card-premium p-6 sticky top-24">
-            <h2 className="text-xl font-black text-accent mb-6">Order Summary</h2>
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-accent/70">
-                <span>Items Total</span>
-                <span className="font-bold">₹{subtotal}</span>
-              </div>
-              {couponDiscount > 0 && (
-                <div className="flex justify-between text-green-600 font-bold">
-                  <span>Coupon</span>
-                  <span>-₹{couponDiscount.toFixed(2)}</span>
+        <aside className="checkout-side-panel lg:block hidden">
+          <div className="checkout-summary card-premium sticky top-24">
+            <h2 className="text-xl font-black text-accent mb-5">Order summary</h2>
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div key={item.id} className="checkout-summary-line">
+                  <span>{item.name}</span>
+                  <span>₹{(item.price * item.quantity).toFixed(2)}</span>
                 </div>
-              )}
-              {rewardDiscount > 0 && (
-                <div className="flex justify-between text-green-600 font-bold">
-                  <span>Rewards</span>
-                  <span>-₹{rewardDiscount.toFixed(2)}</span>
-                </div>
-              )}
-              <div className="flex justify-between text-accent/70">
-                <span>Delivery Fee</span>
-                <span className="font-bold">{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span>
-              </div>
-              <div className="flex justify-between text-accent/70">
-                <span>Taxes ({restaurantSettings.tax_percentage ?? 5}%)</span>
-                <span className="font-bold">₹{tax.toFixed(2)}</span>
-              </div>
-              <div className="border-t border-secondary-dark pt-4 flex justify-between text-2xl font-black text-accent">
-                <span>Grand Total</span>
-                <span>₹{total.toFixed(2)}</span>
-              </div>
+              ))}
             </div>
-            {loyaltyPoints > 0 && (
-              <button
-                type="button"
-                onClick={() => setRewardApplied(!rewardApplied)}
-                className={`mt-4 w-full rounded-xl border px-4 py-3 text-left text-sm font-bold transition ${rewardApplied ? 'border-primary bg-primary/10 text-primary' : 'border-secondary-dark bg-secondary-dark/40 text-accent'}`}
-              >
-                {rewardApplied ? '✓ Rewards applied' : 'Use loyalty rewards'}
-                <span className="ml-2 opacity-80">({loyaltyPoints} pts)</span>
-              </button>
-            )}
-            <div className="p-4 bg-secondary-dark rounded-xl flex items-start gap-3 text-xs text-accent/60 leading-relaxed">
-              <CheckCircle size={16} className="text-green-600 shrink-0" />
-              <span>We ensure the highest standards of hygiene and packaging for every order.</span>
+            <div className="checkout-summary-totals mt-5">
+              <div><span>Subtotal</span><strong>₹{subtotal}</strong></div>
+              <div><span>Delivery</span><strong>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</strong></div>
+              {couponDiscount > 0 && <div><span>Coupon</span><strong>-₹{couponDiscount.toFixed(2)}</strong></div>}
+              {rewardDiscount > 0 && <div><span>Rewards</span><strong>-₹{rewardDiscount.toFixed(2)}</strong></div>}
+              <div className="checkout-summary-totals__grand"><span>To pay</span><strong>₹{total.toFixed(2)}</strong></div>
             </div>
           </div>
+        </aside>
+      </div>
+
+      <div className="checkout-fixed-bar">
+        <div className="checkout-fixed-bar__meta">
+          <span className="checkout-fixed-bar__total">₹{total.toFixed(2)}</span>
+          <span className="checkout-fixed-bar__label">Total</span>
         </div>
+        <button type="submit" form="checkout-form" className="checkout-order-button" disabled={isProcessing || !restaurantSettings.online_ordering_enabled}>
+          {isProcessing ? 'Placing order...' : orderType === 'pickup' ? 'Place pickup order' : onlineAvailable && payment === 'online' ? 'Proceed to pay' : 'Place order'}
+          <ChevronRight size={18} />
+        </button>
       </div>
-        <OrderPreviewModal
-          open={isPreviewOpen}
-          order={previewOrder}
-          clientTotal={total}
-          onCancel={() => { setIsPreviewOpen(false); setPreviewOrder(null); setIsProcessing(false) }}
-          onConfirm={() => { setIsPreviewOpen(false); if (pendingPayload) void run(() => complete(pendingPayload, previewOrder.total)) }}
-        />
-      </div>
+
+      <OrderPreviewModal
+        open={isPreviewOpen}
+        order={previewOrder}
+        clientTotal={total}
+        onCancel={() => { setIsPreviewOpen(false); setPreviewOrder(null); setIsProcessing(false) }}
+        onConfirm={() => { setIsPreviewOpen(false); if (pendingPayload) void run(() => complete(pendingPayload, previewOrder.total)) }}
+      />
+    </div>
   )
 }
 
