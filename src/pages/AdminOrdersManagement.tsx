@@ -49,6 +49,14 @@ export default function AdminOrdersManagement() {
   const [showAudit, setShowAudit] = useState(false)
   const [auditOrder, setAuditOrder] = useState<string | undefined>(undefined)
 
+  const resolveCustomerLocation = (order: any) => {
+    const candidate = order?.customerLocation ?? order?.customer
+    if (candidate && typeof candidate.lat === 'number' && Number.isFinite(candidate.lat) && typeof candidate.lng === 'number' && Number.isFinite(candidate.lng)) {
+      return { lat: candidate.lat, lng: candidate.lng }
+    }
+    return null
+  }
+
   function OrderEta({ orderNumber, customer }: { orderNumber: string; customer?: any }) {
     const [loc, setLoc] = useState<{ latitude: number; longitude: number } | null>(null)
     const [eta, setEta] = useState<string | null>(null)
@@ -273,8 +281,8 @@ export default function AdminOrdersManagement() {
               <section className="rounded-2xl border border-orange-400/25 bg-gradient-to-br from-[#201913] via-[#171311] to-[#0f0d0b] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p><h3 className="mt-1 text-xl font-black text-white">{order.status === 'ready' ? 'Waiting for rider collection' : 'Rider is on the way'}</h3></div><span className={order.status === 'out_for_delivery' ? 'rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-200' : 'rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-bold text-orange-200'}>{order.status === 'out_for_delivery' ? 'LIVE' : 'READY'}</span></div>
                     <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
-                    {order.status === 'out_for_delivery' && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={order.customer} /></div>}
-                {order.status === 'out_for_delivery' && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} /></div>}
+                    {order.status === 'out_for_delivery' && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(order)} /></div>}
+                {order.status === 'out_for_delivery' && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} customerLocation={resolveCustomerLocation(order)} /></div>}
               </section>
             )}
 

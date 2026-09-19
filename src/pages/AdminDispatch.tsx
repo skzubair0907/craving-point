@@ -56,6 +56,14 @@ export default function AdminDispatch() {
         try { localStorage.setItem('admin:panelCollapsed', panelCollapsed ? '1' : '0') } catch (e) {}
     }, [panelCollapsed])
 
+    const resolveCustomerLocation = (order: any) => {
+        const candidate = order?.customerLocation ?? order?.customer
+        if (candidate && typeof candidate.lat === 'number' && Number.isFinite(candidate.lat) && typeof candidate.lng === 'number' && Number.isFinite(candidate.lng)) {
+            return { lat: candidate.lat, lng: candidate.lng }
+        }
+        return null
+    }
+
     function OrderEta({ orderNumber, customer }: { orderNumber: string; customer?: any }) {
         const [loc, setLoc] = useState<{ latitude: number; longitude: number } | null>(null)
         const [eta, setEta] = useState<string | null>(null)
@@ -197,7 +205,7 @@ export default function AdminDispatch() {
                                     </div>
                                     <span className="text-primary font-bold capitalize">{o.status.split('_').join(' ')}</span>
                                     <div className="mt-1">
-                                        <OrderEta orderNumber={row.order_number} customer={o.customer} />
+                                        <OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(o)} />
                                     </div>
                                 </div>
 
@@ -229,7 +237,7 @@ export default function AdminDispatch() {
 
                                 {o.status === 'out_for_delivery' && (
                                     <div className="grid gap-3 md:grid-cols-2">
-                                        <DeliveryHistoryPanel orderNumber={row.order_number} />
+                                        <DeliveryHistoryPanel orderNumber={row.order_number} customerLocation={resolveCustomerLocation(o)} />
                                     </div>
                                 )}
 
@@ -239,7 +247,7 @@ export default function AdminDispatch() {
                     })}
                     {hoveredOrder && (
                         <div className="hidden xl:block fixed right-8 top-24 z-40 w-96">
-                            <DeliveryHistoryPanel orderNumber={hoveredOrder} customerLocation={visible.find(r=>r.order_number===hoveredOrder)?.payload.customer} />
+                            <DeliveryHistoryPanel orderNumber={hoveredOrder} customerLocation={resolveCustomerLocation(visible.find(r => r.order_number === hoveredOrder)?.payload)} />
                         </div>
                     )}
                     {selectedOrder && (
@@ -253,7 +261,7 @@ export default function AdminDispatch() {
                                     </div>
                                 </div>
                                 {!panelCollapsed ? (
-                                    <DeliveryHistoryPanel orderNumber={selectedOrder} customerLocation={visible.find(r => r.order_number === selectedOrder)?.payload.customer} />
+                                    <DeliveryHistoryPanel orderNumber={selectedOrder} customerLocation={resolveCustomerLocation(visible.find(r => r.order_number === selectedOrder)?.payload)} />
                                 ) : (
                                     <div className="text-sm text-accent/60">Collapsed view. Click Expand to view map.</div>
                                 )}

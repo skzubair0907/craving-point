@@ -8,6 +8,10 @@ export default function DeliveryHistoryPanel({ orderNumber, customerLocation }: 
   const [error, setError] = useState<string | null>(null)
   const [useAudit, setUseAudit] = useState(false)
 
+  const normalizedCustomerLocation = customerLocation && typeof customerLocation.lat === 'number' && Number.isFinite(customerLocation.lat) && typeof customerLocation.lng === 'number' && Number.isFinite(customerLocation.lng)
+    ? { lat: customerLocation.lat, lng: customerLocation.lng }
+    : null
+
   const latestRow = rows[0]
   const recentRows = rows.slice(0, 4)
   const latestMapUrl = latestRow && Number.isFinite(Number(latestRow.latitude)) && Number.isFinite(Number(latestRow.longitude))
@@ -62,10 +66,10 @@ export default function DeliveryHistoryPanel({ orderNumber, customerLocation }: 
 
       {latestRow && (
         <div className="mt-4 space-y-3">
-              {customerLocation && latestRow ? (
+              {normalizedCustomerLocation && latestRow ? (
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 220 }}>
                   <DeliveryMap
-                    customerLocation={{ lat: Number(customerLocation.lat || 0), lng: Number(customerLocation.lng || 0) }}
+                    customerLocation={normalizedCustomerLocation}
                     riderLocation={Number(latestRow.latitude) && Number(latestRow.longitude) ? { lat: Number(latestRow.latitude), lng: Number(latestRow.longitude) } : null}
                     height={220}
                   />
