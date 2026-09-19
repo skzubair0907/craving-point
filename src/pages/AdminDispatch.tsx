@@ -12,7 +12,7 @@ import OrderAlerts from '../components/OrderAlerts'
 import ForceDeliverDialog from '../components/ForceDeliverDialog'
 import PushSendLogs from '../components/PushSendLogs'
 
-const stages = [['preparing', 'In kitchen'], ['ready', 'Ready to dispatch'], ['out_for_delivery', 'On the way'], ['delivered', 'Delivered']]
+const stages = [['preparing', 'In kitchen'], ['ready', 'Ready for rider pickup'], ['out_for_delivery', 'Delivery boy picked up · On the way'], ['delivered', 'Delivered']]
 
 export default function AdminDispatch() {
     const { orders, loading, error, refresh } = useAdminOrders()
@@ -224,7 +224,7 @@ export default function AdminDispatch() {
                                     <a className="btn-secondary flex items-center gap-2" href={'tel:' + o.customer?.phone}><Phone size={16} />Call customer</a>
                                     {o.customer?.address && <a className="btn-secondary" href={'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.customer.address)} target="_blank" rel="noreferrer">Open address in Maps</a>}
                                     <button className="btn-secondary" onClick={() => setSelectedOrder(row.order_number)}><MapPin size={14} /> Open map</button>
-                                    {next && next !== 'out_for_delivery' && next !== 'delivered' && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />Mark {next}</button>}
+                                    {next && next !== 'out_for_delivery' && next !== 'delivered' && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />{next === 'ready' ? 'Delivery boy picked up' : `Mark ${next}`}</button>}
                                     {o.status === 'out_for_delivery' && (
                                         <button
                                             className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
