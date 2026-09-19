@@ -38,13 +38,58 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
-    const map = L.map(containerRef.current, { zoomControl: true, scrollWheelZoom: false })
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(map)
+
+    const container = containerRef.current
+    const map = L.map(container, {
+      zoomControl: true,
+      scrollWheelZoom: false,
+      preferCanvas: true,
+      attributionControl: true,
+    })
+
+    const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(map)
+
     mapRef.current = map
     layersRef.current = L.layerGroup().addTo(map)
+
+    const refreshMapSize = () => {
+      requestAnimationFrame(() => {
+        try {
+          map.invalidateSize()
+          if (!map.getCenter() || Number.isNaN(map.getCenter().lat)) {
+            map.setView([customer.lat, customer.lng], 15)
+          }
+        } catch (error) {
+          console.warn('DeliveryMap resize failed', error)
+        }
+      })
+    }
+
+    refreshMapSize()
+
+    let observer: ResizeObserver | null = null
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => refreshMapSize())
+      observer.observe(container)
+    }
+
+    // Re-check sizing when the map is re-shown or if a parent layout changes.
+    const timer = window.setTimeout(refreshMapSize, 120)
+
     setReady(true)
-    return () => { map.remove(); mapRef.current = null; layersRef.current = null }
-  }, [])
+
+    return () => {
+      window.clearTimeout(timer)
+      observer?.disconnect()
+      tileLayer.remove()
+      map.remove()
+      mapRef.current = null
+      layersRef.current = null
+    }
+  }, [customer.lat, customer.lng])
 
   useEffect(() => {
     const map = mapRef.current
