@@ -113,6 +113,7 @@ export default function DeliveryTracking() {
     phone?: string;
     vehicle?: string;
   }>({});
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     if (!order || !effectiveRiderLocation) {
@@ -164,6 +165,13 @@ export default function DeliveryTracking() {
         // ignore notification errors
       }
     }
+  }, [order?.status])
+
+  // Show live map modal when order becomes out_for_delivery
+  useEffect(() => {
+    if (!order) return
+    const status = String(order.status || '').toLowerCase()
+    if (status === 'out_for_delivery') setShowMap(true)
   }, [order?.status])
 
   // Try registering for Web Push (VAPID) and save subscription server-side.
@@ -281,6 +289,38 @@ export default function DeliveryTracking() {
         </main>
       </div>
     );
+  }
+
+  // Render live map modal when requested
+  if (showMap && credentials?.orderId) {
+    return (
+      <>
+        <MapModal orderId={credentials.orderId} token={credentials.token} customer={order?.customerLocation ?? null} onClose={() => setShowMap(false)} />
+      </>
+    )
+  }
+
+  function MapModal({ orderId, token, customer, onClose }: { orderId: string; token?: string; customer: { lat: number; lng: number } | null; onClose: () => void }) {
+    const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderId, token)
+    const riderLocation = riderLoc ? { latitude: riderLoc.latitude, longitude: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp } : undefined
+    const cust = customer ?? { lat: 0, lng: 0 }
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+        <div className="relative z-10 w-full h-full sm:h-auto max-w-3xl rounded-xl bg-[#0b0b0c] p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-black">Live map — {orderId}</h3>
+            <button className="btn-secondary" onClick={onClose}>Close</button>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-white/10" style={{ height: '78vh', maxHeight: 560 }}>
+            <DeliveryMap customerLocation={cust} riderLocation={riderLocation as any} height={'100%'} />
+          </div>
+          <div className="mt-3 flex items-center justify-between">
+            <div className="text-sm text-white/60">Live updates: {lastUpdated ?? '––'}</div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (error || !order) {

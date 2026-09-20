@@ -1,0 +1,17 @@
+const test = require('node:test')
+const assert = require('node:assert/strict')
+
+test('order state machine exposes one authoritative flow and blocks invalid transitions', async () => {
+  const state = await import('../src/lib/orderState.ts')
+
+  assert.equal(state.normalizeOrderStatus('ORDER_PLACED'), 'placed')
+  assert.equal(state.normalizeOrderStatus('out_for_delivery'), 'out_for_delivery')
+  assert.equal(state.canTransitionOrderStatus('placed', 'confirmed'), true)
+  assert.equal(state.canTransitionOrderStatus('ready', 'delivered'), false)
+  assert.equal(state.canTransitionOrderStatus('ready', 'out_for_delivery'), true)
+  assert.equal(state.canTransitionOrderStatus('ready', 'picked_up'), true)
+  assert.equal(state.canTransitionOrderStatus('out_for_delivery', 'delivered'), true)
+  assert.equal(state.getNextOrderStatus({ status: 'ready', orderType: 'delivery' }), 'out_for_delivery')
+  assert.equal(state.getNextOrderStatus({ status: 'ready', orderType: 'pickup' }), 'picked_up')
+  assert.equal(state.getOrderStatusLabel('ORDER_PLACED'), 'Order received')
+})

@@ -2,6 +2,7 @@
 import { MapPin, Phone, Truck, PackageCheck } from 'lucide-react'
 import { useAdminOrders } from '../hooks/useAdminOrders'
 import { supabase } from '../lib/supabase'
+import { useDeliveryTracking } from '../hooks/useDeliveryTracking'
 import { calculateDistance } from '../lib/mapUtils'
 import AdminOrderDetails from '../components/AdminOrderDetails'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
@@ -65,31 +66,8 @@ export default function AdminDispatch() {
     }
 
     function OrderEta({ orderNumber, customer }: { orderNumber: string; customer?: any }) {
-        const [loc, setLoc] = useState<{ latitude: number; longitude: number } | null>(null)
+        const { data: loc, lastUpdated } = useDeliveryTracking(orderNumber)
         const [eta, setEta] = useState<string | null>(null)
-        useEffect(() => {
-            let active = true
-            const fetchLatest = async () => {
-                try {
-                    const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,updated_at').eq('order_number', orderNumber).order('updated_at', { ascending: false }).limit(1)
-                    if (!active) return
-                    if (data && data.length) {
-                        const d = data[0] as any
-                        setLoc({ latitude: d.latitude, longitude: d.longitude })
-                    }
-                } catch (e) {}
-            }
-            void fetchLatest()
-            let channel: any = null
-            try {
-                channel = supabase.channel(`delivery_tracking_admin_${orderNumber}`)
-                channel.on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload: any) => {
-                    const rec = payload.new || payload.record || payload
-                    if (rec && typeof rec.latitude === 'number' && typeof rec.longitude === 'number') setLoc({ latitude: rec.latitude, longitude: rec.longitude })
-                }).subscribe()
-            } catch (e) {}
-            return () => { active = false; try { if (channel) supabase.removeChannel(channel) } catch (e) {} }
-        }, [orderNumber])
 
         // get server ETA using Mapbox via our route-eta function
         useEffect(() => {
@@ -113,7 +91,7 @@ export default function AdminDispatch() {
                 }
             })()
             return () => { mounted = false }
-        }, [loc, customer])
+        }, [loc, customer, lastUpdated])
 
         return <span className="text-sm text-accent/60">ETA: {eta ?? '––'}</span>
     }

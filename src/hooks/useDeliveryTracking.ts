@@ -24,7 +24,7 @@ interface UseDeliveryTrackingResult {
  */
 export function useDeliveryTracking(
   orderId: string,
-  token: string
+  token?: string
 ): UseDeliveryTrackingResult {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
@@ -32,7 +32,7 @@ export function useDeliveryTracking(
   const [lastUpdated, setLastUpdated] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!orderId || !token) {
+    if (!orderId) {
       setLoading(false)
       return
     }
@@ -42,6 +42,8 @@ export function useDeliveryTracking(
 
     let active = true
     const refresh = async () => {
+      // Poll server-side orderStatus only when a tracking token is provided
+      if (!token) return
       try {
         const result = await orderApi('orderStatus', { orderId, token })
         const location = result.order?.deliveryLocation
@@ -56,6 +58,7 @@ export function useDeliveryTracking(
           setData(next)
           setLastUpdated(next.timestamp)
         } else {
+          // don't clobber realtime data if present; only set null if no location present
           setData(null)
           setLastUpdated(null)
         }
@@ -67,10 +70,13 @@ export function useDeliveryTracking(
       }
     }
 
-    void refresh()
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === 'visible') void refresh()
-    }, 3000)
+    // start polling only when token is present
+    if (token) {
+      void refresh()
+      var timer = window.setInterval(() => {
+        if (document.visibilityState === 'visible') void refresh()
+      }, 3000)
+    }
 
     // subscribe to realtime updates for delivery_tracking row for this order number
     let channel: any = null
@@ -106,7 +112,7 @@ export function useDeliveryTracking(
 
     return () => {
       active = false
-      window.clearInterval(timer)
+      try { if (typeof timer !== 'undefined') window.clearInterval(timer) } catch (e) {}
       try { if (channel) supabase.removeChannel(channel) } catch (e) {}
     }
   }, [orderId, token])

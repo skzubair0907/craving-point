@@ -14,8 +14,19 @@ export default function DeliveryLocationControls({ orderId, orderNumber, custome
   const stopSharing=()=>{if(watchId.current!==null){navigator.geolocation.clearWatch(watchId.current);watchId.current=null}setSharing(false);onMessage('Live rider location sharing stopped.')}
   useEffect(()=>()=>{if(watchId.current!==null)navigator.geolocation.clearWatch(watchId.current)},[])
   const publish=async(lat:number,lng:number,meters:number|null)=>{
-    const {error}=await supabase.rpc('set_delivery_location',{p_order_number:orderNumber,p_latitude:lat,p_longitude:lng,p_accuracy:meters})
-    if(error)throw error
+    // Use secure Netlify proxy so the server validates session and assignment
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    const headers: Record<string,string> = { 'Content-Type': 'application/json' }
+    if (token) headers.Authorization = `Bearer ${token}`
+    const res = await fetch('/.netlify/functions/publish-location-proxy.cjs', { method: 'POST', headers, body: JSON.stringify({ order_number: orderNumber, latitude: Number(lat), longitude: Number(lng), accuracy: meters == null ? null : Number(meters) }) })
+    if (!res.ok) {
+      const txt = await res.text().catch(()=>`HTTP ${res.status}`)
+      throw new Error(txt || 'Failed to publish location')
+    }
+    const json = await res.json().catch(()=>({}))
+    if (json && json.error) throw new Error(json.error)
+    return json
   }
   const currentLocation=()=>{
     if(!navigator.geolocation){onMessage('Location is unavailable on this device. Enter the rider location manually.');return}

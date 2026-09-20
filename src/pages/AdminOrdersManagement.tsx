@@ -3,41 +3,27 @@ import { useState, useEffect } from 'react'
 import { calculateDistance } from '../lib/mapUtils'
 import { useAdminOrders } from '../hooks/useAdminOrders'
 import { supabase } from '../lib/supabase'
+import { useDeliveryTracking } from '../hooks/useDeliveryTracking'
+import { DeliveryMap } from '../components/DeliveryMap2'
 import AdminOrderDetails from '../components/AdminOrderDetails'
 import OrderCancellationDialog from '../components/OrderCancellationDialog'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
 import ForceDeliverDialog from '../components/ForceDeliverDialog'
-const nextStatus = (order: any) => ({ placed: 'confirmed', ORDER_PLACED: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: order.meta.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string,string>)[order.status]
-const label = (status: string) => ({
-  placed: 'Order received',
-  ORDER_PLACED: 'Order received',
-  confirmed: 'Confirmed',
-  preparing: 'Cooking',
-  ready: 'Ready for rider pickup',
-  out_for_delivery: 'Delivery boy picked up · On the way to customer',
-  delivered: 'Delivered',
-  picked_up: 'Picked up',
-  awaiting_payment: 'Awaiting payment',
-  cancelled: 'Cancelled',
-} as Record<string, string>)[String(status || '')] || status.split('_').join(' ')
-const actionLabel = (status: string, orderType: string) => ({
-  placed: 'Confirm order',
-  confirmed: 'Start cooking',
-  preparing: 'Mark ready',
-  ready: orderType === 'pickup' ? 'Mark picked up' : 'Delivery boy picked up',
-  out_for_delivery: 'Delivery on the way to customer',
-  delivered: 'Completed',
-  picked_up: 'Completed',
-} as Record<string, string>)[String(status || '')] || label(status)
-const statusTone = (status: string) => {
-  const normalized = String(status || '').toLowerCase()
-  if (['out_for_delivery', 'ready', 'confirmed', 'preparing'].includes(normalized)) return 'border-orange-400/35 bg-orange-500/10 text-orange-100'
-  if (['delivered', 'picked_up'].includes(normalized)) return 'border-emerald-400/35 bg-emerald-500/10 text-emerald-100'
-  if (normalized === 'cancelled') return 'border-red-400/35 bg-red-500/10 text-red-100'
-  if (normalized === 'awaiting_payment') return 'border-amber-400/35 bg-amber-500/10 text-amber-100'
-  return 'border-slate-400/25 bg-slate-500/10 text-slate-100'
+import { getNextOrderStatus, getOrderStatusLabel, getOrderStatusTone } from '../lib/orderState'
+
+const nextStatus = (order: any) => getNextOrderStatus({ status: order.status, orderType: order.meta?.orderType })
+const label = (status: string) => getOrderStatusLabel(status)
+const actionLabel = (status: string, orderType: string) => {
+  if (status === 'placed') return 'Confirm order'
+  if (status === 'confirmed') return 'Start cooking'
+  if (status === 'preparing') return 'Mark ready'
+  if (status === 'ready') return orderType === 'pickup' ? 'Mark picked up' : 'Delivery boy picked up'
+  if (status === 'out_for_delivery') return 'Delivery on the way to customer'
+  if (status === 'delivered' || status === 'picked_up') return 'Completed'
+  return getOrderStatusLabel(status)
 }
+const statusTone = (status: string) => getOrderStatusTone(status)
 export default function AdminOrdersManagement() {
   const { orders, error, loading, refresh } = useAdminOrders()
   const [filter, setFilter] = useState('active')
@@ -48,6 +34,7 @@ export default function AdminOrdersManagement() {
   const [forceOrder, setForceOrder] = useState<{ id: string; orderNumber: string } | null>(null)
   const [showAudit, setShowAudit] = useState(false)
   const [auditOrder, setAuditOrder] = useState<string | undefined>(undefined)
+  const [mapOrder, setMapOrder] = useState<{ orderNumber: string; customer?: { lat: number; lng: number } } | null>(null)
 
   const resolveCustomerLocation = (order: any) => {
     const candidate = order?.customerLocation ?? order?.customer
@@ -57,29 +44,34 @@ export default function AdminOrdersManagement() {
     return null
   }
 
+  // Modal component that subscribes to live rider location for a given order
+  function MapModal({ orderNumber, customer, onClose }: { orderNumber: string; customer?: { lat: number; lng: number } | null; onClose: () => void }) {
+    const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderNumber)
+    const riderLocation = riderLoc ? { latitude: riderLoc.latitude, longitude: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp, riderId: riderLoc.riderId } : undefined
+    const cust = customer ?? { lat: 0, lng: 0 }
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+        <div className="relative z-10 w-full h-full sm:h-auto max-w-3xl rounded-xl bg-[#0b0b0c] p-4 sm:p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-black">Live map — {orderNumber}</h3>
+            <button className="btn-secondary" onClick={onClose}>Close</button>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-white/10" style={{ height: '78vh', maxHeight: 560 }}>
+            <DeliveryMap customerLocation={cust} riderLocation={riderLocation as any} height={'100%'} />
+          </div>
+          <div className="mt-3 flex items-center justify-between">
+            <div className="text-sm text-white/60">Live updates: {lastUpdated ?? '––'}</div>
+            <div className="text-sm text-white/60">Rider: {riderLoc?.riderId ?? '—'}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   function OrderEta({ orderNumber, customer }: { orderNumber: string; customer?: any }) {
-    const [loc, setLoc] = useState<{ latitude: number; longitude: number } | null>(null)
+    const { data: loc, lastUpdated } = useDeliveryTracking(orderNumber)
     const [eta, setEta] = useState<string | null>(null)
-    useEffect(() => {
-      let active = true
-      const fetchLatest = async () => {
-        try {
-          const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,updated_at').eq('order_number', orderNumber).order('updated_at', { ascending: false }).limit(1)
-          if (!active) return
-          if (data && data.length) setLoc({ latitude: data[0].latitude, longitude: data[0].longitude })
-        } catch (e) {}
-      }
-      void fetchLatest()
-      let channel: any = null
-      try {
-        channel = supabase.channel(`delivery_tracking_admin_${orderNumber}`)
-        channel.on('postgres_changes', { event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload: any) => {
-          const rec = payload.new || payload.record || payload
-          if (rec && typeof rec.latitude === 'number' && typeof rec.longitude === 'number') setLoc({ latitude: rec.latitude, longitude: rec.longitude })
-        }).subscribe()
-      } catch (e) {}
-      return () => { active = false; try { if (channel) supabase.removeChannel(channel) } catch (e) {} }
-    }, [orderNumber])
 
     useEffect(() => {
       if (!loc || !customer || typeof customer.lat !== 'number' || typeof customer.lng !== 'number') { setEta(null); return }
@@ -88,7 +80,7 @@ export default function AdminOrdersManagement() {
       const seconds = dist / speedMs
       const mins = Math.max(0, Math.round(seconds / 60))
       setEta(`${mins} min`)
-    }, [loc, customer])
+    }, [loc, customer, lastUpdated])
 
     return <div className="text-sm text-accent/60">ETA: {eta ?? '––'}</div>
   }
@@ -100,6 +92,12 @@ export default function AdminOrdersManagement() {
       const result = await supabase.rpc('set_order_status', { p_id: id, p_status: status, p_reason: reason || null })
       if (result.error) throw new Error(result.error.message)
       await refresh()
+      if (status === 'out_for_delivery' && orderNumber) {
+        // Open a modal-level map for this order so admin can inspect live rider location
+        const matching = orders.find(r => r.order_number === orderNumber)
+        const cust = matching ? resolveCustomerLocation(matching.payload) : null
+        setMapOrder({ orderNumber, customer: cust ?? undefined })
+      }
       if (status !== 'out_for_delivery' || !orderNumber) {
         setMessage("Order status updated. The customer's tracking page will refresh automatically.")
         return
@@ -292,6 +290,10 @@ export default function AdminOrdersManagement() {
           </article>
         )
       })}
+
+      {mapOrder && (
+        <MapModal orderNumber={mapOrder.orderNumber} customer={mapOrder.customer ?? null} onClose={() => setMapOrder(null)} />
+      )}
 
       {cancelOrder && <OrderCancellationDialog orderNumber={cancelOrder.order_number} total={Number(cancelOrder.payload.total)} paid={cancelOrder.payload.payment_status === 'paid'} onClose={() => setCancelOrder(null)} onConfirm={reason => { void update(cancelOrder.id, 'cancelled', reason); setCancelOrder(null) }} />}
       {showAudit && <DeliveryAuditBrowser defaultOrder={auditOrder} />}

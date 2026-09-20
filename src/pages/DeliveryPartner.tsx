@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { calculateDistance } from '../lib/mapUtils'
 import { DeliveryMap } from '../components/DeliveryMap2'
+import { useDeliveryTracking } from '../hooks/useDeliveryTracking'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { Bike, CheckCircle2, ClipboardList, Clock3, LogOut, MapPin, Navigation, Phone, RefreshCw, Route } from 'lucide-react'
@@ -14,21 +15,33 @@ const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.g
  useEffect(()=>{void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>{clearInterval(timer);watches.current.forEach(id=>navigator.geolocation.clearWatch(id))}},[refresh])
  const publish=async(job:Job,lat:number,lng:number,accuracy?:number)=>{
 		try{
-			const r = await supabase.rpc('set_delivery_location', { p_order_number: job.order_number, p_latitude: lat, p_longitude: lng, p_accuracy: accuracy })
-			if (r.error) {
-				// Surface the exact DB/RPC error for debugging and user guidance
-				console.error('set_delivery_location error', r.error)
-				const msg = r.error?.message || String(r.error)
-				// If permission denied, give actionable guidance
-				if (/access denied/i.test(msg) || /not authorized/i.test(msg)) {
-					message('Permission denied. Ensure you are signed in with the delivery partner account linked by the manager, or ask the owner to run the Delivery Partner SQL setup in Supabase.')
+			// Use Netlify proxy to validate session + assignment, then upsert via service role
+			const { data: { session } } = await supabase.auth.getSession()
+			const token = session?.access_token
+			const headers: Record<string,string> = { 'Content-Type': 'application/json' }
+			if (token) headers.Authorization = `Bearer ${token}`
+			const res = await fetch('/.netlify/functions/publish-location-proxy.cjs', {
+				method: 'POST',
+				headers,
+				body: JSON.stringify({ order_number: job.order_number, latitude: Number(lat), longitude: Number(lng), accuracy: accuracy == null ? null : Number(accuracy) })
+			})
+			if (!res.ok) {
+				const text = await res.text().catch(()=>`HTTP ${res.status}`)
+				console.error('publish proxy error', res.status, text)
+				if (/401|403/.test(String(res.status))) {
+					message('Permission denied. Ensure you are signed in with the delivery partner account linked by the manager.')
 				} else {
-					message(msg)
+					message(text || 'Unable to publish location')
 				}
-				return { error: r.error }
+				return { error: { status: res.status, message: text } }
 			}
-			return { data: r.data }
-		}catch(err:any){
+			const json = await res.json().catch(()=>({}))
+			if (json && json.error) {
+				message(json.error)
+				return { error: json }
+			}
+			return { data: json }
+		} catch (err:any) {
 			console.error('publish exception', err)
 			message(err?.message || 'Unable to publish location')
 			return { error: err }
@@ -113,64 +126,25 @@ const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.g
 }
 
 	function RiderMiniMap({ orderNumber, customer, customerLocation }: { orderNumber: string, customer?: any, customerLocation?: { lat?: number; lng?: number } | null }){
-		const [riderLoc, setRiderLoc] = useState<{lat:number,lng:number,accuracy?:number}|null>(null)
-		useEffect(()=>{
-			let mounted=true
-			const load = async ()=>{
-				try{
-					const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,accuracy,updated_at').eq('order_number', orderNumber).order('updated_at',{ascending:false}).limit(1)
-					if(!mounted) return
-					if(data && data.length){ const r = data[0]; setRiderLoc({ lat: Number(r.latitude), lng: Number(r.longitude), accuracy: r.accuracy }) }
-				}catch(e){ }
-			}
-                            
-			void load()
-			let channel:any=null
-			try{
-				channel = supabase.channel(`delivery_tracking_order_${orderNumber}`)
-				channel.on('postgres_changes',{ event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload:any)=>{
-					try{ const rec = payload.new || payload.record || payload; if(rec && typeof rec.latitude==='number' && typeof rec.longitude==='number'){ setRiderLoc({ lat: Number(rec.latitude), lng: Number(rec.longitude), accuracy: rec.accuracy }) } }catch(e){}
-				}).subscribe()
-			}catch(e){}
-			return ()=>{ mounted=false; try{ if(channel) supabase.removeChannel(channel) }catch(e){} }
-		},[orderNumber])
+		const { loading, error, data: riderLoc } = useDeliveryTracking(orderNumber)
 
 		const candidate = customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number'
 			? { lat: Number(customerLocation.lat), lng: Number(customerLocation.lng) }
 			: (customer && typeof customer.lat==='number' && typeof customer.lng==='number') ? { lat: Number(customer.lat), lng: Number(customer.lng) } : null
 		if(!candidate) return null
 		return <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-slate-950/40" style={{ height: 180 }}>
-			<DeliveryMap customerLocation={candidate} riderLocation={riderLoc?{lat:riderLoc.lat,lng:riderLoc.lng,accuracy:riderLoc.accuracy}:null} height={180} />
+			<DeliveryMap customerLocation={candidate} riderLocation={riderLoc?{lat:riderLoc.latitude,lng:riderLoc.longitude,accuracy:riderLoc.accuracy}:null} height={180} />
 		</div>
 	}
 
 function SelectedJobMap({ orderNumber, customer, customerLocation }: { orderNumber: string, customer?: any, customerLocation?: { lat?: number; lng?: number } | null }){
-	const [riderLoc, setRiderLoc] = useState<{lat:number,lng:number,accuracy?:number}|null>(null)
-	useEffect(()=>{
-		let mounted = true
-		const load = async ()=>{
-			try{
-				const { data } = await supabase.from('delivery_tracking').select('latitude,longitude,accuracy,updated_at').eq('order_number', orderNumber).order('updated_at',{ascending:false}).limit(1)
-				if(!mounted) return
-				if(data && data.length){ const r = data[0]; setRiderLoc({ lat: Number(r.latitude), lng: Number(r.longitude), accuracy: r.accuracy }) }
-			}catch(e){ }
-		}
-		void load()
-		let channel:any=null
-		try{
-			channel = supabase.channel(`delivery_tracking_order_${orderNumber}`)
-			channel.on('postgres_changes',{ event: '*', schema: 'public', table: 'delivery_tracking', filter: `order_number=eq.${orderNumber}` }, (payload:any)=>{
-				try{ const rec = payload.new || payload.record || payload; if(rec && typeof rec.latitude==='number' && typeof rec.longitude==='number'){ setRiderLoc({ lat: Number(rec.latitude), lng: Number(rec.longitude), accuracy: rec.accuracy }) } }catch(e){}
-			}).subscribe()
-		}catch(e){}
-		return ()=>{ mounted=false; try{ if(channel) supabase.removeChannel(channel) }catch(e){} }
-	},[orderNumber])
+		const { loading, error, data: riderLoc } = useDeliveryTracking(orderNumber)
 
-	const candidate = customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number'
+		const candidate = customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number'
 		? { lat: Number(customerLocation.lat), lng: Number(customerLocation.lng) }
 		: (customer && typeof customer.lat==='number' && typeof customer.lng==='number') ? { lat: Number(customer.lat), lng: Number(customer.lng) } : null
-	return <div className="mt-5 overflow-hidden rounded-3xl border border-orange-400/20 bg-[#181411] shadow-[0_16px_40px_rgba(0,0,0,0.28)]" style={{ height: 320 }}>
-		<DeliveryMap customerLocation={candidate || {lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.lat,lng:riderLoc.lng,accuracy:riderLoc.accuracy}:null} height={320} />
-	</div>
+		return <div className="mt-5 overflow-hidden rounded-3xl border border-orange-400/20 bg-[#181411] shadow-[0_16px_40px_rgba(0,0,0,0.28)]" style={{ height: 320 }}>
+			<DeliveryMap customerLocation={candidate || {lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.latitude,lng:riderLoc.longitude,accuracy:riderLoc.accuracy}:null} height={320} />
+		</div>
 }
 

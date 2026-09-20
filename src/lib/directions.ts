@@ -1,4 +1,26 @@
 export async function getRouteGeoJSON(origin: { lat: number; lng: number }, dest: { lat: number; lng: number }) {
+  // Prefer server-side cached route (route-eta) which returns geometry + duration
+  try {
+    const etaRes = await fetch('/.netlify/functions/route-eta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ origin, dest, ttlSeconds: 300 }),
+    })
+    if (etaRes.ok) {
+      const etaJson = await etaRes.json()
+      // route-eta returns { geometry, duration_seconds }
+      if (etaJson && (etaJson.geometry || etaJson.routes)) {
+        // Normalize to Mapbox-like response shape expected by callers
+        if (etaJson.routes) return etaJson
+        return { routes: [{ geometry: etaJson.geometry, duration: etaJson.duration_seconds }] }
+      }
+    }
+  } catch (err) {
+    // fallthrough to client-side directions call
+    console.warn('route-eta call failed, falling back to directions:', err)
+  }
+
+  // Fallback to direct directions endpoint (Mapbox proxy)
   const originStr = `${origin.lat},${origin.lng}`
   const destStr = `${dest.lat},${dest.lng}`
   try {
