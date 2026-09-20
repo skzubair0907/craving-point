@@ -228,3 +228,16 @@ button,input,select,textarea{max-width:100%}
   .header-brand-logo img{max-width:52px!important;max-height:46px!important}
   .cinematic-home section[id],.menu-experience{scroll-margin-top:92px}
 }
+
+/* Let desktop and laptop content use the screen instead of sitting inside a
+   narrow centred column. Wide monitors retain a readable outer gutter. */
+@media(min-width:768px){
+  .editorial-shell{width:calc(100% - clamp(40px,6vw,112px));max-width:none}
+  .header-inner{width:calc(100% - clamp(40px,6vw,112px));max-width:none}
+  .cinematic-home > .editorial-shell{width:calc(100% - clamp(40px,6vw,112px))}
+  .story-section,.visit-section{max-width:none}
+}
+
+@media(min-width:1800px){
+  .editorial-shell,.header-inner,.cinematic-home > .editorial-shell{width:min(1640px,calc(100% - 112px))}
+}
