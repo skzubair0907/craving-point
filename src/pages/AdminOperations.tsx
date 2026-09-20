@@ -12,7 +12,8 @@ export default function AdminOperations({kind}:{kind:Kind}) {
  const [auditSearch,setAuditSearch]=useState('')
  const [auditFilter,setAuditFilter]=useState<'all'|'inventory'|'storefront'|'reports'|'staff'|'support'>('all')
  const [auditRange,setAuditRange]=useState<'all'|'today'|'7d'|'30d'>('all')
- const formatActionLabel=(action:string)=>{
+ const formatActionLabel=(action:unknown)=>{
+  const actionText=typeof action==='string'?action:''
   const labels: Record<string,string> = {
    'reports.export': 'Sales report exported',
    'storefront.update': 'Storefront content updated',
@@ -27,9 +28,9 @@ export default function AdminOperations({kind}:{kind:Kind}) {
    'customer_support.update': 'Support request updated',
    'admin_notifications.insert': 'Customer alert created',
   }
-  if (labels[action]) return labels[action]
-  if (!action) return 'System activity'
-  return action
+  if (labels[actionText]) return labels[actionText]
+  if (!actionText) return 'System activity'
+  return actionText
    .split('.')
    .flatMap(part => part.split('_'))
    .filter(Boolean)
@@ -53,19 +54,21 @@ export default function AdminOperations({kind}:{kind:Kind}) {
   if (details.status) return `Status changed to ${details.status}`
   return 'Review in the activity record for full context.'
  }
- const badgeColor = (action: string) => {
-  if (action.includes('inventory')) return 'bg-amber-500/15 text-amber-200 border border-amber-400/30'
-  if (action.includes('storefront')) return 'bg-blue-500/15 text-blue-200 border border-blue-400/30'
-  if (action.includes('report')) return 'bg-violet-500/15 text-violet-200 border border-violet-400/30'
-  if (action.includes('staff')) return 'bg-emerald-500/15 text-emerald-200 border border-emerald-400/30'
-  if (action.includes('support')) return 'bg-pink-500/15 text-pink-200 border border-pink-400/30'
+ const badgeColor = (action: unknown) => {
+  const actionText=typeof action==='string'?action:''
+  if (actionText.includes('inventory')) return 'bg-amber-500/15 text-amber-200 border border-amber-400/30'
+  if (actionText.includes('storefront')) return 'bg-blue-500/15 text-blue-200 border border-blue-400/30'
+  if (actionText.includes('report')) return 'bg-violet-500/15 text-violet-200 border border-violet-400/30'
+  if (actionText.includes('staff')) return 'bg-emerald-500/15 text-emerald-200 border border-emerald-400/30'
+  if (actionText.includes('support')) return 'bg-pink-500/15 text-pink-200 border border-pink-400/30'
   return 'bg-slate-500/15 text-slate-200 border border-slate-400/30'
  }
  const auditRows = kind === 'audit' ? rows.filter(row => {
-  const text = `${row.action} ${row.record_id || ''} ${row.details ? JSON.stringify(row.details) : ''}`.toLowerCase()
+  const action=typeof row?.action==='string'?row.action:''
+  const text = `${action} ${row?.record_id || ''} ${row?.details ? JSON.stringify(row.details) : ''}`.toLowerCase()
   const matchesSearch = text.includes(auditSearch.toLowerCase())
-  const matchesFilter = auditFilter === 'all' || row.action.startsWith(auditFilter)
-  const createdAt = new Date(row.created_at).getTime()
+  const matchesFilter = auditFilter === 'all' || action.startsWith(auditFilter)
+  const createdAt = new Date(row?.created_at).getTime()
   const cutoff = Date.now() - (auditRange === 'today' ? 24*60*60*1000 : auditRange === '7d' ? 7*24*60*60*1000 : auditRange === '30d' ? 30*24*60*60*1000 : 0)
   const matchesRange = auditRange === 'all' || createdAt >= cutoff
   return matchesSearch && matchesFilter && matchesRange
@@ -74,11 +77,11 @@ export default function AdminOperations({kind}:{kind:Kind}) {
   total: rows.length,
   visible: auditRows.length,
   today: rows.filter(row => Date.now() - new Date(row.created_at).getTime() <= 24*60*60*1000).length,
-  inventory: rows.filter(row => row.action.startsWith('inventory')).length,
-  storefront: rows.filter(row => row.action.startsWith('storefront')).length,
-  reports: rows.filter(row => row.action.startsWith('reports')).length,
-  staff: rows.filter(row => row.action.startsWith('admin_staff') || row.action.startsWith('delivery_staff')).length,
-  support: rows.filter(row => row.action.startsWith('customer_support')).length,
+  inventory: rows.filter(row => typeof row?.action==='string' && row.action.startsWith('inventory')).length,
+  storefront: rows.filter(row => typeof row?.action==='string' && row.action.startsWith('storefront')).length,
+  reports: rows.filter(row => typeof row?.action==='string' && row.action.startsWith('reports')).length,
+  staff: rows.filter(row => typeof row?.action==='string' && (row.action.startsWith('admin_staff') || row.action.startsWith('delivery_staff'))).length,
+  support: rows.filter(row => typeof row?.action==='string' && row.action.startsWith('customer_support')).length,
  } : null
  const refresh=useCallback(async()=>{setBusy(true);try{
   const order=kind==='inventory'?'product_id':kind==='delivery'?'name':'created_at'
