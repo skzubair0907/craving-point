@@ -327,6 +327,30 @@ button,input,select,textarea{max-width:100%}
   .editorial-header .header-actions{margin-left:auto}
 }
 
+/* Laptop navigation gets its own comfortable density. It keeps the complete
+   desktop route rail visible above compact-tablet widths without tiny text. */
+@media(min-width:900px) and (max-width:1440px){
+  .editorial-header,.header-inner{height:92px}
+  .header-inner{width:calc(100% - 48px);gap:20px}
+  .header-brand .header-brand-logo{width:60px;height:60px}.header-brand .header-brand-logo img{width:52px;height:52px;max-width:52px;max-height:52px}
+  .header-brand-copy strong{font-size:22px}.header-brand-copy small{font-size:8px}
+  .editorial-header .desktop-links{display:flex!important;gap:3px;padding:6px}
+  .desktop-links .nav-link{min-height:46px;padding:11px clamp(7px,1.15vw,14px);font-size:10px;letter-spacing:.075em}
+  .desktop-links .nav-link-index{display:inline;font-size:8px}
+  .header-order{min-height:48px;padding-inline:16px;font-size:10px}.header-cart{width:48px;height:48px}
+  .editorial-header .mobile-toggle{display:none!important}
+}
+@media(min-width:900px) and (max-width:1080px){
+  .header-brand-copy{display:none}.header-brand{gap:0}
+  .header-inner{width:calc(100% - 32px);gap:12px}
+  .desktop-links .nav-link{padding-inline:8px;font-size:9px}.desktop-links .nav-link-index{display:none}
+  .header-order{padding-inline:13px}.header-order span{font-size:9px}
+}
+@media(max-width:899px){
+  .editorial-header .desktop-links{display:none!important}
+  .editorial-header .mobile-toggle{display:grid!important;place-items:center;flex-shrink:0}
+}
+
 /* Storefront navigation: a compact brand signature, visible current location,
    and clear ordering controls at every desktop width. */
 .editorial-header{height:86px;border-bottom:1px solid rgba(243,236,217,.09);background:rgba(18,15,13,.92);backdrop-filter:blur(16px)}
