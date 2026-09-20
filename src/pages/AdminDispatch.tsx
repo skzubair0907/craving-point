@@ -34,28 +34,7 @@ export default function AdminDispatch() {
     const visible = deliveries.filter(r => matches(r.payload.status, tab) && [r.order_number, r.payload.customer?.name, r.payload.customer?.phone, r.payload.customer?.address].join(' ').toLowerCase().includes(query.toLowerCase()))
 
     const [forceOrder, setForceOrder] = useState<{ id: string; orderNumber: string } | null>(null)
-    const [hoveredOrder, setHoveredOrder] = useState<string | null>(null)
     const [selectedOrder, setSelectedOrder] = useState<string | null>(null)
-    const [panelCollapsed, setPanelCollapsed] = useState(false)
-
-    // persist selected order and panel state across reloads
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem('admin:selectedOrder')
-            const collapsed = localStorage.getItem('admin:panelCollapsed')
-            if (saved) setSelectedOrder(saved)
-            if (collapsed === '1') setPanelCollapsed(true)
-        } catch (e) {}
-    }, [])
-    useEffect(() => {
-        try {
-            if (selectedOrder) localStorage.setItem('admin:selectedOrder', selectedOrder)
-            else localStorage.removeItem('admin:selectedOrder')
-        } catch (e) {}
-    }, [selectedOrder])
-    useEffect(() => {
-        try { localStorage.setItem('admin:panelCollapsed', panelCollapsed ? '1' : '0') } catch (e) {}
-    }, [panelCollapsed])
 
     const resolveCustomerLocation = (order: any) => {
         const candidate = order?.customerLocation ?? order?.customer
@@ -132,13 +111,7 @@ export default function AdminDispatch() {
                     <p className="text-sm text-accent/60">RESTAURANT OPERATIONS</p>
                     <h1 className="section-title">Delivery dispatch</h1>
                 </div>
-                    <div className="flex items-center gap-2">
-                    <button className="btn-secondary" onClick={() => setTeam(!team)}>{team ? 'Back to dispatch' : 'Manage delivery team'}</button>
-                    <button className="btn-secondary" onClick={() => setShowAudit(prev => !prev)}>{showAudit ? 'Hide audit browser' : 'Open audit browser'}</button>
-                    <button className="btn-secondary" onClick={() => setShowMetrics(prev => !prev)}>{showMetrics ? 'Hide metrics' : 'Open metrics'}</button>
-                    <button className="btn-secondary" onClick={() => setShowPushLogs(p => !p)}>{showPushLogs ? 'Hide push logs' : 'View push logs'}</button>
-                    <button className="btn-secondary" onClick={() => setShowEtaTester(p => !p)}>{showEtaTester ? 'Hide ETA tester' : 'Test ETA'}</button>
-                </div>
+                <div className="flex items-center gap-2"><button className="btn-secondary" onClick={() => setTeam(!team)}>{team ? 'Back to dispatch' : 'Manage delivery team'}</button><details className="relative"><summary className="btn-secondary cursor-pointer list-none">More tools</summary><div className="absolute right-0 top-full z-30 mt-2 flex w-52 flex-col gap-2 rounded-2xl border border-white/10 bg-[#171311] p-3 shadow-2xl"><button className="btn-secondary text-left" onClick={() => setShowAudit(prev => !prev)}>{showAudit ? 'Hide audit browser' : 'Open audit browser'}</button><button className="btn-secondary text-left" onClick={() => setShowMetrics(prev => !prev)}>{showMetrics ? 'Hide metrics' : 'Open metrics'}</button><button className="btn-secondary text-left" onClick={() => setShowPushLogs(p => !p)}>{showPushLogs ? 'Hide push logs' : 'View push logs'}</button><button className="btn-secondary text-left" onClick={() => setShowEtaTester(p => !p)}>{showEtaTester ? 'Hide ETA tester' : 'Test ETA'}</button></div></details></div>
             </header>
 
             {team ? <AdminOperations kind="delivery" /> : (
@@ -175,7 +148,7 @@ export default function AdminDispatch() {
                         const o = row.payload
                         const next = ({ placed: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string, string>)[o.status]
                         return (
-                            <article key={row.id} className="card-premium p-5 space-y-4" onMouseEnter={() => setHoveredOrder(row.order_number)} onMouseLeave={() => setHoveredOrder(null)}>
+                            <article key={row.id} className="card-premium p-5 space-y-4">
                                 <div className="flex flex-wrap justify-between gap-3">
                                     <div>
                                         <h2 className="text-xl font-bold">{o.customer?.name || 'Guest'}</h2>
@@ -223,28 +196,16 @@ export default function AdminDispatch() {
                             </article>
                         )
                     })}
-                    {hoveredOrder && (
-                        <div className="hidden xl:block fixed right-8 top-24 z-40 w-96">
-                            <DeliveryHistoryPanel orderNumber={hoveredOrder} customerLocation={resolveCustomerLocation(visible.find(r => r.order_number === hoveredOrder)?.payload)} />
-                        </div>
-                    )}
                     {selectedOrder && (
-                        <div className={`fixed right-6 top-20 z-50 ${panelCollapsed ? 'w-24' : 'w-1/3 max-w-xl'}`}>
-                            <div className={`rounded-2xl border border-white/10 bg-[#0b0b0b] ${panelCollapsed ? 'p-2' : 'p-3'}`}>
+                        <section className="card-premium p-4">
+                            <div className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-3">
                                 <div className="flex items-center justify-between mb-2">
                                     <strong className="truncate">Order {selectedOrder}</strong>
-                                    <div className="flex items-center gap-2">
-                                        <button className="btn-secondary" onClick={() => setPanelCollapsed(p => !p)}>{panelCollapsed ? 'Expand' : 'Collapse'}</button>
-                                        <button className="btn-secondary" onClick={() => setSelectedOrder(null)}>Close</button>
-                                    </div>
+                                    <button className="btn-secondary" onClick={() => setSelectedOrder(null)}>Close map</button>
                                 </div>
-                                {!panelCollapsed ? (
-                                    <DeliveryHistoryPanel orderNumber={selectedOrder} customerLocation={resolveCustomerLocation(visible.find(r => r.order_number === selectedOrder)?.payload)} />
-                                ) : (
-                                    <div className="text-sm text-accent/60">Collapsed view. Click Expand to view map.</div>
-                                )}
+                                <DeliveryHistoryPanel orderNumber={selectedOrder} customerLocation={resolveCustomerLocation(visible.find(r => r.order_number === selectedOrder)?.payload)} />
                             </div>
-                        </div>
+                        </section>
                     )}
                     {showAudit && (
                         <div>
