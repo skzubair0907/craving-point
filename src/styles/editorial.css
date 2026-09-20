@@ -400,6 +400,13 @@ html{scroll-padding-top:116px}
   .customer-signin-dialog{align-items:center;padding:18px!important}.customer-signin-card{padding:30px 26px!important;border-radius:24px!important}.customer-signin-card h2{font-size:43px!important}.customer-signin-card p{font-size:15px!important;line-height:1.7!important}
 }
 
+/* Admin order sound control: clear status, one-tap browser activation and a
+   compact test action once alert audio is enabled. */
+.order-alerts{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:14px;padding:15px 18px;border:1px solid rgba(244,185,86,.22);border-radius:18px;background:linear-gradient(100deg,rgba(220,65,44,.12),rgba(45,32,24,.86));box-shadow:0 12px 26px rgba(0,0,0,.12)}
+.order-alerts-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:rgba(220,65,44,.2);color:#f7bd79}.order-alerts-copy{display:grid;gap:3px}.order-alerts-copy strong{font:800 18px/1 var(--font-display);letter-spacing:.02em;text-transform:uppercase;color:#fff5e9}.order-alerts-copy span,.order-alerts-status{font-size:12px;line-height:1.45;color:var(--brand-cream-soft)}
+.order-alerts-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.order-alerts-actions .btn-primary,.order-alerts-actions .btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 13px;font-size:10px;letter-spacing:.1em}.order-alerts-status{grid-column:2/-1;margin:0}
+@media(max-width:767px){.order-alerts{grid-template-columns:auto 1fr;padding:15px}.order-alerts-actions{grid-column:1/-1}.order-alerts-actions .btn-primary,.order-alerts-actions .btn-secondary{flex:1}.order-alerts-status{grid-column:1/-1}}
+
 /* Storefront navigation: a compact brand signature, visible current location,
    and clear ordering controls at every desktop width. */
 .editorial-header{height:86px;border-bottom:1px solid rgba(243,236,217,.09);background:rgba(18,15,13,.92);backdrop-filter:blur(16px)}
