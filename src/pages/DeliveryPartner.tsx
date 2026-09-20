@@ -13,39 +13,23 @@ export default function DeliveryPartner(){
  const message=(text:string)=>setNotice(text.includes('delivery_partner_')?'Delivery portal setup is pending. Ask the owner to run the Delivery Partner SQL setup once in Supabase.':text)
 const refresh=useCallback(async()=>{const {data:{session}}=await supabase.auth.getSession();setUser(session?.user??null);if(!session?.user)return;const activation=await supabase.rpc('activate_my_delivery_partner_account');if(activation.error){message(activation.error.message);return}if(!activation.data){setJobs([]);setNotice(`The website is signed in as ${session.user.email||'an unknown email'}, but that email is not linked to an active delivery boy. In Admin → Delivery, save this exact email for the rider.`);return}const [orders,summary]=await Promise.all([supabase.rpc('delivery_partner_orders'),supabase.rpc('delivery_partner_earnings')]);if(orders.error)message(orders.error.message);else{setJobs(orders.data||[]);setNotice('')}if(!summary.error)setEarnings(summary.data?.[0]||null)},[])
  useEffect(()=>{void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>{clearInterval(timer);watches.current.forEach(id=>navigator.geolocation.clearWatch(id))}},[refresh])
+ // This RPC is a security-definer function in Supabase. It confirms that the
+ // signed-in rider owns this assigned order before writing GPS data. Using it
+ // directly works on Cloudflare, Netlify and the local app alike.
  const publish=async(job:Job,lat:number,lng:number,accuracy?:number)=>{
-		try{
-			// Use Netlify proxy to validate session + assignment, then upsert via service role
-			const { data: { session } } = await supabase.auth.getSession()
-			const token = session?.access_token
-			const headers: Record<string,string> = { 'Content-Type': 'application/json' }
-			if (token) headers.Authorization = `Bearer ${token}`
-			const res = await fetch('/.netlify/functions/publish-location-proxy.cjs', {
-				method: 'POST',
-				headers,
-				body: JSON.stringify({ order_number: job.order_number, latitude: Number(lat), longitude: Number(lng), accuracy: accuracy == null ? null : Number(accuracy) })
-			})
-			if (!res.ok) {
-				const text = await res.text().catch(()=>`HTTP ${res.status}`)
-				console.error('publish proxy error', res.status, text)
-				if (/401|403/.test(String(res.status))) {
-					message('Permission denied. Ensure you are signed in with the delivery partner account linked by the manager.')
-				} else {
-					message(text || 'Unable to publish location')
-				}
-				return { error: { status: res.status, message: text } }
-			}
-			const json = await res.json().catch(()=>({}))
-			if (json && json.error) {
-				message(json.error)
-				return { error: json }
-			}
-			return { data: json }
-		} catch (err:any) {
-			console.error('publish exception', err)
-			message(err?.message || 'Unable to publish location')
-			return { error: err }
-		}
+  const result=await supabase.rpc('set_delivery_location',{
+   p_order_number:job.order_number,
+   p_latitude:Number(lat),
+   p_longitude:Number(lng),
+   p_accuracy:accuracy==null?null:Number(accuracy),
+  })
+  if(result.error){
+   const detail=result.error.message||'Unable to publish location.'
+   if(/access denied|not assigned/i.test(detail)) message('This delivery is not assigned to your rider account. Ask the manager to check the rider assignment.')
+   else if(/delivery_tracking_audit|delivery_tracking/i.test(detail)) message('Live location database setup is pending. Run delivery-partner-portal.sql once in Supabase.')
+   else message(detail)
+  }
+  return result
  }
 
 	// per-job last publish metadata for throttling
@@ -143,8 +127,9 @@ function SelectedJobMap({ orderNumber, customer, customerLocation }: { orderNumb
 		const candidate = customerLocation && typeof customerLocation.lat === 'number' && typeof customerLocation.lng === 'number'
 		? { lat: Number(customerLocation.lat), lng: Number(customerLocation.lng) }
 		: (customer && typeof customer.lat==='number' && typeof customer.lng==='number') ? { lat: Number(customer.lat), lng: Number(customer.lng) } : null
+		if(!candidate)return <div className="mt-5 rounded-2xl border border-dashed border-white/15 bg-black/15 p-4 text-sm text-white/65">Customer map is unavailable because this order has no saved GPS location. Use the delivery address and Navigate button.</div>
 		return <div className="mt-5 overflow-hidden rounded-3xl border border-orange-400/20 bg-[#181411] shadow-[0_16px_40px_rgba(0,0,0,0.28)]" style={{ height: 320 }}>
-			<DeliveryMap customerLocation={candidate || {lat:19.0175,lng:72.8905}} riderLocation={riderLoc?{lat:riderLoc.latitude,lng:riderLoc.longitude,accuracy:riderLoc.accuracy}:null} height={320} />
+			<DeliveryMap customerLocation={candidate} riderLocation={riderLoc?{lat:riderLoc.latitude,lng:riderLoc.longitude,accuracy:riderLoc.accuracy}:null} height={320} />
 		</div>
 }
 
