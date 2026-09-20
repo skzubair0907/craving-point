@@ -319,6 +319,14 @@ button,input,select,textarea{max-width:100%}
   .story-image .image-caption{font-size:8px;line-height:1.45;padding:13px;gap:12px}
 }
 
+/* The desktop link rail is intentionally replaced by the drawer trigger on a
+   phone. This rule follows the enhanced desktop navigation styles. */
+@media(max-width:1023px){
+  .editorial-header .desktop-links{display:none!important}
+  .editorial-header .mobile-toggle{display:grid!important;place-items:center;flex-shrink:0}
+  .editorial-header .header-actions{margin-left:auto}
+}
+
 /* Storefront navigation: a compact brand signature, visible current location,
    and clear ordering controls at every desktop width. */
 .editorial-header{height:86px;border-bottom:1px solid rgba(243,236,217,.09);background:rgba(18,15,13,.92);backdrop-filter:blur(16px)}
