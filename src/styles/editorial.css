@@ -179,6 +179,7 @@ button,input,select,textarea{max-width:100%}
 /* Mobile home: keep the hero copy below the fixed header and reserve a clean
    area for its two actions before the food image begins. */
 @media(max-width:767px){
+  .campaign-hero{min-height:1120px}
   .campaign-hero{min-height:1020px}
   .campaign-hero .hero-topline{display:none}
   .campaign-copy{padding:98px 20px 0}
@@ -263,4 +264,29 @@ button,input,select,textarea{max-width:100%}
   .food-details{font-size:11px}
   .story-section{padding-block:78px;gap:54px}
   .story-copy>p:not(.small-label){font-size:16px;line-height:1.8}
+}
+
+/* Home-page art direction: a confident food-first opening that stays useful
+   as an ordering page. */
+.campaign-hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 18% 18%,rgba(220,65,44,.18),transparent 28%),radial-gradient(circle at 78% 18%,rgba(232,185,93,.12),transparent 24%),linear-gradient(120deg,rgba(23,21,18,.96) 0%,rgba(23,21,18,.78) 43%,rgba(23,21,18,.14) 72%,rgba(23,21,18,.7) 100%)}
+.campaign-copy{max-width:680px}
+.campaign-copy .small-label{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid rgba(243,236,217,.16);border-radius:999px;background:rgba(23,21,18,.34);backdrop-filter:blur(10px)}
+.campaign-copy .small-label::before{content:"";width:7px;height:7px;border-radius:999px;background:#f4b956;box-shadow:0 0 0 4px rgba(244,185,86,.12)}
+.campaign-copy h1{position:relative;text-wrap:balance}
+.campaign-copy h1::after{content:"EST. CHEETA CAMP";display:block;margin-top:17px;color:rgba(243,236,217,.58);font:600 10px/1.2 Inter,sans-serif;letter-spacing:.25em}
+.hero-description{font-size:17px;line-height:1.65;text-shadow:0 2px 20px rgba(0,0,0,.32)}
+.hero-proof{display:flex;gap:0;margin-top:35px;width:max-content;max-width:100%;border:1px solid rgba(243,236,217,.15);border-radius:16px;overflow:hidden;background:rgba(21,18,15,.6);backdrop-filter:blur(14px);box-shadow:0 16px 36px rgba(0,0,0,.18)}
+.hero-proof span{display:flex;flex-direction:column;gap:5px;min-width:132px;padding:12px 16px;color:#e8dece;font:600 10px/1.35 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}.hero-proof span+span{border-left:1px solid rgba(243,236,217,.12)}.hero-proof b{color:#f6bb72;font-size:9px;letter-spacing:.15em}
+.hero-food-layer{filter:drop-shadow(-20px 34px 48px rgba(0,0,0,.42))}
+.hero-food-layer::before{content:"TODAY'S PICK";position:absolute;right:13%;bottom:17%;z-index:3;padding:10px 13px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(23,21,18,.62);backdrop-filter:blur(10px);color:#fff6e9;font:700 9px/1 Inter,sans-serif;letter-spacing:.16em}
+@media(max-width:767px){
+  .campaign-copy{max-width:none}
+  .campaign-copy .small-label{padding:7px 10px;font-size:9px}
+  .campaign-copy h1::after{margin-top:12px;font-size:8px}
+  .hero-description{font-size:16px}
+  .hero-proof{width:100%;margin-top:20px;border-radius:13px}
+  .hero-proof span{min-width:0;flex:1;padding:10px 8px;font-size:8px;letter-spacing:.04em}
+  .hero-proof b{font-size:8px}
+  .hero-food-layer{top:630px;height:400px}
+  .hero-food-layer::before{right:10%;bottom:12%;font-size:8px;padding:8px 10px}
 }
