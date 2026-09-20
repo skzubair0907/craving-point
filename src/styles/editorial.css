@@ -241,3 +241,26 @@ button,input,select,textarea{max-width:100%}
 @media(min-width:1800px){
   .editorial-shell,.header-inner,.cinematic-home > .editorial-shell{width:min(1640px,calc(100% - 112px))}
 }
+
+/* Laptop is its own layout range: retain breathing room without shrinking the
+   content or typography to desktop-poster proportions. */
+@media(min-width:1024px) and (max-width:1440px){
+  .editorial-shell,.cinematic-home > .editorial-shell{width:calc(100% - 64px)}
+  .header-inner{width:calc(100% - 64px)}
+  .header-brand-logo{width:84px;height:60px}
+  .header-brand-logo img{max-width:64px;max-height:54px}
+  .desktop-links{gap:clamp(16px,2vw,26px)}
+  .header-actions{gap:16px}
+  .header-order{padding:13px 18px;font-size:11px}
+  .menu-experience{padding-block:64px 82px}
+  .section-heading{margin-bottom:30px}
+  .editorial-menu-grid{gap:18px}
+  .editorial-food-card .food-card-body{padding:18px}
+  .food-card-meta{font-size:10px}
+  .food-title h3{font-size:clamp(1.55rem,2.1vw,2rem)}
+  .food-card-body>p{font-size:13px;line-height:1.65}
+  .food-card-bottom>span{font-size:19px}
+  .food-details{font-size:11px}
+  .story-section{padding-block:78px;gap:54px}
+  .story-copy>p:not(.small-label){font-size:16px;line-height:1.8}
+}
