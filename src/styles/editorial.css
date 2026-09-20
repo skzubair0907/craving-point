@@ -308,3 +308,25 @@ button,input,select,textarea{max-width:100%}
   .story-copy>p:not(.small-label){font-size:15px}
   .story-section::after{right:16px;bottom:12px;font-size:108px}
 }
+
+/* Storefront navigation: a compact brand signature, visible current location,
+   and clear ordering controls at every desktop width. */
+.editorial-header{height:86px;border-bottom:1px solid rgba(243,236,217,.09);background:rgba(18,15,13,.92);backdrop-filter:blur(16px)}
+.editorial-header.is-scrolled{background:rgba(18,15,13,.84);box-shadow:0 14px 32px rgba(0,0,0,.16)}
+.header-inner{height:86px;gap:clamp(16px,2.6vw,42px)}
+.header-brand{display:flex;align-items:center;gap:11px;min-width:max-content;color:var(--brand-cream);text-decoration:none}
+.header-brand .header-brand-logo{width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(243,236,217,.14);border-radius:13px;background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.015));box-shadow:0 10px 20px rgba(0,0,0,.18)}
+.header-brand .header-brand-logo img{width:47px;height:47px;max-width:47px;max-height:47px;object-fit:contain;border-radius:10px}
+.header-brand-copy{display:flex;flex-direction:column;gap:4px;line-height:1}
+.header-brand-copy strong{font:800 20px/.9 var(--font-display);letter-spacing:.02em;text-transform:uppercase}.header-brand-copy strong span{color:var(--cp-primary);font-size:.8em}
+.header-brand-copy small{font:600 8px/1 Inter,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:var(--brand-cream-soft)}
+.desktop-links{display:flex;align-items:center;justify-content:center;gap:2px;flex:1;min-width:0;padding:5px;border:1px solid rgba(243,236,217,.09);border-radius:999px;background:rgba(255,255,255,.025)}
+.desktop-links .nav-link{position:relative;display:flex;align-items:center;gap:5px;padding:10px clamp(7px,1vw,13px);border-radius:999px;color:rgba(243,236,217,.72);font:700 10px/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;transition:color .2s ease,background .2s ease,transform .2s ease}
+.desktop-links .nav-link:hover{color:var(--brand-cream);background:rgba(255,255,255,.075);transform:translateY(-1px)}
+.desktop-links .nav-link[aria-current=page]{color:#fff7e9;background:var(--cp-primary);box-shadow:0 8px 18px rgba(220,65,44,.25)}
+.nav-link-index{font-size:7px;color:#f4b956;opacity:.85}.nav-link[aria-current=page] .nav-link-index{color:#fff7e9}
+.header-actions{gap:10px;min-width:max-content}.header-order{min-height:46px;padding:0 15px;gap:9px;border-radius:12px;box-shadow:0 10px 20px rgba(220,65,44,.23);transition:transform .2s ease,box-shadow .2s ease}.header-order:hover{transform:translateY(-2px);box-shadow:0 14px 24px rgba(220,65,44,.32)}
+.header-cart{width:46px;height:46px;justify-content:center;gap:4px;border:1px solid rgba(243,236,217,.16);border-radius:12px;background:rgba(255,255,255,.035);transition:border-color .2s ease,background .2s ease}.header-cart:hover{border-color:rgba(244,185,86,.65);background:rgba(244,185,86,.09)}.header-cart span{font-weight:800;color:#f4b956}
+.editorial-header :is(a,button):focus-visible{outline:2px solid #f4b956;outline-offset:3px}
+@media(min-width:768px) and (max-width:1120px){.header-brand-copy small{display:none}.header-brand{gap:0}.desktop-links .nav-link{padding-inline:8px;font-size:9px}.nav-link-index{display:none}.header-order{padding-inline:13px}.header-order span{font-size:9px}}
+@media(max-width:767px){.editorial-header,.header-inner{height:72px}.header-brand-copy{display:none}.header-brand .header-brand-logo{width:48px!important;height:48px!important;border-radius:12px}.header-brand .header-brand-logo img{width:42px!important;height:42px!important;max-width:42px!important;max-height:42px!important}.header-cart{width:42px;height:42px;border-radius:11px}.mobile-toggle{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.035)}.mobile-menu-list a>span{display:flex;align-items:center;gap:12px}.mobile-menu-list a i{font:700 9px/1 Inter,sans-serif;letter-spacing:.12em;color:#f4b956;font-style:normal}.mobile-menu-list a[aria-current=page]{padding-left:12px;padding-right:12px;border-radius:12px;background:rgba(220,65,44,.13);border-bottom-color:transparent}.mobile-menu-list a[aria-current=page] svg{color:#f4b956}}
