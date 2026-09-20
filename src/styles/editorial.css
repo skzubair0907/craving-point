@@ -175,3 +175,18 @@ button,input,select,textarea{max-width:100%}
  .editorial-shell{width:calc(100% - 24px)}
  .delivery-map-surface{height:240px!important}
 }
+
+/* Mobile home: keep the hero copy below the fixed header and reserve a clean
+   area for its two actions before the food image begins. */
+@media(max-width:767px){
+  .campaign-hero{min-height:1020px}
+  .campaign-hero .hero-topline{display:none}
+  .campaign-copy{padding:98px 20px 0}
+  .campaign-copy .small-label{margin-bottom:18px}
+  .campaign-copy .hero-description{margin-top:22px;line-height:1.55}
+  .campaign-copy .hero-primary-actions{margin-top:26px}
+  .hero-food-layer{top:530px;right:-7%;width:114%;height:400px}
+  .hero-footer{bottom:18px}
+  .cp-bottom-bar>div{padding:10px 12px}
+  .cp-bottom-bar .mobile-view-cart{min-height:56px;padding:10px 14px}
+}
