@@ -22,3 +22,17 @@
 [data-theme=light] .reference-footer{background:#f4eadf;color:#281b12}[data-theme=light] .reference-footer-column h2{color:#824729}[data-theme=light] .reference-footer-wordmark{color:#dfd0c1}[data-theme=light] .reference-footer-wordmark span{color:#b79982}
 @media(max-width:900px){.reference-footer-shell{width:calc(100% - 48px)}.reference-footer-top{grid-template-columns:1.6fr 1fr 1fr;gap:30px}.reference-footer-bottom{justify-content:center}.reference-footer-bottom small{width:100%;text-align:center}}
 @media(max-width:600px){.reference-footer{padding:56px 0 90px}.reference-footer-top{grid-template-columns:1fr 1fr;gap:36px 24px}.reference-footer-intro{grid-column:1/-1}.reference-footer-intro p{font-size:30px}.reference-footer-wordmark{font-size:10.2vw;margin:44px 0 24px}.reference-footer-pill{width:100%;justify-content:space-between;gap:0;padding-left:5px}.reference-footer-pill a{font-size:9px;padding:12px 6px}.reference-footer-pill .reference-footer-order{padding-inline:12px}.reference-footer-controls{width:100%;justify-content:space-between}}
+
+/* Footer layout is deliberately broad and compact: the logo stays at its
+   natural size and every column has useful visual weight. */
+.reference-footer{padding:72px 0 24px;background:radial-gradient(circle at 82% 12%,rgba(220,65,44,.14),transparent 28%),linear-gradient(150deg,#1b120e,#110c09)}
+.reference-footer-shell{width:calc(100% - clamp(40px,6vw,112px));max-width:none}
+.reference-footer .footer-brand-logo{width:78px;height:78px;margin:0;justify-content:flex-start;border-radius:14px}
+.reference-footer .footer-brand-logo img{width:70px;height:70px;max-width:70px;max-height:70px;border-radius:12px}
+.reference-footer-top{grid-template-columns:minmax(300px,1.6fr) minmax(150px,.7fr) minmax(150px,.7fr);gap:clamp(36px,7vw,120px);align-items:start}
+.reference-footer-intro p{max-width:510px;font-size:clamp(29px,3vw,46px);margin-top:24px}
+.reference-footer-column{gap:14px;font-size:14px}.reference-footer-column h2{font-size:11px;letter-spacing:.16em}
+.reference-footer-wordmark{margin:54px 0 28px;font-size:clamp(62px,10vw,170px);line-height:.88;color:rgba(243,236,217,.11)}
+.reference-footer-wordmark span{color:rgba(220,65,44,.48)}
+.reference-footer-bottom{padding-top:20px;border-color:rgba(243,236,217,.28)}
+@media(max-width:767px){.reference-footer{padding:52px 0 90px}.reference-footer-shell{width:calc(100% - 32px)}.reference-footer-top{grid-template-columns:1fr 1fr;gap:32px 20px}.reference-footer-intro{grid-column:1/-1}.reference-footer-intro p{font-size:29px;max-width:360px}.reference-footer-wordmark{font-size:15vw;margin:42px 0 24px}.reference-footer-column{font-size:13px}}

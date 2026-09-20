@@ -290,3 +290,21 @@ button,input,select,textarea{max-width:100%}
   .hero-food-layer{top:630px;height:400px}
   .hero-food-layer::before{right:10%;bottom:12%;font-size:8px;padding:8px 10px}
 }
+
+/* Give the editorial story a complete, premium composition rather than a
+   text block floating in unused space. */
+.story-section{position:relative;grid-template-columns:minmax(290px,.8fr) minmax(0,1.2fr);gap:clamp(34px,5vw,78px);padding:clamp(34px,5vw,70px);border:1px solid rgba(243,236,217,.12);background:radial-gradient(circle at 12% 12%,rgba(220,65,44,.16),transparent 30%),linear-gradient(135deg,rgba(48,32,26,.92),rgba(21,18,15,.94));box-shadow:0 28px 60px rgba(0,0,0,.2)}
+.story-section::after{content:"01";position:absolute;right:clamp(20px,3vw,48px);bottom:clamp(12px,2vw,28px);color:rgba(243,236,217,.07);font:800 clamp(90px,15vw,210px)/.75 var(--font-display);pointer-events:none}
+.story-copy{position:relative;z-index:1;padding-block:clamp(4px,2vw,26px)}
+.story-copy h2{font-size:clamp(58px,6.2vw,104px);margin:18px 0 26px;text-shadow:0 16px 32px rgba(0,0,0,.24)}
+.story-copy>p:not(.small-label){max-width:440px;font-size:16px;line-height:1.85}
+.story-image{z-index:1;border:1px solid rgba(243,236,217,.12);box-shadow:0 22px 50px rgba(0,0,0,.32)}
+.story-image img{aspect-ratio:1.16;filter:saturate(1.06) contrast(1.03)}
+.story-image .image-caption{padding:15px 16px;margin:0;background:rgba(20,16,14,.8)}
+@media(max-width:767px){
+  .story-section{padding:18px;gap:25px;border-radius:22px}
+  .story-copy{padding:10px 6px 14px}
+  .story-copy h2{font-size:clamp(54px,15vw,76px)}
+  .story-copy>p:not(.small-label){font-size:15px}
+  .story-section::after{right:16px;bottom:12px;font-size:108px}
+}
