@@ -32,7 +32,6 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
   const [etaSeconds, setEtaSeconds] = useState<number | null>(null)
   const [ready, setReady] = useState(false)
   const [lastError, setLastError] = useState<string | null>(null)
-  const [routeRetry, setRouteRetry] = useState(0)
   const customer = isValidLocation(customerLocation)
     ? customerLocation
     : resolveMapCenter({ customerLocation, riderLocation, fallbackLocation: { lat: 19.0175, lng: 72.8905 } })
@@ -210,7 +209,6 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
               if (typeof json.routes[0].duration === 'number') setEtaSeconds(Math.round(json.routes[0].duration))
               // clear any previous route error and retries
               setLastError(null)
-              setRouteRetry(0)
               return
             }
             // fallback: straight polyline
@@ -220,16 +218,15 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
             // fallback ETA estimate: assume average speed 8 m/s (≈28.8 km/h)
             const fallbackDistance = calculateDistance(to.lat, to.lng, customer.lat, customer.lng)
             setEtaSeconds(Math.max(5, Math.round(fallbackDistance / 8)))
-            // mark error and schedule retry
-            setLastError('Routing geometry unavailable — will retry')
-            setTimeout(() => setRouteRetry(r => r + 1), 15000)
+            // Road routing is optional. Keep the direct live line visible
+            // without showing a technical error when the route service is off.
+            setLastError(null)
           } catch (err) {
             try { console.error('getRouteGeoJSON failed', err); setLastError(String(err || 'route error')) } catch (e) {}
             const pts = [to, L.latLng(customer.lat, customer.lng)]
             if (!riderPolylineRef.current) riderPolylineRef.current = L.polyline(pts, { color: '#ef3f25', weight: 4, opacity: 0.85 }).addTo(map)
             else riderPolylineRef.current.setLatLngs(pts)
-            // schedule retry if route fetch thrown
-            setTimeout(() => setRouteRetry(r => r + 1), 15000)
+            setLastError(null)
           }
         })()
       } else {
@@ -254,9 +251,9 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
       try { map.setView(customerPoint, 16) } catch (e) {}
     }
     } catch (err) {
-      try { console.error('DeliveryMap effect error', err); setLastError(String(err || 'map effect error')) } catch (e) {}
+      try { console.error('DeliveryMap effect error', err); setLastError(null) } catch (e) {}
     }
-  }, [ready, customer.lat, customer.lng, riderLocation?.lat, riderLocation?.lng, riderLocation?.accuracy, riderLocation?.timestamp, routeRetry])
+  }, [ready, customer.lat, customer.lng, riderLocation?.lat, riderLocation?.lng, riderLocation?.accuracy, riderLocation?.timestamp])
 
   // recenter helper
   const recenter = () => {

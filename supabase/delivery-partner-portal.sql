@@ -8,6 +8,20 @@ alter table public.delivery_staff
 alter table public.delivery_staff
   add column if not exists email text;
 
+-- The portal may be applied without delivery-tracking.sql. Ensure the shared
+-- table exists so customer, admin, and rider maps all have the same GPS source.
+create table if not exists public.delivery_tracking (
+  order_number text primary key references public.order_requests(order_number) on delete cascade,
+  latitude double precision not null check (latitude between -90 and 90),
+  longitude double precision not null check (longitude between -180 and 180),
+  accuracy double precision check (accuracy is null or accuracy >= 0),
+  updated_at timestamptz not null default now(),
+  updated_by uuid references auth.users(id) on delete set null
+);
+alter table public.delivery_tracking enable row level security;
+grant select, insert, update on public.delivery_tracking to authenticated;
+grant all on public.delivery_tracking to service_role;
+
 -- Some older installations ran the delivery portal setup without the tracking
 -- migration. Create the location-write audit table here as well so a rider's
 -- GPS update can never fail just because that optional migration was skipped.
@@ -37,6 +51,22 @@ returns boolean language sql stable security definer set search_path = public as
 $$;
 revoke all on function public.is_delivery_partner() from public, anon;
 grant execute on function public.is_delivery_partner() to authenticated;
+
+-- A rider can view only their own assigned order's latest GPS point. Admin
+-- access remains governed by the existing admin policy in delivery-tracking.sql.
+drop policy if exists "Delivery partner reads assigned location" on public.delivery_tracking;
+create policy "Delivery partner reads assigned location" on public.delivery_tracking
+  for select to authenticated using (
+    exists (
+      select 1
+      from public.order_requests o
+      join public.order_admin_details d on d.order_id = o.id
+      join public.delivery_staff s on s.id = d.delivery_staff_id
+      where o.order_number = delivery_tracking.order_number
+        and s.active = true
+        and (s.user_id = auth.uid() or lower(s.email) = lower(coalesce(auth.jwt()->>'email', '')))
+    )
+  );
 
 -- The rider opens their portal with Google once. Link that authenticated account
 -- to the matching rider email automatically, so the manager never has to handle

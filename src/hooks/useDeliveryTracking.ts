@@ -41,6 +41,19 @@ export function useDeliveryTracking(
     setError(null)
 
     let active = true
+    const applyLocation = (location: any) => {
+      if (!location || !Number.isFinite(Number(location.latitude)) || !Number.isFinite(Number(location.longitude))) return false
+      const next = {
+        latitude: Number(location.latitude),
+        longitude: Number(location.longitude),
+        accuracy: location.accuracy == null ? undefined : Number(location.accuracy),
+        timestamp: location.updated_at || location.timestamp || new Date().toISOString(),
+        riderId: location.updated_by || location.riderId || undefined,
+      }
+      setData(next)
+      setLastUpdated(next.timestamp)
+      return true
+    }
     const refresh = async () => {
       // Poll server-side orderStatus only when a tracking token is provided
       if (!token) return
@@ -48,17 +61,30 @@ export function useDeliveryTracking(
         const result = await orderApi('orderStatus', { orderId, token })
         const location = result.order?.deliveryLocation
         if (!active) return
-        if (location && typeof location.latitude === 'number' && typeof location.longitude === 'number') {
-          const next = {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            accuracy: location.accuracy ?? undefined,
-            timestamp: location.updated_at,
-          }
-          setData(next)
-          setLastUpdated(next.timestamp)
-        } else {
+        if (!applyLocation(location)) {
           // don't clobber realtime data if present; only set null if no location present
+          setData(null)
+          setLastUpdated(null)
+        }
+        setError(null)
+      } catch {
+        if (active) setError(new Error('Live rider location is unavailable.'))
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    const refreshStaffLocation = async () => {
+      if (token) return
+      try {
+        const result = await supabase
+          .from('delivery_tracking')
+          .select('latitude,longitude,accuracy,updated_at,updated_by')
+          .eq('order_number', orderId)
+          .maybeSingle()
+        if (!active) return
+        if (result.error) throw result.error
+        if (!applyLocation(result.data)) {
           setData(null)
           setLastUpdated(null)
         }
@@ -76,6 +102,8 @@ export function useDeliveryTracking(
       var timer = window.setInterval(() => {
         if (document.visibilityState === 'visible') void refresh()
       }, 3000)
+    } else {
+      void refreshStaffLocation()
     }
 
     // subscribe to realtime updates for delivery_tracking row for this order number
@@ -89,18 +117,7 @@ export function useDeliveryTracking(
           if (!active) return
           try {
             const rec = payload.new || payload.record || payload
-            if (rec && typeof rec.latitude === 'number' && typeof rec.longitude === 'number') {
-              const next = {
-                latitude: rec.latitude,
-                longitude: rec.longitude,
-                accuracy: rec.accuracy ?? undefined,
-                timestamp: rec.updated_at || new Date().toISOString(),
-                riderId: rec.updated_by || undefined,
-              }
-              setData(next)
-              setLastUpdated(next.timestamp)
-              setError(null)
-            }
+            if (applyLocation(rec)) setError(null)
           } catch (e) {
             // ignore payload parse errors
           }

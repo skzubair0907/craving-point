@@ -1,4 +1,10 @@
 export async function getRouteGeoJSON(origin: { lat: number; lng: number }, dest: { lat: number; lng: number }) {
+  // The production worker is hosted on Cloudflare. The legacy route endpoints
+  // below only exist on Netlify, so calling them from any of the three live
+  // maps produces a 404 even when GPS tracking is working. The map component
+  // has a reliable straight-line fallback and distance-based ETA.
+  if (window.location.hostname.endsWith('.workers.dev')) return null
+
   // Prefer server-side cached route (route-eta) which returns geometry + duration
   try {
     const etaRes = await fetch('/.netlify/functions/route-eta', {
