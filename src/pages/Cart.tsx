@@ -61,11 +61,11 @@ const CartPage = () => {
   }
 
   return (
-    <div className="cart-page max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div className="cart-page mx-auto grid max-w-7xl grid-cols-1 gap-7 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-3 lg:gap-12">
       {/* Cart Items */}
       <div className="cart-items lg:col-span-2 space-y-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-black text-accent">Your Order</h1>
+        <div className="mb-6 flex items-center justify-between gap-4 sm:mb-8">
+          <h1 className="text-2xl font-black text-accent sm:text-3xl">Your Order</h1>
           <button onClick={clearCart} className="text-sm font-bold text-primary hover:underline">Clear All</button>
         </div>
 
@@ -76,10 +76,10 @@ const CartPage = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              className="card-premium p-4 flex items-center gap-4"
+              className="card-premium flex items-start gap-3 p-4 sm:items-center sm:gap-4"
             >
               <img src={productMedia({ ...item, id: item.productId || item.id }) || '/images/logo-new.png'} alt={productMedia({ ...item, id: item.productId || item.id }) ? item.name : 'Craving Point logo'} className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-xl" />
-              <div className="flex-grow">
+              <div className="min-w-0 flex-grow">
                 <h3 className="font-bold text-accent">{item.name}</h3>
                 <p className="text-sm text-accent/60 mb-2">₹{item.price}</p>
                 <div className="flex items-center space-x-3">
@@ -100,7 +100,7 @@ const CartPage = () => {
                   </button>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="shrink-0 text-right">
                 <p className="font-black text-accent mb-2">₹{item.price * item.quantity}</p>
                 <button 
                   aria-label={`Remove ${item.name}`}
@@ -117,7 +117,7 @@ const CartPage = () => {
 
       {/* Order Summary */}
       <div className="cart-summary lg:col-span-1">
-        <div className="card-premium p-6 sticky top-24">
+        <div className="card-premium p-5 sm:p-6 lg:sticky lg:top-24">
           <h2 className="text-xl font-black text-accent mb-6">Order Summary</h2>
           
           <div className="space-y-4 mb-6">

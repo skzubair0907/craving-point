@@ -135,7 +135,7 @@ const AdminLayout = () => {
   return (
     <div className="admin-layout flex flex-col md:flex-row min-h-screen bg-[#120f10] text-white">
       <AdminSidebar />
-      <div className="admin-content min-w-0 flex-grow overflow-x-auto">
+      <div className="admin-content min-w-0 flex-grow overflow-x-hidden">
         <Outlet />
       </div>
     </div>

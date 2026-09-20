@@ -1650,7 +1650,11 @@ input::placeholder, textarea::placeholder { color: var(--brand-cream-soft); opac
 .card-premium .bg-white { background-color: var(--brand-surface-2); }
 button:disabled { cursor: not-allowed; opacity: .55; }
 @media (max-width: 767px) {
-  #root { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  #root { padding-bottom: calc(72px + env(safe-area-inset-bottom)); overflow-x: clip; }
+  .section-shell { padding-inline: 1rem; }
+  .btn-primary, .btn-secondary { min-height: 44px; }
+  .delivery-map-surface .leaflet-control-zoom { margin-left: .5rem; }
+  .delivery-map-surface .leaflet-control-attribution { max-width: 72%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 }
 
 .bg-secondary-dark { background-color: var(--brand-surface-2); }
@@ -1658,5 +1662,4 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 .admin-input { border: 1px solid var(--brand-border); border-radius: .75rem; padding: .75rem 1rem; background: var(--brand-surface); color: var(--brand-cream); min-width: 0; }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 767px) { input, select, textarea { font-size: 16px; } }
-
 
