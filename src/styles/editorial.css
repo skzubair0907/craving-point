@@ -303,10 +303,20 @@ button,input,select,textarea{max-width:100%}
 .story-image .image-caption{padding:15px 16px;margin:0;background:rgba(20,16,14,.8)}
 @media(max-width:767px){
   .story-section{padding:18px;gap:25px;border-radius:22px}
+  .story-section{grid-template-columns:minmax(0,1fr)!important;align-items:start}
+  .story-image{order:-1;min-width:0;width:100%}
   .story-copy{padding:10px 6px 14px}
   .story-copy h2{font-size:clamp(54px,15vw,76px)}
   .story-copy>p:not(.small-label){font-size:15px}
   .story-section::after{right:16px;bottom:12px;font-size:108px}
+}
+
+/* Phone correction: the feature story must never inherit its desktop columns. */
+@media(max-width:767px){
+  .story-section{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%;overflow:hidden}
+  .story-section .story-image,.story-section .story-copy{grid-column:1;min-width:0;width:100%}
+  .story-section .story-copy{grid-row:2}.story-section .story-image{grid-row:1}
+  .story-image .image-caption{font-size:8px;line-height:1.45;padding:13px;gap:12px}
 }
 
 /* Storefront navigation: a compact brand signature, visible current location,

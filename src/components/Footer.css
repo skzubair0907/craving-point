@@ -36,3 +36,13 @@
 .reference-footer-wordmark span{color:rgba(220,65,44,.48)}
 .reference-footer-bottom{padding-top:20px;border-color:rgba(243,236,217,.28)}
 @media(max-width:767px){.reference-footer{padding:52px 0 90px}.reference-footer-shell{width:calc(100% - 32px)}.reference-footer-top{grid-template-columns:1fr 1fr;gap:32px 20px}.reference-footer-intro{grid-column:1/-1}.reference-footer-intro p{font-size:29px;max-width:360px}.reference-footer-wordmark{font-size:15vw;margin:42px 0 24px}.reference-footer-column{font-size:13px}}
+
+/* Keep the mobile footer compact and prevent its decorative wordmark or
+   controls from extending beyond the phone viewport. */
+@media(max-width:767px){
+  .reference-footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .reference-footer-wordmark{max-width:100%;overflow:hidden;white-space:normal;font-size:clamp(48px,13vw,78px);line-height:.9;text-align:left;letter-spacing:-.07em}
+  .reference-footer-bottom{align-items:stretch;gap:20px}.reference-footer-bottom small{font-size:10px;line-height:1.6;text-align:left;width:100%}
+  .reference-footer-controls{width:100%;justify-content:space-between;gap:12px}.reference-footer-top-button{flex-shrink:0;font-size:9px;white-space:nowrap}
+  .reference-footer-theme button{padding:12px 11px}
+}
