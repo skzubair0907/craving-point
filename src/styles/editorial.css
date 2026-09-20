@@ -190,3 +190,14 @@ button,input,select,textarea{max-width:100%}
   .cp-bottom-bar>div{padding:10px 12px}
   .cp-bottom-bar .mobile-view-cart{min-height:56px;padding:10px 14px}
 }
+
+/* Product actions need predictable width on narrow phones. */
+@media(max-width:480px){
+  .menu-experience{padding-bottom:132px}
+  .editorial-menu-grid{grid-template-columns:minmax(0,1fr)}
+  .editorial-food-card .food-card-body{padding:16px}
+  .food-card-bottom{gap:12px}
+  .food-card-bottom>span{flex:1;min-width:0}
+  .food-add{min-width:92px;flex-shrink:0}
+  .food-details{width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+}
