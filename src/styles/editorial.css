@@ -201,3 +201,30 @@ button,input,select,textarea{max-width:100%}
   .food-add{min-width:92px;flex-shrink:0}
   .food-details{width:max-content;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
 }
+
+/* Shared storefront sizing: compact header branding and predictable content
+   widths from a small phone through a laptop display. */
+@media(min-width:768px){
+  .editorial-header{height:80px}
+  .header-inner{width:min(1240px,calc(100% - 48px));gap:clamp(18px,3vw,38px)}
+  .header-brand-logo{width:72px;height:56px;justify-content:flex-start}
+  .header-brand-logo img{max-width:56px;max-height:52px}
+  .editorial-shell{width:min(1180px,calc(100% - 48px))}
+  .menu-experience{padding-block:76px;scroll-margin-top:104px}
+  .story-section{gap:clamp(40px,6vw,92px);padding-block:96px}
+  .food-card-body{min-width:0}
+  .food-details{white-space:nowrap}
+}
+
+@media(min-width:768px) and (max-width:1023px){
+  .editorial-shell{width:calc(100% - 40px)}
+  .editorial-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .story-section{grid-template-columns:1fr;gap:38px;padding-block:72px}
+  .story-image{order:-1}
+}
+
+@media(max-width:767px){
+  .header-brand-logo{width:58px!important;height:52px!important;justify-content:flex-start}
+  .header-brand-logo img{max-width:52px!important;max-height:46px!important}
+  .cinematic-home section[id],.menu-experience{scroll-margin-top:92px}
+}
