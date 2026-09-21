@@ -14,11 +14,11 @@ import { getNextOrderStatus, getOrderStatusLabel, getOrderStatusTone } from '../
 
 const nextStatus = (order: any) => getNextOrderStatus({ status: order.status, orderType: order.meta?.orderType })
 const label = (status: string) => getOrderStatusLabel(status)
-const actionLabel = (status: string, orderType: string) => {
-  if (status === 'placed') return 'Confirm order'
-  if (status === 'confirmed') return 'Start cooking'
-  if (status === 'preparing') return 'Mark ready'
-  if (status === 'ready') return orderType === 'pickup' ? 'Mark picked up' : 'Delivery boy picked up'
+const actionLabel = (status: string) => {
+  if (status === 'confirmed') return 'Confirm order'
+  if (status === 'preparing') return 'Start cooking'
+  if (status === 'ready') return 'Mark ready'
+  if (status === 'picked_up') return 'Mark picked up'
   if (status === 'out_for_delivery') return 'Delivery on the way to customer'
   if (status === 'delivered' || status === 'picked_up') return 'Completed'
   return getOrderStatusLabel(status)
@@ -263,7 +263,7 @@ export default function AdminOrdersManagement() {
                   alert('Failed to fetch subscriptions')
                 }
               }}>View subscriptions</button>
-              {next && !(order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up', 'out_for_delivery', 'arrived', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
+              {next && !(order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up', 'out_for_delivery', 'arrived', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next)}</button>}
               {order.status === 'out_for_delivery' && (
                 <button
                   className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10"
