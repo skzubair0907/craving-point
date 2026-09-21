@@ -19,6 +19,7 @@ begin
  coupons as (select payload->'meta'->>'coupon' code,count(*) uses,sum((payload->>'discount')::numeric) discount from selected where coalesce(payload->'meta'->>'coupon','')<>'' group by payload->'meta'->>'coupon')
  select jsonb_build_object(
   'orders',(select count(*) from selected),
+  'completed',(select count(*) from selected where payload->>'status'='delivered' or (payload->'meta'->>'orderType'='pickup' and payload->>'status'='picked_up')),
   'revenue',(select coalesce(sum(received),0) from selected),
   'cancelled',(select count(*) from selected where payload->>'status'='cancelled'),
   'refunded',(select count(*) from selected where payload->>'payment_status'='refunded'),
