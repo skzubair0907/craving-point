@@ -146,12 +146,12 @@ export default function DeliveryTracking() {
     setEtaMinutes(etaMin);
   }, [order, effectiveRiderLocation]);
 
-  // Auto-notify customer when order becomes delivered/picked_up
+  // Notify only when a delivery actually reaches its terminal state.
   const addNotification = useNotificationsStore(state => state.add)
   useEffect(() => {
     if (!order) return
     const status = String(order.status || '').toLowerCase()
-    if (status === 'delivered' || status === 'picked_up') {
+    if (status === 'delivered') {
       const title = 'Order completed'
       const message = `Your order ${order.orderNumber || order.id} is ${status}. Enjoy!`
       try {
@@ -171,7 +171,7 @@ export default function DeliveryTracking() {
   useEffect(() => {
     if (!order) return
     const status = String(order.status || '').toLowerCase()
-    if (['picked_up', 'out_for_delivery', 'arrived'].includes(status)) setShowMap(true)
+    if (['out_for_delivery', 'arrived'].includes(status)) setShowMap(true)
   }, [order?.status])
 
   // Try registering for Web Push (VAPID) and save subscription server-side.
@@ -540,14 +540,6 @@ export default function DeliveryTracking() {
                   Updated {new Date(liveLastUpdated).toLocaleTimeString()}
                 </div>
               </div>
-              {order.status === 'out_for_delivery' && order.deliveryOtp && (
-                <div className="mt-5 rounded-xl border border-primary/50 bg-primary/10 p-4">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Delivery confirmation code</p>
-                  <p className="mt-2 text-3xl font-black tracking-[0.35em]">{order.deliveryOtp}</p>
-                  <p className="mt-2 text-sm text-white/70">Give this code to the rider only when your order has arrived.</p>
-                </div>
-              )}
-
               {/* Main Content: Map and Info */}
               <div className="tracking-grid grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}

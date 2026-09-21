@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom'
 import { useAdminOrders } from '../hooks/useAdminOrders'
 export default function AdminDashboard() {
   const { orders, error, loading, refresh } = useAdminOrders()
-  const active = orders.filter(r => !['cancelled','delivered','picked_up','awaiting_payment'].includes(r.payload.status))
-  const completed = orders.filter(r => ['delivered','picked_up'].includes(r.payload.status))
+  const isCompleted = (row: any) => row.payload.status === 'delivered' || (row.payload.meta?.orderType === 'pickup' && row.payload.status === 'picked_up')
+  const active = orders.filter(r => !['cancelled', 'awaiting_payment'].includes(r.payload.status) && !isCompleted(r))
+  const completed = orders.filter(isCompleted)
   const revenue = orders.filter(r => r.payload.payment_status === 'paid' && r.payload.status !== 'cancelled').reduce((sum,r)=>sum+Number(r.payload.total),0)
   const stats = [
     { label: 'Orders received', value: String(orders.length), sub: 'All orders in view', tone: 'from-orange-500/20 to-orange-400/5' },

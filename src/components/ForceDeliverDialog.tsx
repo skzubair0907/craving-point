@@ -21,7 +21,7 @@ export default function ForceDeliverDialog({ orderNumber, onClose, onConfirm }: 
 
         <div className="rounded-xl border border-white/10 bg-black/15 p-4 text-sm space-y-1">
           <p className="font-bold">{orderNumber}</p>
-          <p className="text-accent/70">Force this delivery to the 'delivered' state. This bypasses rider OTP confirmation.</p>
+          <p className="text-accent/70">Force this delivery to the 'delivered' state. Use this only when the rider cannot complete the delivery from their portal.</p>
         </div>
 
         <form className="space-y-4" onSubmit={event => { event.preventDefault(); setBusy(true); onConfirm(reason.trim()); setBusy(false) }}>

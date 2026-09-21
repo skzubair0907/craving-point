@@ -111,34 +111,24 @@ begin
   update public.order_requests
   set payload = jsonb_set(jsonb_set(payload, '{status}', to_jsonb(next_status), true), '{updated_at}', to_jsonb(now()), true)
   where id = p_order_id;
-  if next_status = 'out_for_delivery' then
-    insert into public.delivery_verifications(order_id, otp)
-    values (p_order_id, lpad((floor(random() * 10000))::text, 4, '0'))
-    on conflict (order_id) do update set otp = excluded.otp, created_at = now(), verified_at = null, verified_by = null;
-  end if;
   insert into public.order_history(order_id, status, reason, actor)
   values (p_order_id, next_status, history_reason, auth.uid());
 end $$;
 revoke all on function public.delivery_partner_advance_order(uuid, text) from public, anon;
 grant execute on function public.delivery_partner_advance_order(uuid, text) to authenticated;
 
-create or replace function public.delivery_partner_confirm_delivery(p_order_id uuid, p_otp text)
+create or replace function public.delivery_partner_confirm_delivery(p_order_id uuid, p_otp text default null)
 returns void language plpgsql security definer set search_path = public as $$
-declare expected_otp text;
 begin
   if not exists (
     select 1 from public.order_requests o join public.order_admin_details d on d.order_id = o.id
     join public.delivery_staff s on s.id = d.delivery_staff_id
     where o.id = p_order_id and s.active = true
       and (s.user_id = auth.uid() or lower(s.email) = lower(coalesce(auth.jwt()->>'email', '')))
-      and o.payload->>'status' = 'arrived'
-  ) then raise exception 'Mark arrival before confirming delivery'; end if;
-  select otp into expected_otp from public.delivery_verifications where order_id = p_order_id;
-  if expected_otp is null then raise exception 'Delivery confirmation code is not ready yet'; end if;
-  if trim(p_otp) <> expected_otp then raise exception 'The customer code does not match'; end if;
-  update public.delivery_verifications set verified_at = now(), verified_by = auth.uid() where order_id = p_order_id;
+      and o.payload->>'status' in ('out_for_delivery', 'arrived')
+  ) then raise exception 'Start the delivery before marking it delivered'; end if;
   update public.order_requests set payload = jsonb_set(jsonb_set(payload, '{status}', to_jsonb('delivered'::text), true), '{updated_at}', to_jsonb(now()), true) where id = p_order_id;
-  insert into public.order_history(order_id, status, reason, actor) values (p_order_id, 'delivered', 'Delivery confirmed with customer OTP', auth.uid());
+  insert into public.order_history(order_id, status, reason, actor) values (p_order_id, 'delivered', 'Delivery confirmed by delivery partner', auth.uid());
 end $$;
 revoke all on function public.delivery_partner_confirm_delivery(uuid, text) from public, anon;
 grant execute on function public.delivery_partner_confirm_delivery(uuid, text) to authenticated;

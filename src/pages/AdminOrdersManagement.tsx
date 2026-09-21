@@ -14,6 +14,7 @@ import { getNextOrderStatus, getOrderStatusLabel, getOrderStatusTone } from '../
 
 const nextStatus = (order: any) => getNextOrderStatus({ status: order.status, orderType: order.meta?.orderType })
 const label = (status: string) => getOrderStatusLabel(status)
+const isCompletedOrder = (row: any) => row.payload.status === 'delivered' || (row.payload.meta?.orderType === 'pickup' && row.payload.status === 'picked_up')
 const actionLabel = (status: string) => {
   if (status === 'confirmed') return 'Confirm order'
   if (status === 'preparing') return 'Start cooking'
@@ -136,13 +137,13 @@ export default function AdminOrdersManagement() {
   }
 
   const filtered = orders.filter(row => (
-    (filter === 'all' || filter === 'pending' ? filter === 'all' || row.payload.status === 'awaiting_payment' : !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status))
+    (filter === 'all' || filter === 'pending' ? filter === 'all' || row.payload.status === 'awaiting_payment' : !['cancelled', 'awaiting_payment'].includes(row.payload.status) && !isCompletedOrder(row))
     && (row.order_number + ' ' + row.payload.customer?.name + ' ' + row.payload.customer?.phone).toLowerCase().includes(query.toLowerCase())
   ))
   const summary = [
-    { label: 'Active orders', value: orders.filter(row => !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status)).length },
+    { label: 'Active orders', value: orders.filter(row => !['cancelled', 'awaiting_payment'].includes(row.payload.status) && !isCompletedOrder(row)).length },
     { label: 'Awaiting payment', value: orders.filter(row => row.payload.status === 'awaiting_payment').length },
-    { label: 'Completed', value: orders.filter(row => ['delivered', 'picked_up'].includes(row.payload.status)).length },
+    { label: 'Completed', value: orders.filter(isCompletedOrder).length },
     { label: 'Total orders', value: orders.length },
   ]
 
@@ -287,16 +288,16 @@ export default function AdminOrdersManagement() {
                   onClick={() => setForceOrder({ id: row.id, orderNumber: row.order_number })}
                 >Force mark delivered</button>
               )}
-              {!['delivered', 'picked_up', 'cancelled'].includes(order.status) && <button className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
+              {!isCompletedOrder(row) && order.status !== 'cancelled' && <button className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
               <button className="btn-secondary w-full sm:w-auto" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
 
             {order.meta.orderType === 'delivery' && ['ready', 'picked_up', 'out_for_delivery', 'arrived'].includes(order.status) && (
               <section className="rounded-2xl border border-orange-400/25 bg-gradient-to-br from-[#201913] via-[#171311] to-[#0f0d0b] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p><h3 className="mt-1 text-xl font-black text-white">{order.status === 'ready' ? 'Waiting for rider collection' : order.status === 'picked_up' ? 'Rider collected the order' : order.status === 'arrived' ? 'Rider arrived at customer' : 'Rider is on the way'}</h3></div><span className={['out_for_delivery', 'arrived'].includes(order.status) ? 'rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-200' : 'rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-bold text-orange-200'}>{['out_for_delivery', 'arrived'].includes(order.status) ? 'LIVE' : order.status === 'picked_up' ? 'PICKED UP' : 'READY'}</span></div>
-                    <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : order.status === 'picked_up' ? 'Pickup is confirmed. The shared map is open and will show the rider as soon as they start live location.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
-                    {['picked_up', 'out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(order)} /></div>}
-                {['picked_up', 'out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} customerLocation={resolveCustomerLocation(order)} /></div>}
+                    <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : order.status === 'picked_up' ? 'Pickup is confirmed. The rider must accept the delivery in their portal before live tracking begins.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
+                    {['out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(order)} /></div>}
+                {['out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} customerLocation={resolveCustomerLocation(order)} /></div>}
               </section>
             )}
 

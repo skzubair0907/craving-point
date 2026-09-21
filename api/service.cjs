@@ -60,7 +60,6 @@ async function handle(action, payload, { local = false, repo = repository(local)
     const restaurantLocation = row.payload.restaurantLocation || DEFAULT_RESTAURANT_LOCATION
     const customerLocation = row.payload.customerLocation || null
     let deliveryLocation = null
-    let deliveryVerification = null
     let deliveryRider = null
     try {
       deliveryLocation = await repo.deliveryLocation(row.order_number)
@@ -68,7 +67,6 @@ async function handle(action, payload, { local = false, repo = repository(local)
       // Tracking is optional. A missing location must never block receipt/status access.
     }
     if (['out_for_delivery', 'arrived'].includes(row.payload.status)) {
-      try { deliveryVerification = await repo.deliveryOtp(row.id) } catch { /* OTP is optional until its database migration is applied. */ }
       try { deliveryRider = await repo.deliveryRider?.(row.id) } catch { /* Rider identity is optional for tracking. */ }
     }
     return {
@@ -85,7 +83,6 @@ async function handle(action, payload, { local = false, repo = repository(local)
         restaurantLocation,
         customerLocation,
         deliveryLocation,
-        deliveryOtp: deliveryVerification?.verified_at ? null : deliveryVerification?.otp || null,
         deliveryRider,
       },
     }
@@ -101,7 +98,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
   }
   if (action === 'submitReview') {
     const row = await authorize(repo, payload)
-    if (!['delivered', 'picked_up'].includes(row.payload.status)) fail(400, 'You can review an order after it is completed.')
+    if (row.payload.status !== 'delivered' && !(row.payload.meta?.orderType === 'pickup' && row.payload.status === 'picked_up')) fail(400, 'You can review an order after it is completed.')
     if (!Number.isInteger(payload.rating) || payload.rating < 1 || payload.rating > 5 || typeof payload.review !== 'string' || payload.review.trim().length < 3 || payload.review.length > 1000) fail(400, 'Enter a rating and a review between 3 and 1000 characters.')
     const firstName = String(row.payload.customer?.name || 'Customer').trim().split(/\s+/)[0].slice(0, 50)
     await repo.review({ order_number: row.order_number, name: firstName, rating: payload.rating, review: payload.review.trim() })

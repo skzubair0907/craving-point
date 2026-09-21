@@ -33,7 +33,7 @@ export const ORDER_STATE_MACHINE: Record<string, { label: string; next: string[]
   ready: { label: 'Ready', next: ['rider_assigned', 'picked_up'] },
   rider_assigned: { label: 'Rider assigned', next: ['rider_accepted'] },
   rider_accepted: { label: 'Rider accepted', next: ['picked_up'] },
-  picked_up: { label: 'Picked up', next: ['out_for_delivery', 'delivered'] },
+  picked_up: { label: 'Picked up', next: ['out_for_delivery'] },
   out_for_delivery: { label: 'Out for delivery', next: ['arrived', 'delivered'] },
   arrived: { label: 'Arrived', next: ['delivered'] },
   delivered: { label: 'Delivered', next: [], terminal: true },
