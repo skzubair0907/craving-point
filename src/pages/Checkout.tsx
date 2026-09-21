@@ -437,7 +437,7 @@ const CheckoutPage = () => {
           <span className="checkout-fixed-bar__total">₹{total.toFixed(2)}</span>
           <span className="checkout-fixed-bar__label">Total</span>
         </div>
-        <button type="submit" form="checkout-form" className="checkout-order-button" disabled={isProcessing || !restaurantSettings.online_ordering_enabled}>
+        <button type="submit" form="checkout-form" className="checkout-order-button" disabled={isProcessing || restaurantSettings.online_ordering_enabled === false}>
           {isProcessing ? 'Placing order...' : orderType === 'pickup' ? 'Place pickup order' : onlineAvailable && payment === 'online' ? 'Proceed to pay' : 'Place order'}
           <ChevronRight size={18} />
         </button>
