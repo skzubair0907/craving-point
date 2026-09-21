@@ -48,9 +48,8 @@ begin
   select o.payload->>'status' into current_status
   from public.order_requests o
   join public.order_admin_details d on d.order_id = o.id
-  join public.delivery_staff s on s.id = d.delivery_staff_id and s.active = true
-  where o.id = p_order_id;
-  if not found then raise exception 'Assign an active rider before confirming pickup'; end if;
+  where o.id = p_order_id and d.delivery_staff_id is not null;
+  if not found then raise exception 'Assign a rider before confirming pickup'; end if;
   if current_status not in ('rider_assigned', 'rider_accepted') then
     raise exception 'Pickup can only be confirmed after assigning the rider';
   end if;
