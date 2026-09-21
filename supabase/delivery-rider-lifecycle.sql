@@ -22,7 +22,7 @@ begin
   end if;
 
   insert into public.order_admin_details(order_id, delivery_staff_id, notes, updated_at)
-  values (p_order_id, p_delivery_staff_id, nullif(trim(coalesce(p_notes, '')), ''), now())
+  values (p_order_id, p_delivery_staff_id, trim(coalesce(p_notes, '')), now())
   on conflict (order_id) do update set
     delivery_staff_id = excluded.delivery_staff_id,
     notes = excluded.notes,
