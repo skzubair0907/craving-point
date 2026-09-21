@@ -315,12 +315,12 @@ export default function DeliveryTracking() {
     return (
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div className="relative z-10 w-full h-full sm:h-auto max-w-3xl rounded-xl bg-[#0b0b0c] p-4 sm:p-6">
+        <div className="relative z-10 w-full max-w-3xl rounded-2xl bg-[#0b0b0c] p-4 shadow-2xl sm:p-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-black">Live map — {orderId}</h3>
             <button className="btn-secondary" onClick={onClose}>Close</button>
           </div>
-          <div className="overflow-hidden rounded-lg border border-white/10" style={{ height: '78vh', maxHeight: 560 }}>
+          <div className="h-[58svh] min-h-[300px] max-h-[560px] overflow-hidden rounded-xl border border-white/10 sm:h-[560px]">
             <DeliveryMap customerLocation={cust} riderLocation={riderLocation as any} height={'100%'} />
           </div>
           <div className="mt-3 flex items-center justify-between">

@@ -122,7 +122,9 @@ button,input,select,textarea{max-width:100%}
 @media(max-width:767px){
  .editorial-shell{width:calc(100% - 28px)}
  .header-inner{width:calc(100% - 24px)}
- .delivery-map-surface{height:clamp(240px,62vw,320px)!important}
+ /* The React map component owns its height. A forced mobile height left a
+    large blank panel beneath modal maps and made them look as if they reloaded. */
+ .delivery-map-surface{height:100%!important;min-height:240px}
  .delivery-map-surface .leaflet-control-zoom a{width:32px;height:32px;line-height:32px}
  .card-premium{min-width:0}.card-premium :is(p,h1,h2,h3,span,a){overflow-wrap:anywhere}
  .grid{min-width:0}.overflow-x-auto{overscroll-behavior-x:contain}
@@ -173,7 +175,7 @@ button,input,select,textarea{max-width:100%}
  .header-inner .header-brand-logo{width:112px}.header-inner .header-brand-logo img{max-height:42px}
  .header-actions{gap:6px}.header-cart,.mobile-toggle{min-width:38px;min-height:42px}
  .editorial-shell{width:calc(100% - 24px)}
- .delivery-map-surface{height:240px!important}
+ .delivery-map-surface{height:100%!important;min-height:240px}
 }
 
 /* Mobile home: keep the hero copy below the fixed header and reserve a clean
