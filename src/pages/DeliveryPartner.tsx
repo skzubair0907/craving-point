@@ -12,6 +12,7 @@ const cash = (value: any) => `₹${Number(value || 0).toFixed(2)}`
 const riderAction = (status: string): ['accept' | 'pickup' | 'start', string] => {
   if (status === 'rider_assigned') return ['accept', 'Accept job']
   if (status === 'rider_accepted') return ['pickup', 'Confirm pickup']
+  if (status === 'picked_up') return ['accept', 'Accept delivery']
   return ['start', 'Start delivery']
 }
 const riderStatusLabel = (status: string) => ({ rider_assigned: 'JOB ASSIGNED', rider_accepted: 'GO TO PICKUP', picked_up: 'PICKED UP', out_for_delivery: 'ON THE WAY', arrived: 'AT CUSTOMER' }[status] || 'READY FOR COLLECTION')
@@ -124,7 +125,7 @@ export default function DeliveryPartner() {
     const result = await supabase.rpc('delivery_partner_advance_order', { p_order_id: job.id, p_action: action })
     if (result.error) message(result.error.message)
     else {
-      if (action === 'start') { setNotice('Delivery started. Allow location access to share the trip with the customer.'); share(job) }
+      if (action === 'start' || (action === 'accept' && job.payload.status === 'picked_up')) { setNotice('Delivery started. Allow location access to share the trip with the customer.'); share(job) }
       else setNotice(action === 'accept' ? 'Job accepted. Head to Craving Point for pickup.' : action === 'pickup' ? 'Pickup confirmed. You can now start the delivery.' : 'Arrival recorded. Ask the customer for their 4-digit delivery code.')
       await refresh()
     }

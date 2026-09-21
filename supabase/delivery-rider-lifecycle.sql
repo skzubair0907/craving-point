@@ -89,14 +89,19 @@ begin
   if not found then raise exception 'This delivery is not assigned to you'; end if;
 
   case p_action
-    when 'accept' then next_status := 'rider_accepted'; history_reason := 'Rider accepted delivery job';
+    when 'accept' then
+      if current_status = 'picked_up' then
+        next_status := 'out_for_delivery'; history_reason := 'Rider accepted delivery and started the trip';
+      else
+        next_status := 'rider_accepted'; history_reason := 'Rider accepted delivery job';
+      end if;
     when 'pickup' then next_status := 'picked_up'; history_reason := 'Rider confirmed order pickup';
     when 'start' then next_status := 'out_for_delivery'; history_reason := 'Rider started delivery';
     when 'arrive' then next_status := 'arrived'; history_reason := 'Rider arrived at customer';
     else raise exception 'Invalid rider action';
   end case;
 
-  if (p_action = 'accept' and current_status <> 'rider_assigned')
+  if (p_action = 'accept' and current_status not in ('rider_assigned', 'picked_up'))
     or (p_action = 'pickup' and current_status <> 'rider_accepted')
     or (p_action = 'start' and current_status <> 'picked_up')
     or (p_action = 'arrive' and current_status <> 'out_for_delivery') then
@@ -106,7 +111,7 @@ begin
   update public.order_requests
   set payload = jsonb_set(jsonb_set(payload, '{status}', to_jsonb(next_status), true), '{updated_at}', to_jsonb(now()), true)
   where id = p_order_id;
-  if p_action = 'start' then
+  if next_status = 'out_for_delivery' then
     insert into public.delivery_verifications(order_id, otp)
     values (p_order_id, lpad((floor(random() * 10000))::text, 4, '0'))
     on conflict (order_id) do update set otp = excluded.otp, created_at = now(), verified_at = null, verified_by = null;
