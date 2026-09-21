@@ -263,7 +263,7 @@ export default function AdminOrdersManagement() {
                   alert('Failed to fetch subscriptions')
                 }
               }}>View subscriptions</button>
-              {next && !(order.meta.orderType === 'delivery' && ['out_for_delivery', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
+              {next && !(order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up', 'out_for_delivery', 'arrived', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next, order.meta.orderType)}</button>}
               {order.status === 'out_for_delivery' && (
                 <button
                   className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10"

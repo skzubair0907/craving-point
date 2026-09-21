@@ -146,7 +146,7 @@ export default function AdminDispatch() {
 
                     {visible.map(row => {
                         const o = row.payload
-                        const next = ({ placed: 'confirmed', confirmed: 'preparing', preparing: 'ready', ready: 'out_for_delivery', out_for_delivery: 'delivered' } as Record<string, string>)[o.status]
+                        const next = ({ placed: 'confirmed', confirmed: 'preparing', preparing: 'ready' } as Record<string, string>)[o.status]
                         return (
                             <article key={row.id} className="card-premium p-5 space-y-4">
                                 <div className="flex flex-wrap justify-between gap-3">
@@ -175,7 +175,7 @@ export default function AdminDispatch() {
                                     <a className="btn-secondary flex items-center gap-2" href={'tel:' + o.customer?.phone}><Phone size={16} />Call customer</a>
                                     {o.customer?.address && <a className="btn-secondary" href={'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.customer.address)} target="_blank" rel="noreferrer">Open address in Maps</a>}
                                     <button className="btn-secondary" onClick={() => setSelectedOrder(row.order_number)}><MapPin size={14} /> Open map</button>
-                                    {next && next !== 'out_for_delivery' && next !== 'delivered' && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />{next === 'ready' ? 'Delivery boy picked up' : `Mark ${next}`}</button>}
+                                    {next && <button className="btn-primary flex items-center gap-2" disabled={busy === row.id} onClick={() => void advance(row, next)}><Truck size={16} />{next === 'ready' ? 'Mark ready' : `Mark ${next}`}</button>}
                                     {o.status === 'out_for_delivery' && (
                                         <button
                                             className="btn-secondary border border-red-400/40 text-red-200 hover:bg-red-500/10"
