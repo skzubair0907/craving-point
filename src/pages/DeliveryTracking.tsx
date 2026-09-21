@@ -10,6 +10,47 @@ import clsx from 'clsx';
 import useNotificationsStore from '../store/useNotificationsStore'
 import registerPush from '../lib/push'
 
+type MapCustomerLocation = { lat: number; lng: number } | null;
+
+function LiveMapModal({
+  orderId,
+  token,
+  customer,
+  onClose,
+}: {
+  orderId: string;
+  token?: string;
+  customer: MapCustomerLocation;
+  onClose: () => void;
+}) {
+  const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderId, token);
+  const riderLocation = riderLoc
+    ? {
+        lat: riderLoc.latitude,
+        lng: riderLoc.longitude,
+        accuracy: riderLoc.accuracy,
+        timestamp: riderLoc.timestamp,
+      }
+    : undefined;
+  const customerLocation = customer ?? { lat: 0, lng: 0 };
+
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-3xl rounded-2xl bg-[#0b0b0c] p-4 shadow-2xl sm:p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-black">Live map — {orderId}</h3>
+          <button className="btn-secondary" onClick={onClose}>Close</button>
+        </div>
+        <div className="h-[58svh] min-h-[300px] max-h-[560px] overflow-hidden rounded-xl border border-white/10 sm:h-[560px]">
+          <DeliveryMap customerLocation={customerLocation} riderLocation={riderLocation as any} height="100%" />
+        </div>
+        <div className="mt-3 text-sm text-white/60">Live updates: {lastUpdated ?? '––'}</div>
+      </div>
+    </div>
+  );
+}
+
 export default function DeliveryTracking() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,7 +125,7 @@ export default function DeliveryTracking() {
       if (document.visibilityState === 'visible') void fetchOrder();
     };
     void fetchOrder();
-    const timer = window.setInterval(refreshWhenVisible, 1000);
+    const timer = window.setInterval(refreshWhenVisible, 5_000);
     window.addEventListener('focus', refreshWhenVisible);
     document.addEventListener('visibilitychange', refreshWhenVisible);
     return () => {
@@ -303,31 +344,8 @@ export default function DeliveryTracking() {
   if (showMap && credentials?.orderId) {
     return (
       <>
-        <MapModal orderId={credentials.orderId} token={credentials.token} customer={order?.customerLocation ?? null} onClose={() => setShowMap(false)} />
+        <LiveMapModal orderId={credentials.orderId} token={credentials.token} customer={order?.customerLocation ?? null} onClose={() => setShowMap(false)} />
       </>
-    )
-  }
-
-  function MapModal({ orderId, token, customer, onClose }: { orderId: string; token?: string; customer: { lat: number; lng: number } | null; onClose: () => void }) {
-    const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderId, token)
-    const riderLocation = riderLoc ? { lat: riderLoc.latitude, lng: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp } : undefined
-    const cust = customer ?? { lat: 0, lng: 0 }
-    return (
-      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-        <div className="relative z-10 w-full max-w-3xl rounded-2xl bg-[#0b0b0c] p-4 shadow-2xl sm:p-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-black">Live map — {orderId}</h3>
-            <button className="btn-secondary" onClick={onClose}>Close</button>
-          </div>
-          <div className="h-[58svh] min-h-[300px] max-h-[560px] overflow-hidden rounded-xl border border-white/10 sm:h-[560px]">
-            <DeliveryMap customerLocation={cust} riderLocation={riderLocation as any} height={'100%'} />
-          </div>
-          <div className="mt-3 flex items-center justify-between">
-            <div className="text-sm text-white/60">Live updates: {lastUpdated ?? '––'}</div>
-          </div>
-        </div>
-      </div>
     )
   }
 
