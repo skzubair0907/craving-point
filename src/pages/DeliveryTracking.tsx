@@ -171,7 +171,7 @@ export default function DeliveryTracking() {
   useEffect(() => {
     if (!order) return
     const status = String(order.status || '').toLowerCase()
-    if (status === 'out_for_delivery') setShowMap(true)
+    if (['picked_up', 'out_for_delivery', 'arrived'].includes(status)) setShowMap(true)
   }, [order?.status])
 
   // Try registering for Web Push (VAPID) and save subscription server-side.
