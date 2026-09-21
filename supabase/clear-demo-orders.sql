@@ -22,6 +22,9 @@ where order_id in (select id from order_cleanup_targets);
 delete from public.order_admin_details
 where order_id in (select id from order_cleanup_targets);
 
+delete from public.customer_reviews
+where order_number in (select order_number from order_cleanup_targets);
+
 delete from public.stock_history
 where order_number in (select order_number from order_cleanup_targets);
 
