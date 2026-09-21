@@ -167,6 +167,14 @@ export default function DeliveryTracking() {
     }
   }, [order?.status])
 
+  // A completed delivery should not leave the customer on a stale live-map
+  // screen. Keep a short acknowledgement window, then return to the menu.
+  useEffect(() => {
+    if (String(order?.status || '').toLowerCase() !== 'delivered') return
+    const timer = window.setTimeout(() => navigate('/', { replace: true }), 3_000)
+    return () => window.clearTimeout(timer)
+  }, [order?.status, navigate])
+
   // Show live map modal when order becomes out_for_delivery
   useEffect(() => {
     if (!order) return
@@ -302,7 +310,7 @@ export default function DeliveryTracking() {
 
   function MapModal({ orderId, token, customer, onClose }: { orderId: string; token?: string; customer: { lat: number; lng: number } | null; onClose: () => void }) {
     const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderId, token)
-    const riderLocation = riderLoc ? { latitude: riderLoc.latitude, longitude: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp } : undefined
+    const riderLocation = riderLoc ? { lat: riderLoc.latitude, lng: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp } : undefined
     const cust = customer ?? { lat: 0, lng: 0 }
     return (
       <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
@@ -543,8 +551,8 @@ export default function DeliveryTracking() {
               {/* Main Content: Map and Info */}
               <div className="tracking-grid grid gap-6 md:grid-cols-[1fr_1fr]">
                 {/* Map */}
-                <div className="tracking-map bg-white/10 rounded-xl p-4 h-64 sm:h-96">
-                  <>
+                <div className="tracking-map rounded-2xl border border-white/10 bg-white/10 p-3 sm:p-4">
+                  <div className="h-64 overflow-hidden rounded-xl sm:h-96">
                     <DeliveryMap
                       customerLocation={displayCustomerLocation}
                       riderLocation={effectiveRiderLocation
@@ -553,13 +561,13 @@ export default function DeliveryTracking() {
                       height="100%"
                       width="100%"
                     />
+                  </div>
                     {!customerLoc && (
                       <p className="mt-3 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-100">
                         Exact customer coordinates were not captured, so the map is showing the restaurant fallback location for route context.
                       </p>
                     )}
-                    {riderAtCustomer && <p className="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-200">Your delivery rider is at your saved delivery location.</p>}
-                  </>
+                    {riderAtCustomer && <p className="mt-3 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-medium text-emerald-200">Your delivery rider has arrived at your saved delivery location.</p>}
                 </div>
 
                 {/* Info Panel */}
