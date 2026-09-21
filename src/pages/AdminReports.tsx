@@ -13,7 +13,8 @@ export default function AdminReports(){
   const channel = supabase.channel('admin-reports-orders')
    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'order_requests'},()=>void load())
    .subscribe()
-  return ()=>{ void supabase.removeChannel(channel) }
+  const timer = window.setInterval(()=>{ if(document.visibilityState==='visible') void load() },15_000)
+  return ()=>{ window.clearInterval(timer); void supabase.removeChannel(channel) }
  },[from,to])
  const dailyRows = Array.isArray(report?.daily) ? report.daily : []
  const productRows = Array.isArray(report?.products) ? report.products : []
