@@ -11,7 +11,7 @@ async function main(){
  if(url&&key){try{
  const res=await fetch(url+'/rest/v1/',{headers:{apikey:key,Authorization:'Bearer '+key},signal:AbortSignal.timeout(15000)})
  check('Database API accepts server credentials'+(res.ok?'':' (HTTP '+res.status+')'),res.ok)
- if(res.ok){const schema=await res.json();for(const name of ['admin_can','set_order_status','record_cash_collection','admin_sales_report','set_delivery_location'])check('Database function '+name,Boolean(schema.paths?.['/rpc/'+name]))}
+ if(res.ok){const schema=await res.json();for(const name of ['admin_can','set_order_status','record_cash_collection','admin_sales_report','set_delivery_location','assign_delivery_partner','admin_confirm_delivery_pickup','delivery_partner_orders','delivery_partner_advance_order','delivery_partner_confirm_delivery','delivery_partner_earnings','activate_my_delivery_partner_account'])check('Database function '+name,Boolean(schema.paths?.['/rpc/'+name]))}
  }catch{check('Database API reachable',false)}}
  console.log('Key rotation, RLS, backups, restore drills and real staging orders require separate verification.')
  process.exitCode=failures?1:0

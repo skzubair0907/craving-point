@@ -24,6 +24,17 @@ const actionLabel = (status: string) => {
   return getOrderStatusLabel(status)
 }
 const statusTone = (status: string) => getOrderStatusTone(status)
+
+function AdminLiveMapModal({ orderNumber, customer, onClose }: { orderNumber: string; customer?: { lat: number; lng: number } | null; onClose: () => void }) {
+  const { data: riderLoc, lastUpdated } = useDeliveryTracking(orderNumber)
+  const riderLocation = riderLoc
+    ? { lat: riderLoc.latitude, lng: riderLoc.longitude, accuracy: riderLoc.accuracy, timestamp: riderLoc.timestamp, riderId: riderLoc.riderId }
+    : null
+  const customerLocation = customer ?? { lat: 0, lng: 0 }
+
+  return <div className="fixed inset-0 z-[1000] flex items-center justify-center p-3 sm:p-4"><div className="absolute inset-0 bg-black/60" onClick={onClose} /><div className="relative z-10 w-full max-w-3xl rounded-2xl bg-[#0b0b0c] p-4 shadow-2xl sm:p-6"><div className="mb-3 flex items-center justify-between gap-3"><h3 className="min-w-0 break-all text-lg font-black">Live map — {orderNumber}</h3><button className="btn-secondary shrink-0" onClick={onClose}>Close</button></div><div className="h-[58svh] min-h-[300px] max-h-[560px] overflow-hidden rounded-xl border border-white/10 sm:h-[560px]"><DeliveryMap customerLocation={customerLocation} riderLocation={riderLocation} height="100%" /></div><div className="mt-3 flex flex-wrap justify-between gap-2 text-sm text-white/60"><span>Live updates: {lastUpdated ?? 'Waiting for rider GPS'}</span><span>Rider: {riderLoc?.riderId ?? '—'}</span></div></div></div>
+}
+
 export default function AdminOrdersManagement() {
   const { orders, error, loading, refresh } = useAdminOrders()
   const [filter, setFilter] = useState('active')
@@ -244,7 +255,7 @@ export default function AdminOrdersManagement() {
               <section className="rounded-2xl border border-orange-400/25 bg-gradient-to-br from-[#201913] via-[#171311] to-[#0f0d0b] p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200/80">Rider dispatch</p><h3 className="mt-1 text-xl font-black text-white">{order.status === 'ready' ? 'Waiting for rider collection' : order.status === 'picked_up' ? 'Rider collected the order' : order.status === 'arrived' ? 'Rider arrived at customer' : 'Rider is on the way'}</h3></div><span className={['out_for_delivery', 'arrived'].includes(order.status) ? 'rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-200' : 'rounded-full border border-orange-400/40 bg-orange-500/10 px-3 py-1 text-xs font-bold text-orange-200'}>{['out_for_delivery', 'arrived'].includes(order.status) ? 'LIVE' : order.status === 'picked_up' ? 'PICKED UP' : 'READY'}</span></div>
                     <p className="mt-4 text-sm leading-6 text-white/75">{order.status === 'ready' ? 'Assign a rider in Details, notes & delivery. The rider receives this job in their own portal and starts it from their phone.' : order.status === 'picked_up' ? 'Pickup is confirmed. The rider must accept the delivery in their portal before live tracking begins.' : 'The rider’s own phone provides the live location. The customer tracking link updates automatically.'}</p>
-                    {['out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-3"><OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(order)} /></div>}
+                    {['out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-3 flex flex-wrap items-center justify-between gap-3"><OrderEta orderNumber={row.order_number} customer={resolveCustomerLocation(order)} /><button className="btn-secondary" onClick={() => setMapOrder({ orderNumber: row.order_number, customer: resolveCustomerLocation(order) ?? undefined })}>Open live map</button></div>}
                 {['out_for_delivery', 'arrived'].includes(order.status) && <div className="mt-4"><DeliveryHistoryPanel orderNumber={row.order_number} customerLocation={resolveCustomerLocation(order)} /></div>}
               </section>
             )}
@@ -257,7 +268,7 @@ export default function AdminOrdersManagement() {
       })}
 
       {mapOrder && (
-        <MapModal orderNumber={mapOrder.orderNumber} customer={mapOrder.customer ?? null} onClose={() => setMapOrder(null)} />
+        <AdminLiveMapModal orderNumber={mapOrder.orderNumber} customer={mapOrder.customer ?? null} onClose={() => setMapOrder(null)} />
       )}
 
       {cancelOrder && <OrderCancellationDialog orderNumber={cancelOrder.order_number} total={Number(cancelOrder.payload.total)} paid={cancelOrder.payload.payment_status === 'paid'} onClose={() => setCancelOrder(null)} onConfirm={reason => { void update(cancelOrder.id, 'cancelled', reason); setCancelOrder(null) }} />}

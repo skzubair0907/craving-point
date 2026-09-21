@@ -104,6 +104,11 @@ export function useDeliveryTracking(
       }, 3000)
     } else {
       void refreshStaffLocation()
+      // Staff maps do not have a customer tracking token. Keep them current
+      // even if Realtime has not been enabled for delivery_tracking yet.
+      var timer = window.setInterval(() => {
+        if (document.visibilityState === 'visible') void refreshStaffLocation()
+      }, 5000)
     }
 
     // subscribe to realtime updates for delivery_tracking row for this order number
