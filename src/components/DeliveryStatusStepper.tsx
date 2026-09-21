@@ -33,8 +33,14 @@ export const DeliveryStatusStepper: React.FC<DeliveryStatusStepperProps> = ({
 }) => {
   const stepList = steps ?? (orderType === 'delivery' ? DELIVERY_STEPS : PICKUP_STEPS);
 
-  // Find index of current status in step list
-  const currentIndex = stepList.indexOf(currentStatus);
+  // Rider-only states deliberately keep the customer on a compact six-step
+  // timeline. The authoritative order status remains unchanged in Supabase.
+  const customerStatus = orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up'].includes(currentStatus)
+    ? 'ready'
+    : orderType === 'delivery' && currentStatus === 'arrived'
+      ? 'out_for_delivery'
+      : currentStatus;
+  const currentIndex = stepList.indexOf(customerStatus);
   const isComplete = currentIndex === stepList.length - 1; // Last step reached
 
   return (

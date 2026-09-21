@@ -67,7 +67,7 @@ async function handle(action, payload, { local = false, repo = repository(local)
     } catch {
       // Tracking is optional. A missing location must never block receipt/status access.
     }
-    if (row.payload.status === 'out_for_delivery') {
+    if (['out_for_delivery', 'arrived'].includes(row.payload.status)) {
       try { deliveryVerification = await repo.deliveryOtp(row.id) } catch { /* OTP is optional until its database migration is applied. */ }
       try { deliveryRider = await repo.deliveryRider?.(row.id) } catch { /* Rider identity is optional for tracking. */ }
     }

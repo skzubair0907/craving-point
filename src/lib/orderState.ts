@@ -30,7 +30,7 @@ export const ORDER_STATE_MACHINE: Record<string, { label: string; next: string[]
   placed: { label: 'Order received', next: ['confirmed'] },
   confirmed: { label: 'Confirmed', next: ['preparing'] },
   preparing: { label: 'Preparing', next: ['ready'] },
-  ready: { label: 'Ready', next: ['out_for_delivery', 'picked_up'] },
+  ready: { label: 'Ready', next: ['rider_assigned', 'picked_up'] },
   rider_assigned: { label: 'Rider assigned', next: ['rider_accepted'] },
   rider_accepted: { label: 'Rider accepted', next: ['picked_up'] },
   picked_up: { label: 'Picked up', next: ['out_for_delivery', 'delivered'] },
@@ -85,9 +85,7 @@ export function getNextOrderStatus(order: { status?: string | null; orderType?: 
   const status = normalizeOrderStatus(order?.status ?? null);
   if (!status) return null;
   if (status === 'awaiting_payment') return 'placed';
-  if (status === 'ready') {
-    return order?.orderType === 'pickup' ? 'picked_up' : 'out_for_delivery';
-  }
+  if (status === 'ready') return order?.orderType === 'pickup' ? 'picked_up' : null;
   const allowed = ORDER_STATE_MACHINE[status]?.next ?? [];
   return allowed[0] ?? null;
 }

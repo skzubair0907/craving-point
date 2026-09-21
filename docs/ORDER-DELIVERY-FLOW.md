@@ -33,3 +33,9 @@ Run `supabase/order-delivery-workflow.sql` after the checkout and delivery-partn
 | Pickup | `placed` → `confirmed` → `preparing` → `ready` → `picked_up` |
 
 Online-payment orders cannot advance before payment confirmation. Cancelled, delivered, and picked-up orders are closed. Each status update is added to the order history and shown in customer tracking.
+# Rider lifecycle setup
+
+Run `supabase/delivery-rider-lifecycle.sql` in the Supabase SQL Editor after
+the existing checkout, delivery portal, and delivery verification scripts. It
+adds the server-verified handoff: rider assigned, accepted, picked up, on the
+way, arrived, then OTP-confirmed delivery.
