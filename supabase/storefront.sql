@@ -46,7 +46,10 @@ begin
   select * into current_order from public.order_requests where id = p_id for update;
   if not found then raise exception 'Order not found'; end if;
   current_status := current_order.payload->>'status';
-  if current_status in ('delivered', 'picked_up', 'cancelled') then raise exception 'This order is already closed'; end if;
+  if current_status in ('delivered', 'cancelled')
+    or (current_status = 'picked_up' and current_order.payload->'meta'->>'orderType' = 'pickup') then
+    raise exception 'This order is already closed';
+  end if;
   if p_status not in ('confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'picked_up', 'cancelled') then raise exception 'Invalid status'; end if;
   if p_status <> 'cancelled' and current_order.payload->>'payment_status' <> 'paid' and current_order.payload->'meta'->>'payment' = 'online' then raise exception 'Payment must be confirmed first'; end if;
   if p_status <> 'cancelled' and not (

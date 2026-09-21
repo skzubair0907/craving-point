@@ -117,7 +117,8 @@ end $$;
 revoke all on function public.delivery_partner_advance_order(uuid, text) from public, anon;
 grant execute on function public.delivery_partner_advance_order(uuid, text) to authenticated;
 
-create or replace function public.delivery_partner_confirm_delivery(p_order_id uuid, p_otp text default null)
+drop function if exists public.delivery_partner_confirm_delivery(uuid, text);
+create or replace function public.delivery_partner_confirm_delivery(p_order_id uuid)
 returns void language plpgsql security definer set search_path = public as $$
 begin
   if not exists (
@@ -130,5 +131,5 @@ begin
   update public.order_requests set payload = jsonb_set(jsonb_set(payload, '{status}', to_jsonb('delivered'::text), true), '{updated_at}', to_jsonb(now()), true) where id = p_order_id;
   insert into public.order_history(order_id, status, reason, actor) values (p_order_id, 'delivered', 'Delivery confirmed by delivery partner', auth.uid());
 end $$;
-revoke all on function public.delivery_partner_confirm_delivery(uuid, text) from public, anon;
-grant execute on function public.delivery_partner_confirm_delivery(uuid, text) to authenticated;
+revoke all on function public.delivery_partner_confirm_delivery(uuid) from public, anon;
+grant execute on function public.delivery_partner_confirm_delivery(uuid) to authenticated;
