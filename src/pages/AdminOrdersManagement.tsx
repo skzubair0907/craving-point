@@ -9,7 +9,6 @@ import AdminOrderDetails from '../components/AdminOrderDetails'
 import OrderCancellationDialog from '../components/OrderCancellationDialog'
 import DeliveryHistoryPanel from '../components/DeliveryHistoryPanel'
 import DeliveryAuditBrowser from '../components/DeliveryAuditBrowser'
-import ForceDeliverDialog from '../components/ForceDeliverDialog'
 import { getNextOrderStatus, getOrderStatusLabel, getOrderStatusTone } from '../lib/orderState'
 
 const nextStatus = (order: any) => getNextOrderStatus({ status: order.status, orderType: order.meta?.orderType })
@@ -32,7 +31,6 @@ export default function AdminOrdersManagement() {
   const [message, setMessage] = useState('')
   const [query, setQuery] = useState('')
   const [cancelOrder, setCancelOrder] = useState<any>(null)
-  const [forceOrder, setForceOrder] = useState<{ id: string; orderNumber: string } | null>(null)
   const [showAudit, setShowAudit] = useState(false)
   const [auditOrder, setAuditOrder] = useState<string | undefined>(undefined)
   const [mapOrder, setMapOrder] = useState<{ orderNumber: string; customer?: { lat: number; lng: number } } | null>(null)
@@ -237,59 +235,9 @@ export default function AdminOrdersManagement() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="btn-secondary w-full sm:w-auto" onClick={async () => {
-                try {
-                  const text = prompt('Push message to send', `Test notification for ${row.order_number}`)
-                  if (!text) return
-                  const { data: { session } } = await supabase.auth.getSession()
-                  const token = session?.access_token
-                  await fetch('/.netlify/functions/push-trigger', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-                    body: JSON.stringify({ action: 'send', order_id: row.order_number, title: 'Test notification', message: text })
-                  })
-                  // simple UX feedback
-                  // eslint-disable-next-line no-alert
-                  alert('Push requested')
-                } catch (e) {
-                  // eslint-disable-next-line no-alert
-                  alert('Failed to request push')
-                }
-              }}>Send push</button>
-              <button className="btn-secondary w-full sm:w-auto" onClick={async () => {
-                try {
-                  const { data: { session } } = await supabase.auth.getSession()
-                  const token = session?.access_token
-                  const res = await fetch('/.netlify/functions/push-trigger', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-                    body: JSON.stringify({ action: 'list', order_id: row.order_number })
-                  })
-                  const text = await res.text()
-                  if (res.ok) {
-                    const parsed = JSON.parse(text)
-                    // eslint-disable-next-line no-alert
-                    alert(`Subscriptions for ${row.order_number}: ${parsed.count}`)
-                  } else {
-                    // eslint-disable-next-line no-alert
-                    alert('Failed to fetch subscriptions')
-                  }
-                } catch (e) {
-                  // eslint-disable-next-line no-alert
-                  alert('Failed to fetch subscriptions')
-                }
-              }}>View subscriptions</button>
               {next && !(order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up', 'out_for_delivery', 'arrived', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next)}</button>}
               {order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted'].includes(order.status) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void confirmRiderPickup(row)}>Delivery boy picked up</button>}
-              {order.status === 'out_for_delivery' && (
-                <button
-                  className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10"
-                  disabled={busy === row.id}
-                  onClick={() => setForceOrder({ id: row.id, orderNumber: row.order_number })}
-                >Force mark delivered</button>
-              )}
               {!isCompletedOrder(row) && order.status !== 'cancelled' && <button className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10" disabled={busy === row.id} onClick={() => setCancelOrder(row)}>Cancel order</button>}
-              <button className="btn-secondary w-full sm:w-auto" onClick={() => { setAuditOrder(row.order_number); setShowAudit(true) }}>View activity</button>
             </div>
 
             {order.meta.orderType === 'delivery' && ['ready', 'picked_up', 'out_for_delivery', 'arrived'].includes(order.status) && (
@@ -314,13 +262,6 @@ export default function AdminOrdersManagement() {
 
       {cancelOrder && <OrderCancellationDialog orderNumber={cancelOrder.order_number} total={Number(cancelOrder.payload.total)} paid={cancelOrder.payload.payment_status === 'paid'} onClose={() => setCancelOrder(null)} onConfirm={reason => { void update(cancelOrder.id, 'cancelled', reason); setCancelOrder(null) }} />}
       {showAudit && <DeliveryAuditBrowser defaultOrder={auditOrder} />}
-      {forceOrder && (
-        <ForceDeliverDialog
-          orderNumber={forceOrder.orderNumber}
-          onClose={() => setForceOrder(null)}
-          onConfirm={async (reason) => { setForceOrder(null); await update(forceOrder.id, 'delivered', reason, forceOrder.orderNumber) }}
-        />
-      )}
     </div>
   )
 }
