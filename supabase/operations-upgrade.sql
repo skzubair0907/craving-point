@@ -7,11 +7,11 @@ begin
  if not admin_can('reports',case when p_export then 'export' else 'view' end) then raise exception 'Access denied'; end if;
  if p_from is null or p_to is null or p_to<p_from or p_to-p_from>366 then raise exception 'Choose a date range of at most 367 days'; end if;
  with selected as (
-  select *, (created_at at time zone 'Asia/Kolkata')::date day,
+  select *, (created_at at time zone 'Asia/Kolkata')::date as report_day,
    case when payload->>'payment_status'='paid' then (payload->>'total')::numeric else 0 end received
   from order_requests where created_at >= p_from::timestamp at time zone 'Asia/Kolkata'
    and created_at < (p_to+1)::timestamp at time zone 'Asia/Kolkata'
- ), daily as (select day,count(*) orders,sum(received) revenue from selected group by day),
+ ), daily as (select report_day,count(*) orders,sum(received) revenue from selected group by report_day),
  products as (select item->>'productId' product_id,item->>'name' name,sum((item->>'quantity')::integer) quantity,
  sum((item->>'price')::numeric*(item->>'quantity')::integer) gross_sales
  from selected,jsonb_array_elements(payload->'items') item where payload->>'status' not in ('cancelled','awaiting_payment','refunded') group by item->>'productId',item->>'name'),
@@ -24,7 +24,7 @@ begin
   'cancelled',(select count(*) from selected where payload->>'status'='cancelled'),
   'refunded',(select count(*) from selected where payload->>'payment_status'='refunded'),
   'average',(select coalesce(avg((payload->>'total')::numeric),0) from selected where payload->>'status' not in ('cancelled','awaiting_payment','refunded')),
-  'daily',coalesce((select jsonb_agg(to_jsonb(daily) order by day) from daily),'[]'),
+  'daily',coalesce((select jsonb_agg(to_jsonb(daily) order by report_day) from daily),'[]'),
   'products',coalesce((select jsonb_agg(to_jsonb(products) order by quantity desc) from products),'[]'),
   'methods',coalesce((select jsonb_agg(to_jsonb(methods)) from methods),'[]'),
   'coupons',coalesce((select jsonb_agg(to_jsonb(coupons)) from coupons),'[]')
