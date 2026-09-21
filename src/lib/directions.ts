@@ -1,9 +1,23 @@
 export async function getRouteGeoJSON(origin: { lat: number; lng: number }, dest: { lat: number; lng: number }) {
-  // The production worker is hosted on Cloudflare. The legacy route endpoints
-  // below only exist on Netlify, so calling them from any of the three live
-  // maps produces a 404 even when GPS tracking is working. The map component
-  // has a reliable straight-line fallback and distance-based ETA.
-  if (window.location.hostname.endsWith('.workers.dev')) return null
+  const originStr = `${origin.lng},${origin.lat}`
+  const destStr = `${dest.lng},${dest.lat}`
+
+  // The production application is hosted on Cloudflare, while the legacy
+  // route endpoints below are Netlify-only. Use the public OSRM route service
+  // there so riders and customers see the actual road route, not just a line.
+  if (window.location.hostname.endsWith('.workers.dev')) {
+    try {
+      const response = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${originStr};${destStr}?overview=full&geometries=geojson`,
+      )
+      if (!response.ok) throw new Error(`OSRM returned ${response.status}`)
+      const data = await response.json()
+      if (data?.code === 'Ok' && Array.isArray(data.routes) && data.routes.length) return data
+    } catch (error) {
+      console.warn('Road route is unavailable; showing the direct route instead.', error)
+    }
+    return null
+  }
 
   // Prefer server-side cached route (route-eta) which returns geometry + duration
   try {
@@ -27,10 +41,10 @@ export async function getRouteGeoJSON(origin: { lat: number; lng: number }, dest
   }
 
   // Fallback to direct directions endpoint (Mapbox proxy)
-  const originStr = `${origin.lat},${origin.lng}`
-  const destStr = `${dest.lat},${dest.lng}`
+  const netlifyOriginStr = `${origin.lat},${origin.lng}`
+  const netlifyDestStr = `${dest.lat},${dest.lng}`
   try {
-    const res = await fetch(`/.netlify/functions/directions?origin=${encodeURIComponent(originStr)}&dest=${encodeURIComponent(destStr)}`)
+    const res = await fetch(`/.netlify/functions/directions?origin=${encodeURIComponent(netlifyOriginStr)}&dest=${encodeURIComponent(netlifyDestStr)}`)
     if (!res.ok) throw new Error(`Directions API returned ${res.status}`)
     const json = await res.json()
     return json

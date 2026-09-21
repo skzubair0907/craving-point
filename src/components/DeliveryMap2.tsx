@@ -192,7 +192,9 @@ export const DeliveryMap = ({ customerLocation, riderLocation = null, height = '
 
       // update or create polyline to customer (prefer routed polyline)
       const to = riderLatLng
-      const routeKey = `${to.lat.toFixed(5)}:${to.lng.toFixed(5)}|${customer.lat.toFixed(5)}:${customer.lng.toFixed(5)}`
+      // Refresh the road route after meaningful rider movement, rather than
+      // for every GPS jitter sample.
+      const routeKey = `${to.lat.toFixed(4)}:${to.lng.toFixed(4)}|${customer.lat.toFixed(5)}:${customer.lng.toFixed(5)}`
       const lastRouteKey = (riderPolylineRef as any).__routeKey
       if (routeKey !== lastRouteKey) {
         ;(riderPolylineRef as any).__routeKey = routeKey
