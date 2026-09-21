@@ -101,10 +101,10 @@ export function getOrderStatusLabel(status: string | null | undefined): string {
 export function getOrderStatusTone(status: string | null | undefined): string {
   const normalized = normalizeOrderStatus(status ?? null);
   if (!normalized) return 'border-slate-400/25 bg-slate-500/10 text-slate-100';
-  if (['out_for_delivery', 'ready', 'confirmed', 'preparing'].includes(normalized)) {
+  if (['out_for_delivery', 'ready', 'confirmed', 'preparing', 'picked_up'].includes(normalized)) {
     return 'border-orange-400/35 bg-orange-500/10 text-orange-100';
   }
-  if (['delivered', 'picked_up'].includes(normalized)) {
+  if (normalized === 'delivered') {
     return 'border-emerald-400/35 bg-emerald-500/10 text-emerald-100';
   }
   if (normalized === 'cancelled') {

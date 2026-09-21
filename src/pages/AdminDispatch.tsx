@@ -83,8 +83,8 @@ export default function AdminDispatch() {
             await refresh()
             await refresh()
 
-            // If status is delivered or picked_up, trigger a push notification for the order
-            if (['delivered', 'picked_up'].includes(status) && row.order_number) {
+            // Only a real delivery completion can send an "Order completed" update.
+            if (status === 'delivered' && row.order_number) {
                 try {
                     const { data: { session } } = await supabase.auth.getSession()
                     const token = session?.access_token
