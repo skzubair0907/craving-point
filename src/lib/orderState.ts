@@ -93,7 +93,7 @@ export function getNextOrderStatus(order: { status?: string | null; orderType?: 
 export function getOrderStatusLabel(status: string | null | undefined): string {
   const normalized = normalizeOrderStatus(status ?? null);
   if (!normalized) return String(status ?? 'Unknown').replace(/_/g, ' ');
-  if (normalized === 'picked_up') return 'Picked up';
+  if (normalized === 'picked_up') return 'Delivery partner picked up your order';
   if (normalized === 'out_for_delivery') return 'On the way';
   return ORDER_STATE_MACHINE[normalized]?.label ?? normalized.replace(/_/g, ' ');
 }

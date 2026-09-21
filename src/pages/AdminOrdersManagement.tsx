@@ -120,6 +120,21 @@ export default function AdminOrdersManagement() {
     }
   }
 
+  async function confirmRiderPickup(row: any) {
+    setBusy(row.id)
+    setMessage('')
+    try {
+      const result = await supabase.rpc('admin_confirm_delivery_pickup', { p_order_id: row.id })
+      if (result.error) throw new Error(result.error.message)
+      await refresh()
+      setMessage('Pickup confirmed. The customer can see that the delivery partner has collected the order.')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to confirm rider pickup.')
+    } finally {
+      setBusy('')
+    }
+  }
+
   const filtered = orders.filter(row => (
     (filter === 'all' || filter === 'pending' ? filter === 'all' || row.payload.status === 'awaiting_payment' : !['cancelled', 'delivered', 'picked_up', 'awaiting_payment'].includes(row.payload.status))
     && (row.order_number + ' ' + row.payload.customer?.name + ' ' + row.payload.customer?.phone).toLowerCase().includes(query.toLowerCase())
@@ -264,6 +279,7 @@ export default function AdminOrdersManagement() {
                 }
               }}>View subscriptions</button>
               {next && !(order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted', 'picked_up', 'out_for_delivery', 'arrived', 'delivered'].includes(next)) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void update(row.id, next, undefined, row.order_number)}>{actionLabel(next)}</button>}
+              {order.meta.orderType === 'delivery' && ['rider_assigned', 'rider_accepted'].includes(order.status) && <button className="btn-primary w-full sm:w-auto" disabled={busy === row.id} onClick={() => void confirmRiderPickup(row)}>Delivery boy picked up</button>}
               {order.status === 'out_for_delivery' && (
                 <button
                   className="btn-secondary w-full sm:w-auto border border-red-400/40 text-red-200 hover:bg-red-500/10"

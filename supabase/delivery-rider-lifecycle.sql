@@ -37,6 +37,32 @@ end $$;
 revoke all on function public.assign_delivery_partner(uuid, uuid, text) from public, anon;
 grant execute on function public.assign_delivery_partner(uuid, uuid, text) to authenticated;
 
+-- The restaurant may confirm the physical handoff when its team gives the
+-- parcel to the assigned rider. This is deliberately separate from starting
+-- the trip: only the rider can start GPS and move the order on the way.
+create or replace function public.admin_confirm_delivery_pickup(p_order_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+declare current_status text;
+begin
+  if not public.admin_can('orders', 'edit') then raise exception 'Access denied'; end if;
+  select o.payload->>'status' into current_status
+  from public.order_requests o
+  join public.order_admin_details d on d.order_id = o.id
+  join public.delivery_staff s on s.id = d.delivery_staff_id and s.active = true
+  where o.id = p_order_id;
+  if not found then raise exception 'Assign an active rider before confirming pickup'; end if;
+  if current_status not in ('rider_assigned', 'rider_accepted') then
+    raise exception 'Pickup can only be confirmed after assigning the rider';
+  end if;
+  update public.order_requests
+  set payload = jsonb_set(jsonb_set(payload, '{status}', to_jsonb('picked_up'::text), true), '{updated_at}', to_jsonb(now()), true)
+  where id = p_order_id;
+  insert into public.order_history(order_id, status, reason, actor)
+  values (p_order_id, 'picked_up', 'Pickup confirmed by restaurant', auth.uid());
+end $$;
+revoke all on function public.admin_confirm_delivery_pickup(uuid) from public, anon;
+grant execute on function public.admin_confirm_delivery_pickup(uuid) to authenticated;
+
 create or replace function public.delivery_partner_orders()
 returns table (id uuid, order_number text, payload jsonb, created_at timestamptz, updated_at timestamptz)
 language sql stable security definer set search_path = public as $$
