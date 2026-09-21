@@ -194,6 +194,37 @@ button,input,select,textarea{max-width:100%}
   .cp-bottom-bar .mobile-view-cart{min-height:56px;padding:10px 14px}
 }
 
+/* Final narrow-screen pass. These rules preserve the desktop composition while
+   keeping the checkout and delivery flow comfortable on 320–480px phones. */
+@media(max-width:480px){
+  .header-brand-copy{display:none}
+  .header-inner{gap:10px}
+  .header-order{gap:0;padding:11px 12px;min-width:44px;justify-content:center}
+  .checkout-progress{gap:.4rem;padding-inline:.25rem;white-space:nowrap}
+  .checkout-progress span{min-width:0;gap:.22rem}
+  .checkout-meta-row{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;gap:.35rem .6rem}
+  .checkout-meta-row>span:last-child{grid-column:1/-1;text-align:left}
+  .checkout-meta-row strong{justify-self:end}
+  .checkout-inline-actions{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+  .checkout-inline-actions>*{width:100%;min-width:0}
+  .checkout-order-item__details,.checkout-order-item__row>div{min-width:0}
+  .checkout-order-item strong,.checkout-address-summary p{overflow-wrap:anywhere}
+  .tracking-page .tracking-shell{padding-top:1rem;padding-bottom:1.5rem}
+  .tracking-page .tracking-content{gap:1rem}
+  .tracking-page .tracking-map{height:auto!important;aspect-ratio:1/1;min-height:250px}
+  .tracking-page .tracking-map>div{height:100%!important}
+  .tracking-page .tracking-header p,.tracking-page .tracking-header div:last-child{overflow-wrap:anywhere}
+}
+
+@media(max-width:359px){
+  .header-inner .header-brand-logo{width:104px}
+  .header-actions{gap:5px}
+  .header-order{display:none}
+  .checkout-page{padding-inline:10px}
+  .checkout-card{padding:14px}
+  .checkout-type-button{gap:.35rem;font-size:.84rem}
+}
+
 /* Product actions need predictable width on narrow phones. */
 @media(max-width:480px){
   .menu-experience{padding-bottom:132px}
