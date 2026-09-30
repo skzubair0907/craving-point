@@ -417,6 +417,8 @@ html{scroll-padding-top:116px}
 .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid>div:hover{transform:translateY(-4px);border-color:rgba(244,185,86,.48)!important;background:linear-gradient(145deg,rgba(86,55,38,.82),rgba(39,30,24,.96))!important}
 .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid img{height:132px!important;border:1px solid rgba(243,236,217,.09);border-radius:13px!important;transition:transform .35s ease}.cinematic-home > .editorial-shell.pb-5 > .card-premium .grid>div:hover img{transform:scale(1.015)}
 .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid a{font-weight:700}.cinematic-home > .editorial-shell.pb-5 > .card-premium .grid .btn-secondary{min-height:40px;padding:10px 13px}
+.bestseller-actions{display:flex;align-items:center;gap:12px;flex:0 0 auto;min-width:max-content;white-space:nowrap}
+.bestseller-actions>a,.bestseller-actions>button{flex:0 0 auto;white-space:nowrap}
 @media(max-width:767px){
   html{scroll-padding-top:90px}.campaign-hero + .editorial-shell.pb-5{margin-top:20px}
   .cinematic-home > .editorial-shell.pb-5{padding-bottom:14px;scroll-margin-top:90px}
@@ -426,6 +428,7 @@ html{scroll-padding-top:116px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid{grid-template-columns:1fr!important;gap:12px;margin-top:18px!important}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid>div{padding:16px!important}.cinematic-home > .editorial-shell.pb-5 > .card-premium h4{font-size:25px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid img{height:156px!important}
+  .bestseller-actions{gap:14px}
 }
 
 /* Customer account and sign-in use the storefront's editorial tone while
