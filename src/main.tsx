@@ -8,7 +8,7 @@ import './index.css'
 import './styles/editorial.css'
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => { void navigator.serviceWorker.register('/service-worker.js') })
+  window.addEventListener('load', () => { void navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }) })
 }
 
 // Basic global error handlers to capture runtime errors in the browser console

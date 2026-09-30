@@ -1,7 +1,11 @@
-const CACHE = 'craving-point-shell-v1'
+const CACHE = 'craving-point-shell-v2'
 const shell = ['/', '/manifest.webmanifest', '/images/logo-new.png']
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(shell)).then(() => self.skipWaiting())))
-self.addEventListener('activate', event => event.waitUntil(self.clients.claim()))
+self.addEventListener('activate', event => event.waitUntil(
+  caches.keys()
+    .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+    .then(() => self.clients.claim())
+))
 self.addEventListener('fetch', event => {
   const request = event.request
   const url = new URL(request.url)
