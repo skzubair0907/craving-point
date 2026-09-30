@@ -101,13 +101,10 @@ export default function Home() {
           {favoriteHighlights.map((item) => (
             <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-white/5 p-4">
               <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Favorite pick</p>
-              <h4 className="mt-3 text-lg font-bold text-accent">{item.name}</h4>
+              <Link className="mt-3 block text-lg font-bold text-accent" to={item.link}><h4>{item.name}</h4></Link>
               <div className="mt-3 flex items-center justify-between gap-2">
                 <span className="text-sm text-accent/70">₹{item.price}</span>
-                <div className="bestseller-actions">
-                  <Link className="text-primary underline" to={item.link}>View</Link>
-                  <button type="button" className="btn-secondary" onClick={() => addFavoriteQuick(item.id)}>Add</button>
-                </div>
+                <button type="button" className="btn-secondary shrink-0" onClick={() => addFavoriteQuick(item.id)}>Add</button>
               </div>
             </div>
           ))}
@@ -128,13 +125,10 @@ export default function Home() {
           {bestsellerHighlights.map((item) => (
             <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-primary/5 p-4">
               <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Customer favorite</p>
-              <h4 className="mt-3 text-lg font-bold text-accent">{item.name}</h4>
+              <Link className="mt-3 block text-lg font-bold text-accent" to={item.link}><h4>{item.name}</h4></Link>
               <div className="mt-3 flex items-center justify-between gap-2">
                 <span className="text-sm text-accent/70">₹{item.price}</span>
-                <div className="bestseller-actions">
-                  <Link className="text-primary underline" to={item.link}>View</Link>
-                  <button type="button" className="btn-secondary" onClick={() => addBestsellerQuick(item.id)}>Add</button>
-                </div>
+                <button type="button" className="btn-secondary shrink-0" onClick={() => addBestsellerQuick(item.id)}>Add</button>
               </div>
             </div>
           ))}
