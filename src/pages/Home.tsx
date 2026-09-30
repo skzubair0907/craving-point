@@ -131,7 +131,7 @@ export default function Home() {
               <h4 className="mt-3 text-lg font-bold text-accent">{item.name}</h4>
               <div className="mt-3 flex items-center justify-between gap-2">
                 <span className="text-sm text-accent/70">₹{item.price}</span>
-                <div className="flex items-center gap-3">
+                <div className="bestseller-actions">
                   <Link className="text-primary underline" to={item.link}>View</Link>
                   <button type="button" className="btn-secondary" onClick={() => addBestsellerQuick(item.id)}>Add</button>
                 </div>
