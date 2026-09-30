@@ -419,6 +419,9 @@ html{scroll-padding-top:116px}
 .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid a{font-weight:700}.cinematic-home > .editorial-shell.pb-5 > .card-premium .grid .btn-secondary{min-height:40px;padding:10px 13px}
 .bestseller-actions{display:flex;align-items:center;gap:12px;flex:0 0 auto;min-width:max-content;white-space:nowrap}
 .bestseller-actions>a,.bestseller-actions>button{flex:0 0 auto;white-space:nowrap}
+.bestseller-card-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bestseller-card-footer>span{white-space:nowrap}
+.bestseller-card-footer>.btn-secondary{flex:0 0 auto}
 @media(max-width:767px){
   html{scroll-padding-top:90px}.campaign-hero + .editorial-shell.pb-5{margin-top:20px}
   .cinematic-home > .editorial-shell.pb-5{padding-bottom:14px;scroll-margin-top:90px}
@@ -429,6 +432,9 @@ html{scroll-padding-top:116px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid>div{padding:16px!important}.cinematic-home > .editorial-shell.pb-5 > .card-premium h4{font-size:25px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid img{height:156px!important}
   .bestseller-actions{gap:14px}
+  .bestseller-card-footer{align-items:stretch;flex-direction:column;gap:12px}
+  .bestseller-card-footer>span{width:100%;font-size:1rem;line-height:1.25}
+  .bestseller-card-footer>.btn-secondary{width:100%;justify-content:center}
 }
 
 /* Customer account and sign-in use the storefront's editorial tone while

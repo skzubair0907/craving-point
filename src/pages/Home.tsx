@@ -102,7 +102,7 @@ export default function Home() {
             <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-white/5 p-4">
               <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Favorite pick</p>
               <Link className="mt-3 block text-lg font-bold text-accent" to={item.link}><h4>{item.name}</h4></Link>
-              <div className="mt-3 flex items-center justify-between gap-2">
+              <div className="bestseller-card-footer mt-3">
                 <span className="text-sm text-accent/70">₹{item.price}</span>
                 <button type="button" className="btn-secondary shrink-0" onClick={() => addFavoriteQuick(item.id)}>Add</button>
               </div>
@@ -126,7 +126,7 @@ export default function Home() {
             <div key={item.id} className="rounded-2xl border border-[var(--brand-border)] bg-primary/5 p-4">
               <p className="text-xs uppercase tracking-[0.25em] text-accent/50">Customer favorite</p>
               <Link className="mt-3 block text-lg font-bold text-accent" to={item.link}><h4>{item.name}</h4></Link>
-              <div className="mt-3 flex items-center justify-between gap-2">
+              <div className="bestseller-card-footer mt-3">
                 <span className="text-sm text-accent/70">₹{item.price}</span>
                 <button type="button" className="btn-secondary shrink-0" onClick={() => addBestsellerQuick(item.id)}>Add</button>
               </div>
