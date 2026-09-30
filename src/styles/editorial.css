@@ -238,6 +238,9 @@ button,input,select,textarea{max-width:100%}
 
 /* Shared storefront sizing: compact header branding and predictable content
    widths from a small phone through a laptop display. */
+.food-card-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0;min-width:max-content}
+.food-card-actions .food-details{display:inline-flex;align-items:center;gap:5px;min-height:40px;margin:0;padding:10px 4px;white-space:nowrap;overflow:visible;color:var(--brand-cream-soft)}
+.food-card-actions .food-add{flex-shrink:0}
 @media(min-width:768px){
   .editorial-header{height:80px}
   .header-inner{width:min(1240px,calc(100% - 48px));gap:clamp(18px,3vw,38px)}
@@ -261,6 +264,17 @@ button,input,select,textarea{max-width:100%}
   .header-brand-logo{width:58px!important;height:52px!important;justify-content:flex-start}
   .header-brand-logo img{max-width:52px!important;max-height:46px!important}
   .cinematic-home section[id],.menu-experience{scroll-margin-top:92px}
+}
+
+/* A two-column menu becomes too narrow for two touch actions on small phones.
+   Keep each card full-width so View and Add remain readable and tappable. */
+@media(max-width:640px){
+  .editorial-menu-grid{grid-template-columns:minmax(0,1fr)}
+  .food-card-bottom{justify-content:space-between;gap:12px}
+  .food-card-bottom>span{flex:1;min-width:0}
+  .food-card-actions{gap:10px}
+  .food-card-actions .food-details{min-width:58px;justify-content:center;padding-inline:8px}
+  .food-card-actions .food-add{min-width:88px}
 }
 
 /* Let desktop and laptop content use the screen instead of sitting inside a
