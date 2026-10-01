@@ -424,8 +424,8 @@ html{scroll-padding-top:116px}
 .bestseller-card-footer>.btn-secondary{flex:0 0 auto}
 @media(max-width:767px){
   html{scroll-padding-top:90px}.campaign-hero + .editorial-shell.pb-5{margin-top:20px}
-  .cinematic-home > .editorial-shell.pb-5{padding-bottom:14px;scroll-margin-top:90px}
-  .cinematic-home > .editorial-shell.pb-5 > .card-premium{padding:20px!important;border-radius:20px}.cinematic-home > .editorial-shell.pb-5 > .card-premium::before{left:20px;width:46px}
+  .cinematic-home > .editorial-shell.pb-5{width:calc(100% - 32px)!important;max-width:calc(100vw - 32px);min-width:0;box-sizing:border-box;margin-inline:auto;padding-bottom:14px;scroll-margin-top:90px}
+  .cinematic-home > .editorial-shell.pb-5 > .card-premium{width:100%;min-width:0;box-sizing:border-box;padding:20px!important;border-radius:20px}.cinematic-home > .editorial-shell.pb-5 > .card-premium::before{left:20px;width:46px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium> .flex:first-child{align-items:flex-start;gap:16px}.cinematic-home > .editorial-shell.pb-5 > .card-premium h3{font-size:31px}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .btn-primary,.cinematic-home > .editorial-shell.pb-5 > .card-premium> .flex:first-child>.btn-secondary{width:100%;justify-content:center}
   .cinematic-home > .editorial-shell.pb-5 > .card-premium .grid{grid-template-columns:1fr!important;gap:12px;margin-top:18px!important}
