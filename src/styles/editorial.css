@@ -439,6 +439,10 @@ html{scroll-padding-top:116px}
 
 /* Customer account and sign-in use the storefront's editorial tone while
    keeping forms and order history effortless to scan. */
+.visit-map-link{display:flex;min-height:370px;flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;padding:42px;background:linear-gradient(135deg,#302018,#171512);border:1px solid var(--brand-border);color:var(--brand-cream);transition:background .2s,transform .2s}
+.visit-map-link:hover{background:linear-gradient(135deg,#4a2b1e,#211d18);transform:translateY(-2px)}
+.visit-map-link strong{font:600 clamp(30px,3vw,46px)/.95 var(--font-display)}
+.visit-map-link span{font:600 10px/1.5 Inter,sans-serif;letter-spacing:.13em;color:var(--brand-cream-soft)}
 .customer-account{max-width:1180px!important;padding-top:132px!important;padding-bottom:100px!important;color:var(--brand-cream)}
 .customer-account-hero{position:relative;overflow:hidden;padding:30px 34px;border:1px solid rgba(243,236,217,.13);border-radius:24px;background:radial-gradient(circle at 92% 5%,rgba(220,65,44,.22),transparent 28%),linear-gradient(135deg,#2d211a,#1c1815)}
 .customer-account-hero::after{content:"CP .88";position:absolute;right:30px;bottom:-16px;color:rgba(243,236,217,.06);font:800 112px/.8 var(--font-display);pointer-events:none}.customer-account-hero>*{position:relative;z-index:1}
