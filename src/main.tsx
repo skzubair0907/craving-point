@@ -9,7 +9,7 @@ import './styles/editorial.css'
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    void navigator.serviceWorker.getRegistrations().then(registrations => Promise.all(registrations.map(registration => registration.unregister())))
+    void navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' })
   })
 }
 
